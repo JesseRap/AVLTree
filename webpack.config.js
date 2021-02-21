@@ -46,6 +46,10 @@ module.exports = {
                 },
               ],
             ],
+            plugins: [
+              "@babel/plugin-proposal-class-properties",
+              "@babel/plugin-proposal-optional-chaining",
+            ]
           },
         },
       },
@@ -66,8 +70,7 @@ module.exports = {
            * MiniCssExtractPlugin doesn't support HMR.
            * For developing, use 'style-loader' instead.
            * */
-          prod ? MiniCssExtractPlugin.loader : 'style-loader',
-          'css-loader',
+          'style-loader'
         ],
       },
     ],
