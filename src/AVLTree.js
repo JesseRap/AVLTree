@@ -1,3 +1,6 @@
+import anime from 'animejs/lib/anime.es.js';
+import { tick } from 'svelte';
+
 class Node {
 	constructor(val) {
 		this.val = val;
@@ -8,7 +11,7 @@ class Node {
 	}
 }
 
-const XMLNS = "http://www.w3.org/2000/svg";
+const XMLNS = 'http://www.w3.org/2000/svg';
 
 export default class AVLTree {
 	constructor() {
@@ -144,11 +147,12 @@ export default class AVLTree {
 	};
 
 	createSVGElement = (XMLNS) => {
-		const svg = document.createElementNS(XMLNS, "svg");
-    svg.setAttributeNS(null, "width", "100%");
-    svg.setAttributeNS(null, "height", "100%");
-    svg.style.border = "1px solid black";
-    svg.setAttributeNS(null, "viewBox", "0 0 100 100");
+		const svg = document.createElementNS(XMLNS, 'svg');
+    svg.setAttributeNS(null, 'width', '100%');
+    svg.setAttributeNS(null, 'height', '100%');
+    svg.style.border = '1px solid black';
+    svg.setAttribute('className', 'svg-main');
+    svg.setAttributeNS(null, 'viewBox', '0 0 100 100');
 		return svg;
 	};
 
@@ -161,11 +165,11 @@ export default class AVLTree {
 	};
 
 	createNodeSVG = (cx, cy) => {
-		const circle = document.createElementNS(XMLNS, "circle");
-		circle.setAttributeNS(null, "cx", `${cx}%`);
-		circle.setAttributeNS(null, "cy", `${cy}%`);
-		circle.setAttributeNS(null, "r", "5");
-		circle.setAttributeNS(null, "fill", "red");
+		const circle = document.createElementNS(XMLNS, 'circle');
+		circle.setAttributeNS(null, 'cx', `${cx}%`);
+		circle.setAttributeNS(null, 'cy', `${cy}%`);
+		circle.setAttributeNS(null, 'r', '5');
+		circle.setAttributeNS(null, 'fill', 'red');
 
 		return circle;
 	};
@@ -189,13 +193,12 @@ export default class AVLTree {
 		return path;
 	};
 
+	svg = this.createSVGElement(XMLNS);
 	renderTree = () => {
-    const svg = this.createSVGElement(XMLNS);
-    if (!this.root) return svg;
+		this.svg = this.createSVGElement(XMLNS);
+    if (!this.root) return this.svg;
 
-    const bfs = (node) => {
-      if (!node) return;
-
+    const bfs = () => {
 			/**
 			 * Vertical alignment is computed by computing vertical offset as 1 / tree height, starting at (1 / height) / 2.
 			 * E.g., if height is 4, rows are at height:
@@ -207,63 +210,143 @@ export default class AVLTree {
 			 */
 
 			// vertical space between nodes at level N
-			const cyInc = 1 / (node.height + 1) * 100;
+			const cyInc = 1 / (this.root.height + 1) * 100;
 			// vertical offset for current node.
 			let cy = cyInc / 2;
 
 			let levelN = 0;
-			let level = [node];
+			let level = [this.root];
+			let groups = [this.svg]
 
 			while (level.length && level.some(el => el !== null)) {
 				const nextLevel = [];
+				const nextGroups = [];
 
 				// Nodes become more horizontally packed lower down in the tree.
 				const cxInc = 1 / Math.pow(2, levelN) * 100;
 				let cx = cxInc / 2;
 
-				level.forEach((n, index) => {
-					if (!n) {
+				console.log("level - TOP", level)
+				console.log("groups - TOP", groups)
+
+				level.forEach((node, index) => {
+					if (!node) {
 						// We keep pushing null children in order to have placeholders for empty leaves.
 						nextLevel.push(null, null);
+						nextGroups.push(null, null);
 					} else {
+						const parentGroup = groups[index];
+						console.log('parentGroup', parentGroup, index);
+
 						// Calculate the coordinates of the left and right children, in order to draw the line between them.
 
 						const { nextCy, leftCx, rightCx } = this.getChildrenCoords(cy, cyInc, levelN, index);
 
-						console.table({ n, index, cyInc, cxInc, cy, cx, nextCy, leftCx, rightCx});
+						console.table({ node, index, cyInc, cxInc, cy, cx, nextCy, leftCx, rightCx});
+
+						// const g = document.createElementNS(XMLNS, 'g');
+
+						const leftGroup = document.createElementNS(XMLNS, 'g');
+						nextLevel.push(node.left);
+						nextGroups.push(node.left ? leftGroup : null);
+
+						if (node.left) {
+							// Create path to left child.
+							const leftPath = this.createNodePath(cx, cy, leftCx, nextCy);
+			        parentGroup.appendChild(leftPath);
+			        parentGroup.appendChild(leftGroup);
+			      }
+
+						const rightGroup = document.createElementNS(XMLNS, 'g');
+						nextLevel.push(node.right);
+						nextGroups.push(node.right ? rightGroup : null);
+
+						if (node.right) {
+							// Create path to right child.
+							const rightPath = this.createNodePath(cx, cy, rightCx, nextCy);
+			        parentGroup.appendChild(rightPath);
+							parentGroup.appendChild(rightGroup);
+			      }
 
 						const circle = this.createNodeSVG(cx, cy);
 
-						const text = this.createNodeLabelSVG(cx, cy, n.val);
+						const text = this.createNodeLabelSVG(cx, cy, node.val);
 
-						nextLevel.push(n.left);
+						parentGroup.appendChild(circle);
+						parentGroup.appendChild(text);
 
-						if (n.left) {
-							// Create path to left child.
-							const leftPath = this.createNodePath(cx, cy, leftCx, nextCy);
-			        svg.appendChild(leftPath);
-			      }
-
-						nextLevel.push(n.right);
-
-						if (n.right) {
-							// Create path to right child.
-							const rightPath = this.createNodePath(cx, cy, rightCx, nextCy);
-			        svg.appendChild(rightPath);
-			      }
-						svg.appendChild(circle);
-						svg.appendChild(text);
+						console.log("GROUPS", groups, index)
+						console.log("NEXT GROUPS", nextGroups)
 					}
 					cx += cxInc;
 				});
 				levelN++;
 				level = nextLevel;
+				groups = nextGroups;
 				cy += cyInc;
 			}
     };
 
     bfs(this.root);
 
-    return svg;
+    return this.svg;
   };
+
+	timeline = anime.timeline({
+		autoPlay: false,
+	  easing: 'easeOutExpo',
+	});
+
+	nodeNotFoundAnimation = () => {
+		this.timeline.add({
+		  targets: this.svg,
+		  // fill: '#fff',
+		  // backgroundColor: '#000',
+			duration: 750,
+			easing: 'easeInOutExpo'
+		});
+	};
+
+	nodeFoundAnimation = node  => {
+		this.timeline.add({
+		  targets: node,
+		  fill: '#fff',
+		  scale: 2,
+			direction: 'alternate',
+			duration: 750
+		});
+	};
+
+	visitNodeAnimation = node => {
+		this.timeline.add({
+		  targets: node,
+		  backgroundColor: 'blue',
+			direction: 'alternate',
+			duration: 200
+		});
+	};
+
+	find = val => {
+		const dfs = node => {
+			console.log('dfs', node?.val);
+			if (!node) {
+				this.nodeNotFoundAnimation();
+				return;
+			}
+			if (node.val === val) {
+				this.nodeNotFoundAnimation(node);
+				return;
+			}
+			this.visitNodeAnimation(node);
+			if (node.val >= val) {
+				dfs(node.left);
+			} else {
+				dfs(node.right);
+			}
+		};
+
+		dfs(this.root);
+		this.timeline.play();
+		console.log(this.timeline);
+	};
 }
