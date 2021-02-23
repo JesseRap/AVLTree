@@ -8,7 +8,7 @@ const sveltePath = path.resolve('node_modules', 'svelte')
 
 module.exports = {
   entry: {
-    bundle: ['./src/main.js'],
+    bundle: ['@babel/polyfill', './src/main.js'],
   },
   resolve: {
     alias: {

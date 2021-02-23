@@ -244,9 +244,8 @@ export default class AVLTree {
 
 						console.table({ node, index, cyInc, cxInc, cy, cx, nextCy, leftCx, rightCx});
 
-						// const g = document.createElementNS(XMLNS, 'g');
-
 						const leftGroup = document.createElementNS(XMLNS, 'g');
+						leftGroup.setAttributeNS(null, 'class', 'left');
 						nextLevel.push(node.left);
 						nextGroups.push(node.left ? leftGroup : null);
 
@@ -258,6 +257,7 @@ export default class AVLTree {
 			      }
 
 						const rightGroup = document.createElementNS(XMLNS, 'g');
+						rightGroup.setAttributeNS(null, 'class', 'right');
 						nextLevel.push(node.right);
 						nextGroups.push(node.right ? rightGroup : null);
 
@@ -294,59 +294,74 @@ export default class AVLTree {
 
 	timeline = anime.timeline({
 		autoPlay: false,
-	  easing: 'easeOutExpo',
 	});
 
 	nodeNotFoundAnimation = () => {
+		console.log('nodeNotFoundAnimation');
 		this.timeline.add({
 		  targets: this.svg,
-		  // fill: '#fff',
-		  // backgroundColor: '#000',
-			duration: 750,
-			easing: 'easeInOutExpo'
+		  fill: '#fff',
+		  backgroundColor: '#000',
+			easing: 'easeInOutExpo',
+			duration: 500
+		})
+		.add({
+		  targets: this.svg,
+		  fill: '#000',
+		  backgroundColor: '#fff',
+			easing: 'easeInOutExpo',
+			duration: 500
 		});
 	};
 
 	nodeFoundAnimation = node  => {
+		console.log('nodeFoundAnimation', node);
+		const circle = Array.from(node.children).filter(child => child.tagName === 'circle');
+		console.log(circle);
 		this.timeline.add({
-		  targets: node,
-		  fill: '#fff',
-		  scale: 2,
-			direction: 'alternate',
-			duration: 750
+		  targets: circle,
+		  fill: '#000',
+		  color: '#fff',
+		  border: '#1f3',
+			duration: 1000
 		});
 	};
 
 	visitNodeAnimation = node => {
+		console.log('visitNodeAnimation', node);
+		const circle = Array.from(node.children).filter(child => child.tagName === 'circle');
 		this.timeline.add({
-		  targets: node,
-		  backgroundColor: 'blue',
-			direction: 'alternate',
-			duration: 200
+		  targets: circle,
+			fill: ['#ff0000', '#ccc'],
+			strokeWidth: '5px',
+			stroke: "#aaa",
+			duration: 1000
 		});
 	};
 
 	find = val => {
-		const dfs = node => {
+		const dfs = (node, svgEl) => {
 			console.log('dfs', node?.val);
 			if (!node) {
 				this.nodeNotFoundAnimation();
 				return;
 			}
+			this.visitNodeAnimation(svgEl);
 			if (node.val === val) {
-				this.nodeNotFoundAnimation(node);
+				this.nodeFoundAnimation(svgEl);
 				return;
 			}
-			this.visitNodeAnimation(node);
 			if (node.val >= val) {
-				dfs(node.left);
+				const leftSVGGroup = svgEl.querySelector('.left');
+				dfs(node.left, leftSVGGroup);
 			} else {
-				dfs(node.right);
+				const rightSVGGroup = svgEl.querySelector('.right');
+				dfs(node.right, rightSVGGroup);
 			}
 		};
 
-		dfs(this.root);
+		dfs(this.root, this.svg);
 		this.timeline.play();
-		console.log(this.timeline);
+		console.log(this.timeline, this.svg);
 	};
 }
