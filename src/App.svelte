@@ -98,17 +98,36 @@
 		console.log("FINDVAL", findVal)
 		tree.find(findVal);
 	};
+
+	const onInsertRandVal = () => {
+		const randVal = Math.floor(Math.random() * 50);
+		tree.insert(randVal);
+		updateSvg();
+	}
+
+	const onReset = () => {
+		tree = new AVLTree();
+		updateSvg();
+	}
 </script>
 
 <h1 class="hello">Hello {name}!</h1>
 
-<div bind:this={container} style="width: 100%; height: 100%"/>
+<div bind:this={container} style="width: 600px; height: 600px; margin: auto;"/>
 
-<div>
-	<input type='number' bind:value={newVal} />
-	<button on:click={onNewValue}>New Value</button>
-</div>
-<div>
-	<input type='number' bind:value={findVal} />
-	<button on:click={onFindValue}>Find Value</button>
+<div style="display: flex; width: 100%; justify-content: space-between">
+	<div>
+		<input type='number' bind:value={newVal} />
+		<button on:click={onNewValue}>New Value</button>
+	</div>
+	<div>
+		<input type='number' bind:value={findVal} />
+		<button on:click={onFindValue}>Find Value</button>
+	</div>
+	<div>
+		<button on:click={onInsertRandVal}>Insert Random Value</button>
+	</div>
+	<div>
+		<button on:click={onReset}>RESET</button>
+	</div>
 </div>
