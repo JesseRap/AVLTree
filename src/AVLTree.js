@@ -38,6 +38,13 @@ export default class AVLTree {
 		return levels;
 	};
 
+	getHeap = () => {
+		const levels = this.getLevels();
+		return levels.reduce((acc, level) => (
+			[...acc, ...level]
+		), []);
+	};
+
 	updateNode = node => this.updateNodeHeight(this.updateNodeBalance(node));
 
 	rotateLeft = node => {

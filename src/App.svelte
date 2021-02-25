@@ -8,83 +8,182 @@
 	let name = 'world';
 	let container;
 
-	// tree.insert(7)
-	// console.log(tree.toString());
-	//
-	// tree.insert(6)
-	// console.log(tree.toString());
-	//
-	// tree.insert(9)
-	// console.log(tree.toString());
-	//
-	// tree.insert(2)
-	// console.log(tree.toString());
-	//
-	// tree.insert(1)
-	// console.log(tree.toString());
-	//
-	// tree.root = tree.rotateLeft(tree.root);
-	// console.log(tree.toString());
+	const XMLNS = 'http://www.w3.org/2000/svg';
 
-
-// 	const node = tree.root;
-// 	tree.root = tree.rotateLeft(node);
-// 	console.log('ROTATE');
-// 	console.log(tree);
-
-	// console.log(tree.toString());
-	//
 	let child;
 	let tree;
 	let svg;
+	let svgHeap = new Array(0);
+	let parentArray = new Array(0);
+
+	const cxArr = [];
+	const cyArr = [];
+
+	const createSVGElement = () => {
+		const svg = document.createElementNS(XMLNS, 'svg');
+    svg.setAttributeNS(null, 'width', '100%');
+    svg.setAttributeNS(null, 'height', '100%');
+    svg.style.border = '1px solid black';
+    svg.setAttribute('class', 'svg-main');
+    svg.setAttributeNS(null, 'viewBox', '0 0 100 100');
+		return svg;
+	};
+
+	const updateCxArr = tree => {
+		if (!tree.root) return new Array(0);
+		const levels = tree.getLevels();
+		console.log(levels);
+		const newCxArry = levels.reduce((acc, level, index) => {
+			const cxInc = 1 / Math.pow(2, index) * 100;
+			console.log('cxInc', cxInc)
+			return [...acc, ...level.map((_, idx) => (cxInc / 2) + (cxInc * idx))];
+		}, []);
+		console.log('newCxArry', newCxArry);
+		newCxArry.forEach((val, index) => {
+			cxArr[index] = val;
+		})
+		console.log('CXARR', cxArr);
+	};
+
+	const updateCyArr = tree => {
+		if (!tree.root) return new Array(0);
+		// vertical space between nodes.
+		const cyInc = 1 / (tree.root.height + 1) * 100;
+		// vertical offset for current node.
+		const levels = tree.getLevels();
+		const newCyArr = levels.reduce((acc, level, index) => (
+			[...acc, ...level.map(_ => (cyInc / 2) + (cyInc * index))]
+		), []);
+		newCyArr.forEach((val, index) => {
+			cyArr[index] = val;
+		})
+		console.log('CYARR', cyArr);
+	};
+
+	const updateSVGHeap = tree => {
+		if (!tree.root) return new Array(0);
+		const heap = tree.getHeap();
+		console.log("HEAP", heap);
+		svgHeap = heap.map((node, index) => node ? svgHeap[index] ? svgHeap[index] : createNodeSVG(node, index) : null);
+	}
+
+	const updateParentArray = tree => {
+		if (!tree.root) return [];
+		 // TODO: make so it doesn't replace entity.
+		 parentArray = svgHeap.map((_, index) => {
+			 if (index === 0) {
+				 return null;
+			 } else {
+				 return Math.floor((index - 1) / 2);
+			 }
+		 });
+	};
+
+	const createNodeSVG = (node, index) => {
+
+		const g = document.createElementNS(XMLNS, 'g');
+		const circle = document.createElementNS(XMLNS, 'circle');
+		circle.setAttributeNS(null, 'cx', cxArr[index]);
+		circle.setAttributeNS(null, 'cy', cyArr[index]);
+		circle.setAttributeNS(null, 'r', '5');
+		circle.setAttributeNS(null, 'fill', 'red');
+		g.appendChild(circle);
+
+		const text = document.createElementNS(XMLNS, 'text');
+		text.setAttributeNS(null, 'x', cxArr[index]);
+		text.setAttributeNS(null, 'y', cyArr[index]);
+		text.innerHTML = String(node.val);
+
+		g.appendChild(text);
+		return g;
+	};
+
+	const appendChildrenToParents = () => {
+		console.log('appendChildrenToParents', parentArray, svgHeap);
+		if (svgHeap.length === 1) {
+			if (svgHeap[0]) {
+				svg.appendChild(svgHeap[0]);
+			}
+			return;
+		}
+		for (let i = svgHeap.length - 1; i >= 0; i--) {
+			if (parentArray[i] !== null && svgHeap[parentArray[i]] !== null && svgHeap[i] !== null) {
+				svgHeap[parentArray[i]].appendChild(svgHeap[i]);
+			}
+		}
+		console.log(svgHeap);
+	};
+
+	const renderTree = () => {
+		const heap = tree.getHeap();
+		console.log("HEAP", heap);
+		if (heap.length === 0) {
+			svg = createSVGElement();
+			svgHeap[0] = createSVGElement();
+			return;
+		}
+		const SVGHeap = heap.map((node, index) => {
+			if (node) {
+				return createNodeSVG(node, index);
+			} else {
+				return null;
+			}
+		});
+
+		console.log("SVGHeap", SVGHeap)
+		SVGHeap.forEach((el, index) => {
+			console.log('here', el, index)
+			if (SVGHeap[index] !== null) {
+				const parent = SVGHeap[Math.floor(index / 2)];
+				parent.appendChild(SVGHeap[index]);
+			}
+		});
+
+		svg = SVGHeap[0];
+
+		// updateSvg();
+
+		// getLevels()
+		// flatten the levels (i.e., heap)
+		// map each element to a NodeSVG
+		// set cx and cy based on cxArr and cyArr
+		// forEach over heap and append children to parents
+		// parent(i) = Math.floor(i / 2)
+		// if heap[i] !== null, heap[parent(i)].appendChild()
+	};
+
 	onMount(() => {
 		tree = new AVLTree();
 
-		console.log(tree.toString());
-		console.log(tree.root);
+		// console.log(tree.toString());
+		console.log('root', tree.root);
 
-		tree.insert(1)
-		console.log(tree.toString());
-		console.log(tree.root);
-
-		tree.insert(3)
-		console.log(tree.toString());
-		console.log(tree.root);
-		//
-		// tree.insert(5)
+		// tree.insert(1)
 		// console.log(tree.toString());
 		// console.log(tree.root);
 		//
-		// tree.insert(2)
-		// console.log(tree.toString());
-		// console.log(tree.root);
-		//
-		// tree.insert(0)
-		// console.log(tree.toString());
-		// console.log(tree.root);
-		//
-		// tree.insert(9)
+		// tree.insert(3)
 		// console.log(tree.toString());
 		// console.log(tree.root);
 
-		svg = tree.renderTree();
+		svg = createSVGElement();
+
+		// svg = tree.renderTree();
+		// renderTree();
 		container.appendChild(svg);
-
-		// tick().then(() => {
-		// 	anime({
-		// 		targets: svg,
-		// 		scale: 2,
-		// 		direction: 'alternate',
-		// 		duration: 1000,
-		// 		easing: 'easeInOutExpo'
-		// 	});
-		// });
+		updateSvg();
 	});
 
 	const updateSvg = () => {
 		const temp = svg;
-		svg = tree.renderTree();
-		container.replaceChild(svg, temp);
+		// svg = tree.renderTree();
+		// container.replaceChild(svg, temp);
+		updateCyArr(tree);
+		updateCxArr(tree);
+		updateSVGHeap(tree);
+		updateParentArray(tree);
+		appendChildrenToParents();
+		// renderTree();
 	};
 
 	let newVal = 0;
@@ -101,6 +200,7 @@
 
 	const onInsertRandVal = () => {
 		const randVal = Math.floor(Math.random() * 50);
+		console.log('onInsertRandVal', randVal);
 		tree.insert(randVal);
 		updateSvg();
 	}
