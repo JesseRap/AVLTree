@@ -109,7 +109,12 @@
 	};
 
 	const appendChildrenToParents = () => {
-		if (!tree.root) return;
+		if (!tree.root) {
+			Array.from(svg.children).forEach(child => {
+				svg.removeChild(child);
+			});
+			return;
+		}
 		console.log('appendChildrenToParents', parentArray, svgHeap);
 		svgHeap.forEach((group, index) => {
 			if (!group) {
