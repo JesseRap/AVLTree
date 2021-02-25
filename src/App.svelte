@@ -18,6 +18,8 @@
 	let svgHeap = new Array(0);
 	let parentArray = new Array(0);
 
+	let edgeMatrix = {};
+
 	const cxArr = [];
 	const cyArr = [];
 
@@ -81,16 +83,25 @@
 		 });
 	};
 
+	const updateEdgeMatrix = tree => {
+		if (!tree.root) return [];
+		// const heap = tree.getHeap();
+		for (let i = svgHeap.length - 1; i <= 0; i--) {
+			if (svgHeap[i] && svgHeap[parentArray[i]]) {
+				edgeMatrix[i] = parentArray[i];
+			}
+		}
+		console.log("EDGE MATRIX", edgeMatrix)
+	}
+
 	const createNodeSVG = (node, index) => {
 		console.log('createNodeSVG!!');
 
 		const g = document.createElementNS(XMLNS, 'g');
-		g.id = groupId++;
+		g.id = String(groupId++);
 		const circle = document.createElementNS(XMLNS, 'circle');
 		circle.setAttributeNS(null, 'cx', '0');
 		circle.setAttributeNS(null, 'cy', '0');
-		circle.style.transform = 	`translate(${cxArr[index]}%, ${cyArr[index]}%`;
-		// circle.setAttributeNS(null, 'cy', cyArr[index]);
 		circle.setAttributeNS(null, 'r', '5');
 		circle.setAttributeNS(null, 'fill', 'red');
 		g.appendChild(circle);
@@ -98,9 +109,6 @@
 		const text = document.createElementNS(XMLNS, 'text');
 		text.setAttributeNS(null, 'x', '0');
 		text.setAttributeNS(null, 'y', '0');
-		text.style.transform = `translate(${cxArr[index]}%, ${cyArr[index]}%`;
-		// text.setAttributeNS(null, 'x', cxArr[index]);
-		// text.setAttributeNS(null, 'y', cyArr[index]);
 		text.setAttribute('font-size', '5px');
 		text.innerHTML = String(node.val);
 
@@ -122,10 +130,8 @@
 			}
 			console.log('yo', Array.from(svg.children), Array.from(svg.children).includes(child => child.id === group.id));
 			Array.from(svg.children).forEach(child => {
-				console.log("SUPPP", child, child.id, group, group.id, child.id === group.id);
 			})
 			if (group && !Array.from(svg.children).some(child => {
-				console.log('child', child);
 				return child.id === group.id
 			})) {
 				console.log('APPEND CHILD');
@@ -133,44 +139,6 @@
 			}
 		})
 	};
-
-	// const renderTree = () => {
-	// 	const heap = tree.getHeap();
-	// 	console.log("HEAP", heap);
-	// 	if (heap.length === 0) {
-	// 		svg = createSVGElement();
-	// 		svgHeap[0] = createSVGElement();
-	// 		return;
-	// 	}
-	// 	const SVGHeap = heap.map((node, index) => {
-	// 		if (node) {
-	// 			return createNodeSVG(node, index);
-	// 		} else {
-	// 			return null;
-	// 		}
-	// 	});
-	//
-	// 	console.log("SVGHeap", SVGHeap)
-	// 	SVGHeap.forEach((el, index) => {
-	// 		console.log('here', el, index)
-	// 		if (SVGHeap[index] !== null) {
-	// 			const parent = SVGHeap[Math.floor(index / 2)];
-	// 			parent.appendChild(SVGHeap[index]);
-	// 		}
-	// 	});
-	//
-	// 	svg = SVGHeap[0];
-	//
-	// 	// updateSvg();
-	//
-	// 	// getLevels()
-	// 	// flatten the levels (i.e., heap)
-	// 	// map each element to a NodeSVG
-	// 	// set cx and cy based on cxArr and cyArr
-	// 	// forEach over heap and append children to parents
-	// 	// parent(i) = Math.floor(i / 2)
-	// 	// if heap[i] !== null, heap[parent(i)].appendChild()
-	// };
 
 	onMount(() => {
 		tree = new AVLTree();
@@ -191,16 +159,69 @@
 			console.log(group, index);
 			if (group) {
 				const circle = Array.from(group.children).find(g => g.tagName === 'circle');
-				circle.style.transform = `translate(${cxArr[index]}%, ${cyArr[index]}%`;
-				// circle.setAttributeNS(null, 'cx', cxArr[index]);
-				// circle.setAttributeNS(null, 'cy', cyArr[index]);
+				anime({
+					targets: circle,
+					translateX: `${cxArr[index]}%`,
+					translateY: `${cyArr[index]}%`,
+					duration: circle.getAttributeNS(null, 'translateX') === null ? 0 : 2000
+				});
 
 				const text = Array.from(group.children).find(g => g.tagName === 'text');
-				text.style.transform = `translate(${cxArr[index]}%, ${cyArr[index]}%`;
-				// text.setAttributeNS(null, 'x', cxArr[index]);
-				// text.setAttributeNS(null, 'y', cyArr[index]);
+				anime({
+					targets: text,
+					translateX: `${cxArr[index]}%`,
+					translateY: `${cyArr[index]}%`,
+					duration: text.getAttributeNS(null, 'translateX') === null ? 0 : 2000
+				});
 			}
 		});
+	};
+
+	// const drawEdges = () => {
+	// 	for (let childNodeIndex in edgeMatrix) {
+	// 		for (let parentNodeIndex in edgeMatrix[childNodeIndex]) {
+	// 			const path = document.createElementNS(XMLNS, 'path');
+	// 			path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[parentArray[i]]} ${cyArr[parentArray[i]]}`);
+	// 			path.setAttributeNS(null, "stroke", "black");
+	// 			path.setAttributeNS(null, "fill", "transparent");
+	// 			path.setAttributeNS(null, 'stroke-dasharray', '100');
+	// 			path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
+	// 			svg.append(path);
+	// 			anime({
+	// 				targets: path,
+	// 				'stroke-dashoffset': '0%',
+	// 				duration: 1000
+	// 			});
+	// 			// path.setAttributeNS(null, 'stroke-dashoffset', '0%');
+	// 		}
+	// 	}
+	// };
+
+	const edgesMemo = {};
+	const drawEdges = tree => {
+		for (let i = 0; i < svgHeap.length; i++) {
+			if (svgHeap[i] && svgHeap[parentArray[i]]) {
+				if (edgesMemo?.[i]?.[parentArray[i]]) {
+					const path = edgesMemo[i][parentArray[i]];
+					path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[parentArray[i]]} ${cyArr[parentArray[i]]}`);
+				} else {
+					const path = document.createElementNS(XMLNS, 'path');
+					path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[parentArray[i]]} ${cyArr[parentArray[i]]}`);
+					path.setAttributeNS(null, "stroke", "black");
+					path.setAttributeNS(null, "fill", "transparent");
+					path.setAttributeNS(null, 'stroke-dasharray', '100');
+					path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
+					svg.append(path);
+					anime({
+						targets: path,
+						'stroke-dashoffset': '0%',
+						duration: 10000
+					});
+					// path.setAttributeNS(null, 'stroke-dashoffset', '0%');
+					edgesMemo[i] = { ...edgesMemo[i], [parentArray[i]]: path };
+				}
+			}
+		}
 	};
 
 	const updateSvg = () => {
@@ -213,6 +234,8 @@
 		updateParentArray(tree);
 		updateNodeCoords(tree);
 		appendChildrenToParents();
+		// updateEdgeMatrix(tree);
+		drawEdges(tree);
 		// renderTree();
 	};
 

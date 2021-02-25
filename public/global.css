@@ -28,6 +28,10 @@ text {
 	transition: transform 1s;
 }
 
+path {
+	transition: d 1s;
+}
+
 a {
 	color: rgb(0,100,200);
 	text-decoration: none;
