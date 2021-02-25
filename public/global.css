@@ -16,6 +16,18 @@ body {
 	box-sizing: border-box;
 }
 
+circle {
+	/* transition: cx 1s; */
+	/* transition: cy 1s; */
+	transition: transform 1s;
+}
+
+text {
+	/* transition: x 1s; */
+	/* transition: y 1s; */
+	transition: transform 1s;
+}
+
 a {
 	color: rgb(0,100,200);
 	text-decoration: none;

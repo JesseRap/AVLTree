@@ -4,7 +4,7 @@
 	import { afterUpdate, onMount, tick } from 'svelte';
 	import AVLTree from './AVLTree.js';
 	import SVGTree from './SVGTree.svelte';
-	import Tree from './Tree.svelte';
+	// import Tree from './Tree.svelte';
 	let name = 'world';
 	let container;
 
@@ -83,15 +83,21 @@
 
 		const g = document.createElementNS(XMLNS, 'g');
 		const circle = document.createElementNS(XMLNS, 'circle');
-		circle.setAttributeNS(null, 'cx', cxArr[index]);
-		circle.setAttributeNS(null, 'cy', cyArr[index]);
+		circle.setAttributeNS(null, 'cx', '0');
+		circle.setAttributeNS(null, 'cy', '0');
+		circle.style.transform = 	`translate(${cxArr[index]}%, ${cyArr[index]}%`;
+		// circle.setAttributeNS(null, 'cy', cyArr[index]);
 		circle.setAttributeNS(null, 'r', '5');
 		circle.setAttributeNS(null, 'fill', 'red');
 		g.appendChild(circle);
 
 		const text = document.createElementNS(XMLNS, 'text');
-		text.setAttributeNS(null, 'x', cxArr[index]);
-		text.setAttributeNS(null, 'y', cyArr[index]);
+		text.setAttributeNS(null, 'x', '0');
+		text.setAttributeNS(null, 'y', '0');
+		text.style.transform = `translate(${cxArr[index]}%, ${cyArr[index]}%`;
+		// text.setAttributeNS(null, 'x', cxArr[index]);
+		// text.setAttributeNS(null, 'y', cyArr[index]);
+		text.setAttribute('font-size', '5px');
 		text.innerHTML = String(node.val);
 
 		g.appendChild(text);
@@ -99,6 +105,7 @@
 	};
 
 	const appendChildrenToParents = () => {
+		if (!tree.root) return;
 		console.log('appendChildrenToParents', parentArray, svgHeap);
 		if (svgHeap.length === 1) {
 			if (svgHeap[0]) {
@@ -106,12 +113,15 @@
 			}
 			return;
 		}
-		for (let i = svgHeap.length - 1; i >= 0; i--) {
-			if (parentArray[i] !== null && svgHeap[parentArray[i]] !== null && svgHeap[i] !== null) {
-				svgHeap[parentArray[i]].appendChild(svgHeap[i]);
-			}
-		}
 		console.log(svgHeap);
+
+		const lastIndex = svgHeap.length - 1
+		svgHeap[parentArray[lastIndex]].appendChild(svgHeap[lastIndex]);
+		// for (let i = svgHeap.length - 1; i >= 0; i--) {
+		// 	if (parentArray[i] !== null && svgHeap[parentArray[i]] !== null && svgHeap[i] !== null && !Array.from(svgHeap[parentArray[i]].children).includes(child => child === svgHeap[i])) {
+		// 		svgHeap[parentArray[i]].appendChild(svgHeap[i]);
+		// 	}
+		// }
 	};
 
 	const renderTree = () => {
@@ -155,16 +165,7 @@
 	onMount(() => {
 		tree = new AVLTree();
 
-		// console.log(tree.toString());
 		console.log('root', tree.root);
-
-		// tree.insert(1)
-		// console.log(tree.toString());
-		// console.log(tree.root);
-		//
-		// tree.insert(3)
-		// console.log(tree.toString());
-		// console.log(tree.root);
 
 		svg = createSVGElement();
 
@@ -174,14 +175,33 @@
 		updateSvg();
 	});
 
+	const updateNodeCoords = (tree) => {
+		console.log('updateNodeCoords')
+		svgHeap.forEach((group, index) => {
+			console.log(group, index);
+			if (group) {
+				const circle = Array.from(group.children).find(g => g.tagName === 'circle');
+				circle.style.transform = `translate(${cxArr[index]}%, ${cyArr[index]}%`;
+				// circle.setAttributeNS(null, 'cx', cxArr[index]);
+				// circle.setAttributeNS(null, 'cy', cyArr[index]);
+
+				const text = Array.from(group.children).find(g => g.tagName === 'text');
+				text.style.transform = `translate(${cxArr[index]}%, ${cyArr[index]}%`;
+				// text.setAttributeNS(null, 'x', cxArr[index]);
+				// text.setAttributeNS(null, 'y', cyArr[index]);
+			}
+		});
+	};
+
 	const updateSvg = () => {
-		const temp = svg;
+		// const temp = svg;
 		// svg = tree.renderTree();
 		// container.replaceChild(svg, temp);
 		updateCyArr(tree);
 		updateCxArr(tree);
 		updateSVGHeap(tree);
 		updateParentArray(tree);
+		updateNodeCoords(tree);
 		appendChildrenToParents();
 		// renderTree();
 	};
@@ -201,7 +221,7 @@
 	const onInsertRandVal = () => {
 		const randVal = Math.floor(Math.random() * 50);
 		console.log('onInsertRandVal', randVal);
-		tree.insert(randVal);
+		tree.insertUnbalanced(randVal);
 		updateSvg();
 	}
 
