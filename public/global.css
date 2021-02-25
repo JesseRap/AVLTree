@@ -29,6 +29,7 @@ text {
 }
 
 path {
+	/* transition: stroke-dashoffset 1s; */
 	transition: d 1s;
 }
 

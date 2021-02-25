@@ -116,6 +116,17 @@
 		return g;
 	};
 
+	const removeOldNodes = () => {
+		const heap = tree.getHeap();
+		for (let i = 0; i < heap.length; i++) {
+			for (let j = 0; j < svgHeap.length; j++) {
+				if (heap[i] === null) {
+					svgHeap[i] = null;
+				}
+			}
+		}
+	};
+
 	const appendChildrenToParents = () => {
 		if (!tree.root) {
 			Array.from(svg.children).forEach(child => {
@@ -128,7 +139,6 @@
 			if (!group) {
 				return;
 			}
-			console.log('yo', Array.from(svg.children), Array.from(svg.children).includes(child => child.id === group.id));
 			Array.from(svg.children).forEach(child => {
 			})
 			if (group && !Array.from(svg.children).some(child => {
@@ -167,6 +177,8 @@
 				});
 
 				const text = Array.from(group.children).find(g => g.tagName === 'text');
+				const heap = tree.getHeap();
+				text.innerHTML = heap[index].val;
 				anime({
 					targets: text,
 					translateX: `${cxArr[index]}%`,
@@ -209,13 +221,14 @@
 					path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[parentArray[i]]} ${cyArr[parentArray[i]]}`);
 					path.setAttributeNS(null, "stroke", "black");
 					path.setAttributeNS(null, "fill", "transparent");
+					// const strokeDashArray = Math.sqrt(Math.pow(Math.abs(cxArr[i] - cxArr[parentArray[i]]), 2) + Math.pow(Math.abs(cyArr[i] - cyArr[parentArray[i]]), 2));
 					path.setAttributeNS(null, 'stroke-dasharray', '100');
 					path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
 					svg.append(path);
 					anime({
 						targets: path,
 						'stroke-dashoffset': '0%',
-						duration: 10000
+						duration: 1000
 					});
 					// path.setAttributeNS(null, 'stroke-dashoffset', '0%');
 					edgesMemo[i] = { ...edgesMemo[i], [parentArray[i]]: path };
@@ -233,6 +246,7 @@
 		updateSVGHeap(tree);
 		updateParentArray(tree);
 		updateNodeCoords(tree);
+		removeOldNodes();
 		appendChildrenToParents();
 		// updateEdgeMatrix(tree);
 		drawEdges(tree);
@@ -252,7 +266,10 @@
 	};
 
 	const onInsertRandVal = () => {
-		const randVal = Math.floor(Math.random() * 50);
+		let randVal = Math.floor(Math.random() * 50);
+		if (edgesMemo[randVal]) {
+			randVal = Math.floor(Math.random() * 50);
+		}
 		console.log('onInsertRandVal', randVal);
 		tree.insert(randVal);
 		updateSvg();
