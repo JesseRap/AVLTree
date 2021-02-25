@@ -3,10 +3,12 @@
 
 	import { afterUpdate, onMount, tick } from 'svelte';
 	import AVLTree from './AVLTree.js';
-	import SVGTree from './SVGTree.svelte';
+	// import SVGTree from './SVGTree.svelte';
 	// import Tree from './Tree.svelte';
 	let name = 'world';
 	let container;
+
+	let groupId = 0;
 
 	const XMLNS = 'http://www.w3.org/2000/svg';
 
@@ -80,8 +82,10 @@
 	};
 
 	const createNodeSVG = (node, index) => {
+		console.log('createNodeSVG!!');
 
 		const g = document.createElementNS(XMLNS, 'g');
+		g.id = groupId++;
 		const circle = document.createElementNS(XMLNS, 'circle');
 		circle.setAttributeNS(null, 'cx', '0');
 		circle.setAttributeNS(null, 'cy', '0');
@@ -107,60 +111,61 @@
 	const appendChildrenToParents = () => {
 		if (!tree.root) return;
 		console.log('appendChildrenToParents', parentArray, svgHeap);
-		if (svgHeap.length === 1) {
-			if (svgHeap[0]) {
-				svg.appendChild(svgHeap[0]);
+		svgHeap.forEach((group, index) => {
+			if (!group) {
+				return;
 			}
-			return;
-		}
-		console.log(svgHeap);
-
-		const lastIndex = svgHeap.length - 1
-		svgHeap[parentArray[lastIndex]].appendChild(svgHeap[lastIndex]);
-		// for (let i = svgHeap.length - 1; i >= 0; i--) {
-		// 	if (parentArray[i] !== null && svgHeap[parentArray[i]] !== null && svgHeap[i] !== null && !Array.from(svgHeap[parentArray[i]].children).includes(child => child === svgHeap[i])) {
-		// 		svgHeap[parentArray[i]].appendChild(svgHeap[i]);
-		// 	}
-		// }
+			console.log('yo', Array.from(svg.children), Array.from(svg.children).includes(child => child.id === group.id));
+			Array.from(svg.children).forEach(child => {
+				console.log("SUPPP", child, child.id, group, group.id, child.id === group.id);
+			})
+			if (group && !Array.from(svg.children).some(child => {
+				console.log('child', child);
+				return child.id === group.id
+			})) {
+				console.log('APPEND CHILD');
+				svg.appendChild(group);
+			}
+		})
 	};
 
-	const renderTree = () => {
-		const heap = tree.getHeap();
-		console.log("HEAP", heap);
-		if (heap.length === 0) {
-			svg = createSVGElement();
-			svgHeap[0] = createSVGElement();
-			return;
-		}
-		const SVGHeap = heap.map((node, index) => {
-			if (node) {
-				return createNodeSVG(node, index);
-			} else {
-				return null;
-			}
-		});
-
-		console.log("SVGHeap", SVGHeap)
-		SVGHeap.forEach((el, index) => {
-			console.log('here', el, index)
-			if (SVGHeap[index] !== null) {
-				const parent = SVGHeap[Math.floor(index / 2)];
-				parent.appendChild(SVGHeap[index]);
-			}
-		});
-
-		svg = SVGHeap[0];
-
-		// updateSvg();
-
-		// getLevels()
-		// flatten the levels (i.e., heap)
-		// map each element to a NodeSVG
-		// set cx and cy based on cxArr and cyArr
-		// forEach over heap and append children to parents
-		// parent(i) = Math.floor(i / 2)
-		// if heap[i] !== null, heap[parent(i)].appendChild()
-	};
+	// const renderTree = () => {
+	// 	const heap = tree.getHeap();
+	// 	console.log("HEAP", heap);
+	// 	if (heap.length === 0) {
+	// 		svg = createSVGElement();
+	// 		svgHeap[0] = createSVGElement();
+	// 		return;
+	// 	}
+	// 	const SVGHeap = heap.map((node, index) => {
+	// 		if (node) {
+	// 			return createNodeSVG(node, index);
+	// 		} else {
+	// 			return null;
+	// 		}
+	// 	});
+	//
+	// 	console.log("SVGHeap", SVGHeap)
+	// 	SVGHeap.forEach((el, index) => {
+	// 		console.log('here', el, index)
+	// 		if (SVGHeap[index] !== null) {
+	// 			const parent = SVGHeap[Math.floor(index / 2)];
+	// 			parent.appendChild(SVGHeap[index]);
+	// 		}
+	// 	});
+	//
+	// 	svg = SVGHeap[0];
+	//
+	// 	// updateSvg();
+	//
+	// 	// getLevels()
+	// 	// flatten the levels (i.e., heap)
+	// 	// map each element to a NodeSVG
+	// 	// set cx and cy based on cxArr and cyArr
+	// 	// forEach over heap and append children to parents
+	// 	// parent(i) = Math.floor(i / 2)
+	// 	// if heap[i] !== null, heap[parent(i)].appendChild()
+	// };
 
 	onMount(() => {
 		tree = new AVLTree();
@@ -221,7 +226,7 @@
 	const onInsertRandVal = () => {
 		const randVal = Math.floor(Math.random() * 50);
 		console.log('onInsertRandVal', randVal);
-		tree.insertUnbalanced(randVal);
+		tree.insert(randVal);
 		updateSvg();
 	}
 
