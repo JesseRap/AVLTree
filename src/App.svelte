@@ -163,13 +163,17 @@
 		//
 	};
 
-	const appendChildrenToParents = () => {
+	const appendChildrenToParents = (tree) => {
 		if (!tree.root) {
 			Array.from(svg.children).forEach(child => {
 				svg.removeChild(child);
 			});
 			return;
 		}
+		const heap = tree.getHeap();
+
+
+
 		console.log('appendChildrenToParents', parentArray, svgHeap);
 		svgHeap.forEach((group, index) => {
 			if (!group) {
@@ -230,13 +234,38 @@
 
 	const edgesMemo = {};
 	const drawEdges = tree => {
+		const heap = tree.getHeap();
 		for (let i = 0; i < svgHeap.length; i++) {
-			if (svgHeap[i] && svgHeap[parentArray[i]]) {
-				if (edgesMemo?.[i]?.[parentArray[i]]) {
-					const path = edgesMemo[i][parentArray[i]];
-					path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[parentArray[i]]} ${cyArr[parentArray[i]]}`);
+			if (edgesMemo[i]) {
+				// const heap = tree.getHeap();
+				// if (!heap[i]) {
+				// 	svgHeap[i] = null;
+				// 	parentArray[i] = null;
+				// 	edgesMemo[i][parentArray[i]] = null;
+				// 	continue;
+				// }
+				const path = edgesMemo[i];
+				console.log(tree.toHeapString());
+				path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[parentArray[i]]} ${cyArr[parentArray[i]]}`);
+				if (!heap[i] && edgesMemo[i]) {
+					svg.removeChild(path);
+				}
+			}
+			if (heap[i] && heap[parentArray[i]]) {
+				if (edgesMemo?.[i]) {
+					// const heap = tree.getHeap();
+					// if (!heap[i]) {
+					// 	svgHeap[i] = null;
+					// 	parentArray[i] = null;
+					// 	edgesMemo[i][parentArray[i]] = null;
+					// 	continue;
+					// }
+					// const path = edgesMemo[i];
+					// console.log(tree.toHeapString());
+					// path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[parentArray[i]]} ${cyArr[parentArray[i]]}`);
 				} else {
 					const path = document.createElementNS(XMLNS, 'path');
+					path.setAttribute('id', `${i}-${parentArray[i]}`);
 					path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[parentArray[i]]} ${cyArr[parentArray[i]]}`);
 					path.setAttributeNS(null, "stroke", "black");
 					path.setAttributeNS(null, "fill", "transparent");
@@ -251,8 +280,11 @@
 						delay: 1000
 					});
 					// path.setAttributeNS(null, 'stroke-dashoffset', '0%');
-					edgesMemo[i] = { ...edgesMemo[i], [parentArray[i]]: path };
+					edgesMemo[i] = path;
+					console.log('edgesMemo', edgesMemo);
 				}
+			} else {
+				delete edgesMemo[i];
 			}
 		}
 	};
@@ -261,18 +293,18 @@
 		// const temp = svg;
 		// svg = tree.renderTree();
 		// container.replaceChild(svg, temp);
-		console.log('cyArr prev', cyArr);
+		// console.log('cyArr prev', cyArr);
 		cyArr = updateCyArr(tree);
-		console.log('cyArr post', cyArr);
+		// console.log('cyArr post', cyArr);
 
-		console.log('cxArr prev', cxArr);
+		// console.log('cxArr prev', cxArr);
 		cxArr = updateCxArr(tree);
-		console.log('cxArr post', cxArr);
+		// console.log('cxArr post', cxArr);
 		updateSVGHeap(tree);
 		removeOldNodes();
 		updateParentArray(tree);
 		updateNodeCoords(tree);
-		appendChildrenToParents();
+		appendChildrenToParents(tree);
 		// updateEdgeMatrix(tree);
 		drawEdges(tree);
 		// renderTree();
