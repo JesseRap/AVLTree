@@ -66,7 +66,8 @@
 	}
 
 	const rotateLeft = () => {
-		tree.root = tree.rotateLeft(tree.root);
+		// tree.root = tree.rotateLeft(tree.root);
+		tree.rotateLeftIndex(1);
 		updateSvg();
 	};
 
