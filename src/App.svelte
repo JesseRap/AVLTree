@@ -36,17 +36,17 @@
 	const updateCxArr = tree => {
 		if (!tree.root) return new Array(0);
 		const levels = tree.getLevels();
-		console.log(levels);
+		// console.log(levels);
 		const newCxArry = levels.reduce((acc, level, index) => {
 			const cxInc = 1 / Math.pow(2, index) * 100;
-			console.log('cxInc', cxInc)
+			// console.log('cxInc', cxInc)
 			return [...acc, ...level.map((_, idx) => (cxInc / 2) + (cxInc * idx))];
 		}, []);
-		console.log('newCxArry', newCxArry);
+		// console.log('newCxArry', newCxArry);
 		newCxArry.forEach((val, index) => {
 			cxArr[index] = val;
 		})
-		console.log('CXARR', cxArr);
+		// console.log('CXARR', cxArr);
 	};
 
 	const updateCyArr = tree => {
@@ -81,6 +81,12 @@
 				 return Math.floor((index - 1) / 2);
 			 }
 		 });
+	};
+
+	const swap = (arr, i1, i2) => {
+		const temp = arr[i1];
+		arr[i1] = arr[i2];
+		arr[i2] = temp
 	};
 
 	const updateEdgeMatrix = tree => {
@@ -121,10 +127,17 @@
 		for (let i = 0; i < heap.length; i++) {
 			for (let j = 0; j < svgHeap.length; j++) {
 				if (heap[i] === null) {
+					if (svgHeap[i]) {
+						svgHeap[i].innerHTML = '';
+					}
 					svgHeap[i] = null;
 				}
 			}
 		}
+	};
+
+	const rotateSVGLeft = index => {
+		svgHeap[index].setAttributeNS(null, 'cx', cxArr[index * 2]);
 	};
 
 	const appendChildrenToParents = () => {
@@ -150,6 +163,13 @@
 		})
 	};
 
+	const getHeapSubtreeIndices = (heap, index) => {
+		if (index > heap.length / 2) {
+			return [];
+		}
+		return [heap[index], ...getHeapSubtreeIndices(heap, index * 2), ...getHeapSubtreeIndices(heap, index * 2 + 1)];
+	}
+
 	onMount(() => {
 		tree = new AVLTree();
 
@@ -157,23 +177,38 @@
 
 		svg = createSVGElement();
 
+		tree.insertUnbalanced(9);
+		tree.insertUnbalanced(12);
+		tree.insertUnbalanced(43);
+
+		console.log('svgHeap', svgHeap)
+
 		// svg = tree.renderTree();
 		// renderTree();
 		container.appendChild(svg);
 		updateSvg();
+
+		console.log('svgHeap', svgHeap)
+
+		rotateSVGLeft(0);
+		// updateParentArray(tree);
+		// updateNodeCoords(tree);
+		// updateSvg();
+
+		console.log("SVG HEAPSHFSHF", svgHeap);
 	});
 
 	const updateNodeCoords = (tree) => {
-		console.log('updateNodeCoords')
+		// console.log('updateNodeCoords')
 		svgHeap.forEach((group, index) => {
-			console.log(group, index);
+			// console.log(group, index);
 			if (group) {
 				const circle = Array.from(group.children).find(g => g.tagName === 'circle');
 				anime({
 					targets: circle,
 					translateX: `${cxArr[index]}%`,
 					translateY: `${cyArr[index]}%`,
-					duration: circle.getAttributeNS(null, 'translateX') === null ? 0 : 2000
+					duration: circle.getAttributeNS(null, 'translateX') === null ? 0 : 100
 				});
 
 				const text = Array.from(group.children).find(g => g.tagName === 'text');
@@ -228,7 +263,8 @@
 					anime({
 						targets: path,
 						'stroke-dashoffset': '0%',
-						duration: 1000
+						duration: 1,
+						delay: 1000
 					});
 					// path.setAttributeNS(null, 'stroke-dashoffset', '0%');
 					edgesMemo[i] = { ...edgesMemo[i], [parentArray[i]]: path };
@@ -244,9 +280,9 @@
 		updateCyArr(tree);
 		updateCxArr(tree);
 		updateSVGHeap(tree);
+		removeOldNodes();
 		updateParentArray(tree);
 		updateNodeCoords(tree);
-		removeOldNodes();
 		appendChildrenToParents();
 		// updateEdgeMatrix(tree);
 		drawEdges(tree);
@@ -270,8 +306,9 @@
 		if (edgesMemo[randVal]) {
 			randVal = Math.floor(Math.random() * 50);
 		}
-		console.log('onInsertRandVal', randVal);
-		tree.insert(randVal);
+		console.log('onInsertRandVal *!@#!&@#&*', randVal);
+		// tree.insert(randVal);
+		tree.insertUnbalanced(randVal);
 		updateSvg();
 	}
 
