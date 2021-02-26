@@ -61,7 +61,6 @@
 	const updateSVGHeap = tree => {
 		if (!tree.root) return new Array(0);
 		const heap = tree.getHeap();
-		console.log("HEAP", heap);
 		svgHeap = heap.map((node, index) => {
 			if (!node) return null;
 			return svgHeap.find(el => el?.id === String(node.id)) || createNodeSVG(node, index);
@@ -90,17 +89,6 @@
 		arr[i1] = arr[i2];
 		arr[i2] = temp
 	};
-
-	const updateEdgeMatrix = tree => {
-		if (!tree.root) return [];
-		// const heap = tree.getHeap();
-		for (let i = svgHeap.length - 1; i <= 0; i--) {
-			if (svgHeap[i] && svgHeap[parentArray[i]]) {
-				edgeMatrix[i] = parentArray[i];
-			}
-		}
-		console.log("EDGE MATRIX", edgeMatrix)
-	}
 
 	const createNodeSVG = (node, index) => {
 		console.log('createNodeSVG!!');
@@ -151,21 +139,6 @@
 		while (heap[index * 2 + 1]) {
 			swap(heap, index, index * 2 + 2);
 		}
-	};
-
-	const rotateRootGroupLeft = () => {
-		console.log('rotateRootGroupLeft');
-		console.log(tree.toHeapString());
-		tree.root = tree.rotateLeft(tree.root);
-		console.log(tree.toHeapString());
-
-		// swap(heap, index, index * 2 +  1);
-		// swapRightRecursive(svgHeap, index
-		// );
-		// console.log("hi", svgHeap);
-		// switch around elements in heaps
-		// switch parent pointers
-		//
 	};
 
 	const appendChildrenToParents = (tree) => {
@@ -310,7 +283,6 @@
 		updateParentArray(tree);
 		updateNodeCoords(tree);
 		appendChildrenToParents(tree);
-		// updateEdgeMatrix(tree);
 		drawEdges(tree);
 		// renderTree();
 		console.log("HEAP STRING", tree.toHeapString())
@@ -355,18 +327,12 @@
 
 		svg = createSVGElement();
 
-		// tree.insert(9);
-		// tree.insert(12);
-		// tree.insert(43);
-
 		console.log('svgHeap', svgHeap)
 
 		container.appendChild(svg);
 		updateSvg();
 
 		console.log('svgHeap', svgHeap);
-
-		// rotateRootGroupLeft();
 
 	});
 </script>
