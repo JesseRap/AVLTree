@@ -52,6 +52,9 @@ export default class AVLTree {
 	updateNode = node => this.updateNodeHeight(this.updateNodeBalance(node));
 
 	rotateLeft = node => {
+		if (!node.right) {
+			throw new Error('Cannot rotate left without right child.');
+		}
 		const temp = node.right;
 		node.right = (node.right || {}).left || null;
 		temp.left = node;
@@ -62,6 +65,9 @@ export default class AVLTree {
 	};
 
 	rotateRight = node => {
+		if (!node.left) {
+			throw new Error('Cannot rotate right without left child.');
+		}
 		const temp = node.left;
 		node.left = (node.left || {}).right || null;
 		temp.right = node;

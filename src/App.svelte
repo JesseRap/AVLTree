@@ -68,6 +68,11 @@
 		});
 	}
 
+	const rotateLeft = () => {
+		tree.root = tree.rotateLeft(tree.root);
+		updateSvg();
+	};
+
 	const updateParentArray = tree => {
 		if (!tree.root) return [];
 		 // TODO: make so it doesn't replace entity.
@@ -384,5 +389,8 @@
 	</div>
 	<div>
 		<button on:click={onReset}>RESET</button>
+	</div>
+	<div>
+		<button on:click={rotateLeft}>ROTATE LEFT</button>
 	</div>
 </div>
