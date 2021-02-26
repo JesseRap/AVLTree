@@ -20,8 +20,8 @@
 
 	let edgeMatrix = {};
 
-	const cxArr = [];
-	const cyArr = [];
+	let cxArr = [];
+	let cyArr = [];
 
 	const createSVGElement = () => {
 		const svg = document.createElementNS(XMLNS, 'svg');
@@ -36,17 +36,11 @@
 	const updateCxArr = tree => {
 		if (!tree.root) return new Array(0);
 		const levels = tree.getLevels();
-		// console.log(levels);
-		const newCxArry = levels.reduce((acc, level, index) => {
+		cxArr = levels.reduce((acc, level, index) => {
 			const cxInc = 1 / Math.pow(2, index) * 100;
-			// console.log('cxInc', cxInc)
 			return [...acc, ...level.map((_, idx) => (cxInc / 2) + (cxInc * idx))];
 		}, []);
-		// console.log('newCxArry', newCxArry);
-		newCxArry.forEach((val, index) => {
-			cxArr[index] = val;
-		})
-		// console.log('CXARR', cxArr);
+		console.log('CXARR', cxArr);
 	};
 
 	const updateCyArr = tree => {
@@ -55,12 +49,9 @@
 		const cyInc = 1 / (tree.root.height + 1) * 100;
 		// vertical offset for current node.
 		const levels = tree.getLevels();
-		const newCyArr = levels.reduce((acc, level, index) => (
+		cyArr = levels.reduce((acc, level, index) => (
 			[...acc, ...level.map(_ => (cyInc / 2) + (cyInc * index))]
 		), []);
-		newCyArr.forEach((val, index) => {
-			cyArr[index] = val;
-		})
 		console.log('CYARR', cyArr);
 	};
 
@@ -236,26 +227,6 @@
 			}
 		});
 	};
-
-	// const drawEdges = () => {
-	// 	for (let childNodeIndex in edgeMatrix) {
-	// 		for (let parentNodeIndex in edgeMatrix[childNodeIndex]) {
-	// 			const path = document.createElementNS(XMLNS, 'path');
-	// 			path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[parentArray[i]]} ${cyArr[parentArray[i]]}`);
-	// 			path.setAttributeNS(null, "stroke", "black");
-	// 			path.setAttributeNS(null, "fill", "transparent");
-	// 			path.setAttributeNS(null, 'stroke-dasharray', '100');
-	// 			path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
-	// 			svg.append(path);
-	// 			anime({
-	// 				targets: path,
-	// 				'stroke-dashoffset': '0%',
-	// 				duration: 1000
-	// 			});
-	// 			// path.setAttributeNS(null, 'stroke-dashoffset', '0%');
-	// 		}
-	// 	}
-	// };
 
 	const edgesMemo = {};
 	const drawEdges = tree => {
