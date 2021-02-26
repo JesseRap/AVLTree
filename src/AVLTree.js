@@ -77,7 +77,7 @@ export default class AVLTree {
 	 * @return {Node}      [description]
 	 */
 	updateNodeHeight = node =>{
-		node.height = Math.max(node.right && node.right.height !== undefined ? node.right.height : -1, node.left && node.left.height !== undefined ? node.left.height : -1) + 1;
+		node.height = Math.max(node.right?.height ?? -1, node.left?.height ?? -1) + 1;
 		return node;
 	};
 
