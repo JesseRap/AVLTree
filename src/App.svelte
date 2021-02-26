@@ -37,11 +37,12 @@
 	const updateCxArr = tree => {
 		if (!tree.root) return new Array(0);
 		const levels = tree.getLevels();
-		cxArr = levels.reduce((acc, level, index) => {
+		const result = levels.reduce((acc, level, index) => {
 			const cxInc = 1 / Math.pow(2, index) * 100;
 			return [...acc, ...level.map((_, idx) => (cxInc / 2) + (cxInc * idx))];
 		}, []);
-		console.log('CXARR', cxArr);
+		console.log('CXARR', result);
+		return result;
 	};
 
 	const updateCyArr = tree => {
@@ -50,17 +51,21 @@
 		const cyInc = 1 / (tree.root.height + 1) * 100;
 		// vertical offset for current node.
 		const levels = tree.getLevels();
-		cyArr = levels.reduce((acc, level, index) => (
+		const result = levels.reduce((acc, level, index) => (
 			[...acc, ...level.map(_ => (cyInc / 2) + (cyInc * index))]
 		), []);
-		console.log('CYARR', cyArr);
+		console.log('CYARR', result);
+		return result;
 	};
 
 	const updateSVGHeap = tree => {
 		if (!tree.root) return new Array(0);
 		const heap = tree.getHeap();
 		console.log("HEAP", heap);
-		svgHeap = heap.map((node, index) => node ? svgHeap[index] ? svgHeap[index] : createNodeSVG(node, index) : null);
+		svgHeap = heap.map((node, index) => {
+			if (!node) return null;
+			return svgHeap.find(el => el?.id == node.id) || console.log("NEW!!!") || createNodeSVG(node, index);
+		});
 	}
 
 	const updateParentArray = tree => {
@@ -96,8 +101,8 @@
 		console.log('createNodeSVG!!');
 
 		const g = document.createElementNS(XMLNS, 'g');
-		g.id = String(node.id);
-		// g.id = String(groupId++);
+		// g.id = String(node.id);
+		g.id = String(groupId++);
 		const circle = document.createElementNS(XMLNS, 'circle');
 		circle.setAttributeNS(null, 'cx', '0');
 		circle.setAttributeNS(null, 'cy', '0');
@@ -113,7 +118,7 @@
 
 		const balance = document.createElementNS(XMLNS, 'text');
 		balance.setAttributeNS(null, 'x', '0');
-		balance.setAttributeNS(null, 'y', '0 + 10f');
+		balance.setAttributeNS(null, 'y', '10');
 		balance.setAttribute('font-size', '5px');
 		balance.setAttribute('class', 'balance');
 		balance.innerHTML = String(node.balance);
@@ -143,12 +148,16 @@
 		}
 	};
 
-	const rotateSVGLeft = index => {
-		const heap = tree.getHeap();
-		swap(heap, index, index * 2 +  1);
-		swapRightRecursive(svgHeap, index
-		);
-		console.log("hi", svgHeap);
+	const rotateRootGroupLeft = () => {
+		console.log('rotateRootGroupLeft');
+		console.log(tree.toHeapString());
+		tree.root = tree.rotateLeft(tree.root);
+		console.log(tree.toHeapString());
+
+		// swap(heap, index, index * 2 +  1);
+		// swapRightRecursive(svgHeap, index
+		// );
+		// console.log("hi", svgHeap);
 		// switch around elements in heaps
 		// switch parent pointers
 		//
@@ -252,8 +261,13 @@
 		// const temp = svg;
 		// svg = tree.renderTree();
 		// container.replaceChild(svg, temp);
-		updateCyArr(tree);
-		updateCxArr(tree);
+		console.log('cyArr prev', cyArr);
+		cyArr = updateCyArr(tree);
+		console.log('cyArr post', cyArr);
+
+		console.log('cxArr prev', cxArr);
+		cxArr = updateCxArr(tree);
+		console.log('cxArr post', cxArr);
 		updateSVGHeap(tree);
 		removeOldNodes();
 		updateParentArray(tree);
@@ -304,9 +318,9 @@
 
 		svg = createSVGElement();
 
-		tree.insert(9);
-		tree.insert(12);
-		tree.insert(43);
+		// tree.insert(9);
+		// tree.insert(12);
+		// tree.insert(43);
 
 		console.log('svgHeap', svgHeap)
 
@@ -314,6 +328,8 @@
 		updateSvg();
 
 		console.log('svgHeap', svgHeap);
+
+		// rotateRootGroupLeft();
 
 	});
 </script>
