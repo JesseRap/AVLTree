@@ -72,7 +72,7 @@ export default class AVLTree {
 			throw new Error('Cannot rotate left without right child.');
 		}
 		const temp = node.right;
-		node.right = (node.right || {}).left || null;
+		node.right = node.right?.left || null;
 		temp.left = node;
 
 		this.updateNode(node);
