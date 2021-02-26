@@ -1,5 +1,7 @@
 import { tick } from 'svelte';
 
+let id = 0;
+
 class Node {
 	constructor(val) {
 		this.val = val;
@@ -7,6 +9,7 @@ class Node {
 		this.right = null;
 		this.balance = 0;
 		this.height = 0;
+		this.id = id++;
 	}
 }
 

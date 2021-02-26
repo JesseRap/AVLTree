@@ -181,9 +181,9 @@
 
 		svg = createSVGElement();
 
-		tree.insertUnbalanced(9);
-		tree.insertUnbalanced(12);
-		tree.insertUnbalanced(43);
+		// tree.insert(9);
+		// tree.insert(12);
+		// tree.insert(43);
 
 		console.log('svgHeap', svgHeap)
 
@@ -194,7 +194,7 @@
 
 		console.log('svgHeap', svgHeap)
 
-		rotateSVGLeft(0);
+		// rotateSVGLeft(0);
 		// updateParentArray(tree);
 		// updateNodeCoords(tree);
 		// updateSvg();
@@ -292,7 +292,7 @@
 		}
 		console.log('onInsertRandVal *!@#!&@#&*', randVal);
 		// tree.insert(randVal);
-		tree.insertUnbalanced(randVal);
+		tree.insert(randVal);
 		updateSvg();
 	}
 
