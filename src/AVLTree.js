@@ -14,8 +14,13 @@ export class Node {
 }
 
 export default class AVLTree {
-	constructor() {
+	constructor(inputArray) {
 		this.root = null;
+		if (inputArray) {
+			for (const val of inputArray) {
+				this.insert(val);
+			}
+		}
 	}
 
 	/**
