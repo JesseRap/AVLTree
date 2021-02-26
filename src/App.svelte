@@ -64,7 +64,7 @@
 		console.log("HEAP", heap);
 		svgHeap = heap.map((node, index) => {
 			if (!node) return null;
-			return svgHeap.find(el => el?.id == node.id) || console.log("NEW!!!") || createNodeSVG(node, index);
+			return svgHeap.find(el => el?.id === String(node.id)) || createNodeSVG(node, index);
 		});
 	}
 

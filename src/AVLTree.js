@@ -114,6 +114,7 @@ export default class AVLTree {
 		return rebalance ? this.rebalance(node) : node;
 	};
 
+	// TODO: Refactor for readability.
 	rebalance = node => {
 		console.log('rebalance', node);
 		if (node.balance === 2) {
@@ -155,24 +156,19 @@ export default class AVLTree {
 		const dfs = (node, svgEl) => {
 			console.log('dfs', node?.val);
 			if (!node) {
-				this.nodeNotFoundAnimation();
 				return;
 			}
-			this.visitNodeAnimation(svgEl);
 			if (node.val === val) {
-				this.nodeFoundAnimation(svgEl);
-				return;
+				return node;
 			}
 			if (node.val >= val) {
-				const leftSVGGroup = svgEl.querySelector('.left');
-				dfs(node.left, leftSVGGroup);
+				dfs(node.left);
 			} else {
-				const rightSVGGroup = svgEl.querySelector('.right');
-				dfs(node.right, rightSVGGroup);
+				dfs(node.right);
 			}
 		};
 
-		dfs(this.root, this.svg);
+		dfs(this.root);
 	};
 
 	toHeapString = () => {
