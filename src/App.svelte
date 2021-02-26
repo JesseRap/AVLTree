@@ -19,8 +19,6 @@
 	let parentArray = new Array(0);
 
 
-	let edgeMatrix = {};
-
 	let cxArr = [];
 	let cyArr = [];
 
@@ -210,46 +208,35 @@
 		});
 	};
 
+	const createPath = i => {
+		const path = document.createElementNS(XMLNS, 'path');
+		path.setAttribute('id', `${i}-${parentArray[i]}`);
+		path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[parentArray[i]]} ${cyArr[parentArray[i]]}`);
+		path.setAttributeNS(null, "stroke", "black");
+		path.setAttributeNS(null, "fill", "transparent");
+		path.setAttributeNS(null, 'stroke-dasharray', '100');
+		path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
+		return path;
+	};
+
 	const edgesMemo = {};
 	const drawEdges = tree => {
 		const heap = tree.getHeap();
 		for (let i = 0; i < svgHeap.length; i++) {
 			if (edgesMemo[i]) {
-				// const heap = tree.getHeap();
-				// if (!heap[i]) {
-				// 	svgHeap[i] = null;
-				// 	parentArray[i] = null;
-				// 	edgesMemo[i][parentArray[i]] = null;
-				// 	continue;
-				// }
 				const path = edgesMemo[i];
-				console.log(tree.toHeapString());
+				if (!heap[i]) {
+					svg.removeChild(path);
+					delete edgesMemo[i];
+				}
 				path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[parentArray[i]]} ${cyArr[parentArray[i]]}`);
 				if (!heap[i] && edgesMemo[i]) {
 					svg.removeChild(path);
 				}
 			}
 			if (heap[i] && heap[parentArray[i]]) {
-				if (edgesMemo?.[i]) {
-					// const heap = tree.getHeap();
-					// if (!heap[i]) {
-					// 	svgHeap[i] = null;
-					// 	parentArray[i] = null;
-					// 	edgesMemo[i][parentArray[i]] = null;
-					// 	continue;
-					// }
-					// const path = edgesMemo[i];
-					// console.log(tree.toHeapString());
-					// path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[parentArray[i]]} ${cyArr[parentArray[i]]}`);
-				} else {
-					const path = document.createElementNS(XMLNS, 'path');
-					path.setAttribute('id', `${i}-${parentArray[i]}`);
-					path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[parentArray[i]]} ${cyArr[parentArray[i]]}`);
-					path.setAttributeNS(null, "stroke", "black");
-					path.setAttributeNS(null, "fill", "transparent");
-					// const strokeDashArray = Math.sqrt(Math.pow(Math.abs(cxArr[i] - cxArr[parentArray[i]]), 2) + Math.pow(Math.abs(cyArr[i] - cyArr[parentArray[i]]), 2));
-					path.setAttributeNS(null, 'stroke-dasharray', '100');
-					path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
+				if (!edgesMemo?.[i]) {
+					const path = createPath(i);
 					svg.append(path);
 					anime({
 						targets: path,
