@@ -134,12 +134,6 @@
 		}
 	};
 
-	const swapRightRecursive = (heap, index) => {
-		while (heap[index * 2 + 1]) {
-			swap(heap, index, index * 2 + 2);
-		}
-	};
-
 	const appendChildrenToParents = (tree) => {
 		if (!tree.root) {
 			Array.from(svg.children).forEach(child => {
@@ -151,7 +145,6 @@
 
 
 
-		console.log('appendChildrenToParents', parentArray, svgHeap);
 		svgHeap.forEach((group, index) => {
 			if (!group) {
 				return;
@@ -161,7 +154,6 @@
 			if (group && !Array.from(svg.children).some(child => {
 				return child.id === group.id
 			})) {
-				console.log('APPEND CHILD');
 				svg.appendChild(group);
 			}
 		})
@@ -175,9 +167,7 @@
 	};
 
 	const updateNodeCoords = (tree) => {
-		// console.log('updateNodeCoords')
 		svgHeap.forEach((group, index) => {
-			// console.log(group, index);
 			if (group) {
 				const circle = Array.from(group.children).find(g => g.tagName === 'circle');
 				anime({
@@ -247,7 +237,6 @@
 					});
 					// path.setAttributeNS(null, 'stroke-dashoffset', '0%');
 					edgesMemo[i] = path;
-					console.log('edgesMemo', edgesMemo);
 				}
 			} else {
 				delete edgesMemo[i];
