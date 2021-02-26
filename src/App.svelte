@@ -18,6 +18,7 @@
 	let svgHeap = new Array(0);
 	let parentArray = new Array(0);
 
+
 	let edgeMatrix = {};
 
 	let cxArr = [];
@@ -95,7 +96,8 @@
 		console.log('createNodeSVG!!');
 
 		const g = document.createElementNS(XMLNS, 'g');
-		g.id = String(groupId++);
+		g.id = String(node.id);
+		// g.id = String(groupId++);
 		const circle = document.createElementNS(XMLNS, 'circle');
 		circle.setAttributeNS(null, 'cx', '0');
 		circle.setAttributeNS(null, 'cy', '0');
@@ -109,7 +111,15 @@
 		text.setAttribute('font-size', '5px');
 		text.innerHTML = String(node.val);
 
+		const balance = document.createElementNS(XMLNS, 'text');
+		balance.setAttributeNS(null, 'x', '0');
+		balance.setAttributeNS(null, 'y', '0 + 10f');
+		balance.setAttribute('font-size', '5px');
+		balance.setAttribute('class', 'balance');
+		balance.innerHTML = String(node.balance);
+
 		g.appendChild(text);
+		g.appendChild(balance);
 		return g;
 	};
 
@@ -172,35 +182,7 @@
 			return [];
 		}
 		return [heap[index], ...getHeapSubtreeIndices(heap, index * 2), ...getHeapSubtreeIndices(heap, index * 2 + 1)];
-	}
-
-	onMount(() => {
-		tree = new AVLTree();
-
-		console.log('root', tree.root);
-
-		svg = createSVGElement();
-
-		// tree.insert(9);
-		// tree.insert(12);
-		// tree.insert(43);
-
-		console.log('svgHeap', svgHeap)
-
-		// svg = tree.renderTree();
-		// renderTree();
-		container.appendChild(svg);
-		updateSvg();
-
-		console.log('svgHeap', svgHeap)
-
-		// rotateSVGLeft(0);
-		// updateParentArray(tree);
-		// updateNodeCoords(tree);
-		// updateSvg();
-
-		console.log("SVG HEAPSHFSHF", svgHeap);
-	});
+	};
 
 	const updateNodeCoords = (tree) => {
 		// console.log('updateNodeCoords')
@@ -215,7 +197,7 @@
 					duration: circle.getAttributeNS(null, 'translateX') === null ? 0 : 100
 				});
 
-				const text = Array.from(group.children).find(g => g.tagName === 'text');
+				const text = Array.from(group.children).find(g => g.tagName === 'text' && g.getAttribute('class') !== 'balance');
 				const heap = tree.getHeap();
 				text.innerHTML = heap[index].val;
 				anime({
@@ -223,6 +205,15 @@
 					translateX: `${cxArr[index]}%`,
 					translateY: `${cyArr[index]}%`,
 					duration: text.getAttributeNS(null, 'translateX') === null ? 0 : 2000
+				});
+
+				const balance = Array.from(group.children).find(g => g.tagName === 'text' && g.getAttribute('class') === 'balance');
+				balance.innerHTML = heap[index].balance;
+				anime({
+					targets: balance,
+					translateX: `${cxArr[index]}%`,
+					translateY: `${cyArr[index] + 5}%`,
+					duration: balance.getAttributeNS(null, 'translateX') === null ? 0 : 2000
 				});
 			}
 		});
@@ -271,7 +262,12 @@
 		// updateEdgeMatrix(tree);
 		drawEdges(tree);
 		// renderTree();
+		console.log("HEAP STRING", tree.toHeapString())
 	};
+
+
+
+
 
 	let newVal = 0;
 	const onNewValue = () => {
@@ -300,6 +296,26 @@
 		tree = new AVLTree();
 		updateSvg();
 	}
+
+	onMount(() => {
+		tree = new AVLTree();
+
+		console.log('root', tree.root);
+
+		svg = createSVGElement();
+
+		tree.insert(9);
+		tree.insert(12);
+		tree.insert(43);
+
+		console.log('svgHeap', svgHeap)
+
+		container.appendChild(svg);
+		updateSvg();
+
+		console.log('svgHeap', svgHeap);
+
+	});
 </script>
 
 <h1 class="hello">Hello {name}!</h1>

@@ -2,7 +2,7 @@ import { tick } from 'svelte';
 
 let id = 0;
 
-class Node {
+export class Node {
 	constructor(val) {
 		this.val = val;
 		this.left = null;
@@ -183,4 +183,9 @@ export default class AVLTree {
 
 		dfs(this.root, this.svg);
 	};
+
+	toHeapString = () => {
+		const heap = this.getHeap();
+		return heap.map(el => el?.val || null);
+	}
 }
