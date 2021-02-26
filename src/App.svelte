@@ -136,8 +136,21 @@
 		}
 	};
 
+	const swapRightRecursive = (heap, index) => {
+		while (heap[index * 2 + 1]) {
+			swap(heap, index, index * 2 + 2);
+		}
+	};
+
 	const rotateSVGLeft = index => {
-		svgHeap[index].setAttributeNS(null, 'cx', cxArr[index * 2]);
+		const heap = tree.getHeap();
+		swap(heap, index, index * 2 +  1);
+		swapRightRecursive(svgHeap, index
+		);
+		console.log("hi", svgHeap);
+		// switch around elements in heaps
+		// switch parent pointers
+		//
 	};
 
 	const appendChildrenToParents = () => {
