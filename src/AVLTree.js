@@ -28,16 +28,7 @@ export default class AVLTree {
 		const levels = [];
 		while (level.length && level.some(el => el !== null)) {
 			levels.push(level);
-			const nextLevel = [];
-			for (const node of level) {
-				if (node) {
-					nextLevel.push(node.left)
-					nextLevel.push(node.right)
-				} else {
-					nextLevel.push(null, null)
-				}
-			}
-			level = nextLevel;
+			level = level.reduce((acc, node) => [...acc, node?.right || null, node?.left || null], [])
 		}
 		return levels;
 	};
