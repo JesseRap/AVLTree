@@ -101,8 +101,8 @@
 		console.log('createNodeSVG!!');
 
 		const g = document.createElementNS(XMLNS, 'g');
-		// g.id = String(node.id);
-		g.id = String(groupId++);
+		g.id = String(node.id);
+		// g.id = String(groupId++);
 		const circle = document.createElementNS(XMLNS, 'circle');
 		circle.setAttributeNS(null, 'cx', '0');
 		circle.setAttributeNS(null, 'cy', '0');
