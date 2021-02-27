@@ -17,6 +17,7 @@
 	let svg;
 	let svgHeap = new Array(0);
 	let parentArray = new Array(0);
+	let rotateIndex = 0;
 
 
 	let cxArr = [];
@@ -67,7 +68,7 @@
 
 	const rotateLeft = () => {
 		// tree.root = tree.rotateLeft(tree.root);
-		tree.rotateLeftIndex(1);
+		tree.rotateLeftIndex(rotateIndex);
 		updateSvg();
 	};
 
@@ -287,8 +288,8 @@
 			randVal = Math.floor(Math.random() * 50);
 		}
 		console.log('onInsertRandVal *!@#!&@#&*', randVal);
-		// tree.insert(randVal);
-		tree.insertUnbalanced(randVal);
+		tree.insert(randVal);
+		// tree.insertUnbalanced(randVal);
 		updateSvg();
 	}
 
@@ -334,6 +335,7 @@
 		<button on:click={onReset}>RESET</button>
 	</div>
 	<div>
+		<input type='number' bind:value={rotateIndex} />
 		<button on:click={rotateLeft}>ROTATE LEFT</button>
 	</div>
 </div>
