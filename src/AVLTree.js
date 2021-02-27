@@ -42,7 +42,7 @@ export default class AVLTree {
 	 * Returns a heap representation of the tree.
 	 * @return {any[]} Heap representation of tree with 'null' in the place of empty nodes.
 	 */
-	getHeap = () => {
+	get heap() {
 		const levels = this.getLevels();
 		return levels.reduce((acc, level) => (
 			[...acc, ...level]
@@ -61,7 +61,7 @@ export default class AVLTree {
 	};
 
 	rotateLeftIndex = (index = 0) => {
-		const heap = this.getHeap();
+		const heap = this.heap;
 		const node = heap[index];
 		const parent = index === 0 ? this.root : heap[Math.floor((index - 1) / 2)];
 		const isLeft = index % 2 === 1;
@@ -199,7 +199,7 @@ export default class AVLTree {
 	};
 
 	toHeapString = () => {
-		const heap = this.getHeap();
+		const heap = this.heap;
 		return heap.map(el => el?.val || null);
 	}
 }

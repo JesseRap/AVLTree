@@ -58,7 +58,7 @@
 
 	const updateSVGHeap = tree => {
 		if (!tree.root) return new Array(0);
-		const heap = tree.getHeap();
+		const heap = tree.heap;
 		svgHeap = heap.map((node, index) => {
 			if (!node) return null;
 			return svgHeap.find(el => el?.id === String(node.id)) || createNodeSVG(node, index);
@@ -121,7 +121,7 @@
 	};
 
 	const removeOldNodes = () => {
-		const heap = tree.getHeap();
+		const heap = tree.heap;
 		for (let i = 0; i < heap.length; i++) {
 			for (let j = 0; j < svgHeap.length; j++) {
 				if (heap[i] === null) {
@@ -141,7 +141,7 @@
 			});
 			return;
 		}
-		const heap = tree.getHeap();
+		const heap = tree.heap;
 
 
 
@@ -178,7 +178,7 @@
 				});
 
 				const text = Array.from(group.children).find(g => g.tagName === 'text' && g.getAttribute('class') !== 'balance');
-				const heap = tree.getHeap();
+				const heap = tree.heap;
 				text.innerHTML = heap[index].val;
 				anime({
 					targets: text,
@@ -212,7 +212,7 @@
 
 	const edgesMemo = {};
 	const drawEdges = tree => {
-		const heap = tree.getHeap();
+		const heap = tree.heap;
 		for (let i = 0; i < svgHeap.length; i++) {
 			if (edgesMemo[i]) {
 				const path = edgesMemo[i];
