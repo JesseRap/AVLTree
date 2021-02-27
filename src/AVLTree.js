@@ -72,6 +72,18 @@ export default class AVLTree {
 		return rotated;
 	};
 
+	rotateRightIndex = (index = 0) => {
+		const heap = this.heap;
+		const node = heap[index];
+		const parent = index === 0 ? this.root : heap[Math.floor((index - 1) / 2)];
+		const isLeft = index % 2 === 1;
+		const rotated = this.rotateRight(node);
+		this.updateNode(node);
+		this.updateNode(rotated);
+		parent[isLeft ? 'left' : 'right'] = rotated;
+		return rotated;
+	};
+
 	rotateLeft = node => {
 		if (!node.right) {
 			throw new Error('Cannot rotate left without right child.');

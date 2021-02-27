@@ -288,7 +288,7 @@
 		}
 		console.log('onInsertRandVal *!@#!&@#&*', randVal);
 		// tree.insert(randVal);
-		tree.insert(randVal);
+		tree.insertUnbalanced(randVal);
 		updateSvg();
 	}
 
