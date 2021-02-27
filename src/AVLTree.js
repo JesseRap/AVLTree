@@ -63,12 +63,16 @@ export default class AVLTree {
 	rotateLeftIndex = (index = 0) => {
 		const heap = this.heap;
 		const node = heap[index];
-		const parent = index === 0 ? this.root : heap[Math.floor((index - 1) / 2)];
+		const parent = index === 0 ? null : heap[Math.floor((index - 1) / 2)];
 		const isLeft = index % 2 === 1;
 		const rotated = this.rotateLeft(node);
 		this.updateNode(node);
 		this.updateNode(rotated);
-		parent[isLeft ? 'left' : 'right'] = rotated;
+		if (parent) {
+			parent[isLeft ? 'left' : 'right'] = rotated;
+		} else {
+			this.root = rotated;
+		}
 		return rotated;
 	};
 

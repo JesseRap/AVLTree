@@ -40,7 +40,7 @@
 			const cxInc = 1 / Math.pow(2, index) * 100;
 			return [...acc, ...level.map((_, idx) => (cxInc / 2) + (cxInc * idx))];
 		}, []);
-		console.log('CXARR', result);
+		// console.log('CXARR', result);
 		return result;
 	};
 
@@ -53,7 +53,7 @@
 		const result = levels.reduce((acc, level, index) => (
 			[...acc, ...level.map(_ => (cyInc / 2) + (cyInc * index))]
 		), []);
-		console.log('CYARR', result);
+		// console.log('CYARR', result);
 		return result;
 	};
 
