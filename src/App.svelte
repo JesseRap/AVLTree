@@ -69,7 +69,7 @@
 	const rotateLeft = () => {
 		// tree.root = tree.rotateLeft(tree.root);
 		tree.rotateLeftIndex(rotateIndex);
-		updateSvg();
+		updateSvg(tree);
 	};
 
 	const updateParentArray = tree => {
@@ -121,7 +121,7 @@
 		return g;
 	};
 
-	const removeOldNodes = () => {
+	const removeOldNodes = (tree) => {
 		const heap = tree.heap;
 		for (let i = 0; i < heap.length; i++) {
 			for (let j = 0; j < svgHeap.length; j++) {
@@ -167,7 +167,8 @@
 		return [heap[index], ...getHeapSubtreeIndices(heap, index * 2), ...getHeapSubtreeIndices(heap, index * 2 + 1)];
 	};
 
-	const updateNodeCoords = (tree) => {
+	const updateNodeCoords = tree => {
+		if (!tree.root) svgHeap = [];
 		svgHeap.forEach((group, index) => {
 			if (group) {
 				const circle = Array.from(group.children).find(g => g.tagName === 'circle');
@@ -211,13 +212,13 @@
 		return path;
 	};
 
-	const edgesMemo = {};
+	let edgesMemo = {};
 	const drawEdges = tree => {
 		const heap = tree.heap;
 		for (let i = 0; i < svgHeap.length; i++) {
 			if (edgesMemo[i]) {
 				const path = edgesMemo[i];
-				if (!heap[i]) {
+				if (path && !heap[i]) {
 					svg.removeChild(path);
 					delete edgesMemo[i];
 				}
@@ -245,7 +246,7 @@
 		}
 	};
 
-	const updateSvg = () => {
+	const updateSvg = (tree) => {
 		// const temp = svg;
 		// svg = tree.renderTree();
 		// container.replaceChild(svg, temp);
@@ -257,7 +258,7 @@
 		cxArr = updateCxArr(tree);
 		// console.log('cxArr post', cxArr);
 		updateSVGHeap(tree);
-		removeOldNodes();
+		removeOldNodes(tree);
 		updateParentArray(tree);
 		updateNodeCoords(tree);
 		appendChildrenToParents(tree);
@@ -272,8 +273,8 @@
 
 	let newVal = 0;
 	const onNewValue = () => {
-		tree.insert(newVal);
-		updateSvg();
+		tree.insertUnbalanced(newVal);
+		updateSvg(tree);
 	};
 
 	let findVal = null;
@@ -290,12 +291,19 @@
 		console.log('onInsertRandVal *!@#!&@#&*', randVal);
 		tree.insert(randVal);
 		// tree.insertUnbalanced(randVal);
-		updateSvg();
+		updateSvg(tree);
 	}
 
 	const onReset = () => {
 		tree = new AVLTree();
-		updateSvg();
+		edgesMemo = {};
+		updateSvg(tree);
+	}
+
+	const update = tree => {
+		console.log('UPDATE!!!');
+		tree = tree;
+		updateSvg(tree);
 	}
 
 	onMount(() => {
@@ -308,7 +316,7 @@
 		console.log('svgHeap', svgHeap)
 
 		container.appendChild(svg);
-		updateSvg();
+		updateSvg(tree);
 
 		console.log('svgHeap', svgHeap);
 
