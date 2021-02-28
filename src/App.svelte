@@ -274,7 +274,7 @@
 
 	let newVal = 0;
 	const onNewValue = () => {
-		tree.insertUnbalanced(newVal);
+		tree.insert(newVal);
 		updateSvg(tree);
 	};
 

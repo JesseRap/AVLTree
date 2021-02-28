@@ -61,9 +61,12 @@ export default class AVLTree {
 		this.root = this.rotateLeft(this.root);
 	};
 
-	rotateLeftIndex = (index = 0) => {
+	getNodeIndex = node => this.heap.indexOf(node);
+
+	rotateLeftIndex = (node) => {
+		const index = this.getNodeIndex(node)
 		const heap = this.heap;
-		const node = heap[index];
+		// const node = heap[index];
 		const parent = index === 0 ? null : heap[Math.floor((index - 1) / 2)];
 		const isLeft = index % 2 === 1;
 		const rotated = this.rotateLeft(node);
@@ -77,9 +80,10 @@ export default class AVLTree {
 		return rotated;
 	};
 
-	rotateRightIndex = (index = 0) => {
+	rotateRightIndex = (node) => {
+		const index = this.getNodeIndex(node)
 		const heap = this.heap;
-		const node = heap[index];
+		// const node = heap[index];
 		const parent = index === 0 ? this.root : heap[Math.floor((index - 1) / 2)];
 		const isLeft = index % 2 === 1;
 		const rotated = this.rotateRight(node);
@@ -135,6 +139,24 @@ export default class AVLTree {
 		return node;
 	};
 
+	updateAllNodes = () => {
+		const heap = this.heap;
+		for (let i = heap.length - 1; i >= 0; i--) {
+			if (heap[i]) {
+				this.updateNode(heap[i]);
+			}
+		}
+	};
+
+	rebalanceAllNodes = () => {
+		for (let i = this.heap.length - 1; i >= 0; i--) {
+			if (this.heap[i] && Math.abs(this.heap[i].balance) > 1) {
+		 	this.rebalance(this.heap[i]);
+			this.updateAllNodes();
+			}
+		}
+	}
+
 	/**
 	 * Recursive function to insert a node with a given value starting from a certain origin node.
 	 * @param  {any}  val - Value of the new node.
@@ -142,20 +164,53 @@ export default class AVLTree {
 	 * @param  {boolean} rebalance=true - Should the tree rebalance itself after insertion?
 	 * @return {Node} The input `node` with the new node inserted.
 	 */
-	insertValFromNode = (val, node, rebalance = true) => {
-		if (!node) {
-			return new Node(val);
+	insertValFromRoot = (val, rebalance = true) => {
+		if (!this.root) {
+			this.root = new Node(val);
+			return;
 		}
-		if (node.val >= val) {
-			console.log('go left');
-			node.left = this.insertValFromNode(val, node.left, rebalance);
+
+		let [node, previous] = [this.root, null];
+
+		while (node) {
+			previous = node;
+			if (node.val > val) {
+				node = node.left;
+			} else {
+				node = node.right;
+			}
+		}
+
+		if (previous) {
+			if (previous.val > val) {
+				previous.left = new Node(val);
+			} else {
+				previous.right = new Node(val);
+			}
 		} else {
-			console.log('go right');
-			node.right = this.insertValFromNode(val, node.right, rebalance);
+			if (this.root.val > val) {
+				this.root.left = new Node(val);
+			} else {
+				this.root.right = new Node(val);
+			}
 		}
-		this.updateNodeHeight(node);
-		this.updateNodeBalance(node);
-		return rebalance ? this.rebalance(node) : node;
+
+		this.updateAllNodes();
+
+		if (rebalance) {
+			this.rebalanceAllNodes();
+		}
+
+		// if (node.val >= val) {
+		// 	console.log('go left');
+		// 	node.left = this.insertValFromRoot(val, node.left, rebalance);
+		// } else {
+		// 	console.log('go right');
+		// 	node.right = this.insertValFromRoot(val, node.right, rebalance);
+		// }
+		// this.updateNodeHeight(node);
+		// this.updateNodeBalance(node);
+		// return rebalance ? this.rebalance(node) : node;
 	};
 
 	// TODO: Refactor for readability.
@@ -164,32 +219,31 @@ export default class AVLTree {
 		if (node.balance === 2) {
 			if (node.right.balance >= 0) {
 				// Right-right
-				return this.rotateLeft(node);
+				this.rotateLeftIndex(node);
 			} else {
 				// Right-left
-				node.right = this.rotateRight(node.right);
-				return this.rotateLeft(node);
+				this.rotateRightIndex(node.right);
+				this.rotateLeftIndex(node);
 			}
 		} else if (node.balance === -2) {
 			if (node.left.balance <= 0) {
 				// Left-left
-				return this.rotateRight(node);
+				this.rotateRightIndex(node);
 			} else {
 				// Left-right
-				node.left = this.rotateLeft(node.left);
-				return this.rotateRight(node);
+				this.rotateLeftIndex(node.left);
+				this.rotateRightIndex(node);
 			}
 		}
-		return node;
 	};
 
 	insert = val => {
-		this.root = this.insertValFromNode(val, this.root);
+		this.insertValFromRoot(val);
 		this.states.push(this.heap);
 	};
 
 	insertUnbalanced = val => {
-		this.root = this.insertValFromNode(val, this.root, false);
+		this.insertValFromRoot(val, false);
 		this.states.push(this.heap);
 	};
 
