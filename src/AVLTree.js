@@ -111,7 +111,7 @@ export default class AVLTree {
 		this.updateNode(node);
 		this.updateNode(temp);
 
-		// this.states.push(this.heap);
+		// this.states.push(this);
 
 		return temp;
 	};
@@ -127,7 +127,7 @@ export default class AVLTree {
 		this.updateNode(node);
 		this.updateNode(temp);
 
-		// this.states.push(this.heap);
+		// this.states.push(this);
 
 		return temp;
 	};
@@ -211,7 +211,7 @@ export default class AVLTree {
 
 		this.updateAllNodes();
 
-		this.states.push(this.heap);
+		this.states.push(this);
 
 		if (rebalance) {
 			this.rebalanceAllNodes();
@@ -239,7 +239,7 @@ export default class AVLTree {
 			} else {
 				// Right-left
 				this.rotateRightIndex(node.right);
-				this.states.push(this.heap);
+				this.states.push(this);
 				this.rotateLeftIndex(node);
 			}
 		} else if (node.balance === -2) {
@@ -249,7 +249,7 @@ export default class AVLTree {
 			} else {
 				// Left-right
 				this.rotateLeftIndex(node.left);
-				this.states.push(this.heap);
+				this.states.push(this);
 				this.rotateRightIndex(node);
 			}
 		}
@@ -257,12 +257,12 @@ export default class AVLTree {
 
 	insert = val => {
 		this.insertValFromRoot(val);
-		this.states.push(this.heap);
+		this.states.push(this);
 	};
 
 	insertUnbalanced = val => {
 		this.insertValFromRoot(val, false);
-		this.states.push(this.heap);
+		this.states.push(this);
 	};
 
 	toString = () => {
