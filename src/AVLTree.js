@@ -84,12 +84,17 @@ export default class AVLTree {
 		const index = this.getNodeIndex(node)
 		const heap = this.heap;
 		// const node = heap[index];
-		const parent = index === 0 ? this.root : heap[Math.floor((index - 1) / 2)];
+		const parent = index === 0 ? null : heap[Math.floor((index - 1) / 2)];
 		const isLeft = index % 2 === 1;
 		const rotated = this.rotateRight(node);
 		this.updateNode(node);
 		this.updateNode(rotated);
-		parent[isLeft ? 'left' : 'right'] = rotated;
+		if (parent) {
+			parent[isLeft ? 'left' : 'right'] = rotated;
+		} else {
+			this.root = rotated;
+		}
+		// parent[isLeft ? 'left' : 'right'] = rotated;
 		return rotated;
 	};
 
@@ -103,6 +108,9 @@ export default class AVLTree {
 
 		this.updateNode(node);
 		this.updateNode(temp);
+
+		// this.states.push(this.heap);
+
 		return temp;
 	};
 
@@ -116,6 +124,9 @@ export default class AVLTree {
 
 		this.updateNode(node);
 		this.updateNode(temp);
+
+		// this.states.push(this.heap);
+
 		return temp;
 	};
 
@@ -197,6 +208,8 @@ export default class AVLTree {
 
 		this.updateAllNodes();
 
+		this.states.push(this.heap);
+
 		if (rebalance) {
 			this.rebalanceAllNodes();
 		}
@@ -223,6 +236,7 @@ export default class AVLTree {
 			} else {
 				// Right-left
 				this.rotateRightIndex(node.right);
+				this.states.push(this.heap);
 				this.rotateLeftIndex(node);
 			}
 		} else if (node.balance === -2) {
@@ -232,6 +246,7 @@ export default class AVLTree {
 			} else {
 				// Left-right
 				this.rotateLeftIndex(node.left);
+				this.states.push(this.heap);
 				this.rotateRightIndex(node);
 			}
 		}
