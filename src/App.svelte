@@ -248,7 +248,7 @@
 	};
 
 	const updateSvg = (tree) => {
-		console.log('updateSvg', tree)
+		console.log('updateSvg', tree, cxArr, cyArr)
 		// const temp = svg;
 		// svg = tree.renderTree();
 		// container.replaceChild(svg, temp);
@@ -262,9 +262,9 @@
 		updateSVGHeap(tree);
 		removeOldNodes(tree);
 		updateParentArray(tree);
+		drawEdges(tree);
 		updateNodeCoords(tree);
 		appendChildrenToParents(tree);
-		drawEdges(tree);
 		// renderTree();
 		console.log("HEAP STRING", tree.toHeapString());
 		console.log("STATES", tree.states);
