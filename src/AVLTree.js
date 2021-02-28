@@ -70,13 +70,14 @@ export default class AVLTree {
 		const parent = index === 0 ? null : heap[Math.floor((index - 1) / 2)];
 		const isLeft = index % 2 === 1;
 		const rotated = this.rotateLeft(node);
-		this.updateNode(node);
-		this.updateNode(rotated);
+		// this.updateNode(node);
+		// this.updateNode(rotated);
 		if (parent) {
 			parent[isLeft ? 'left' : 'right'] = rotated;
 		} else {
 			this.root = rotated;
 		}
+		this.updateAllNodes();
 		return rotated;
 	};
 
@@ -87,13 +88,14 @@ export default class AVLTree {
 		const parent = index === 0 ? null : heap[Math.floor((index - 1) / 2)];
 		const isLeft = index % 2 === 1;
 		const rotated = this.rotateRight(node);
-		this.updateNode(node);
-		this.updateNode(rotated);
+		// this.updateNode(node);
+		// this.updateNode(rotated);
 		if (parent) {
 			parent[isLeft ? 'left' : 'right'] = rotated;
 		} else {
 			this.root = rotated;
 		}
+		this.updateAllNodes();
 		// parent[isLeft ? 'left' : 'right'] = rotated;
 		return rotated;
 	};
@@ -176,6 +178,7 @@ export default class AVLTree {
 	 * @return {Node} The input `node` with the new node inserted.
 	 */
 	insertValFromRoot = (val, rebalance = true) => {
+		console.log('INSERT', val);
 		if (!this.root) {
 			this.root = new Node(val);
 			return;

@@ -68,7 +68,8 @@
 
 	const rotateLeft = () => {
 		// tree.root = tree.rotateLeft(tree.root);
-		tree.rotateLeftIndex(rotateIndex);
+		tree.rotateLeftIndex(tree.heap[rotateIndex]);
+		tree = tree;
 		updateSvg(tree);
 	};
 
@@ -247,6 +248,7 @@
 	};
 
 	const updateSvg = (tree) => {
+		console.log('updateSvg', tree)
 		// const temp = svg;
 		// svg = tree.renderTree();
 		// container.replaceChild(svg, temp);
