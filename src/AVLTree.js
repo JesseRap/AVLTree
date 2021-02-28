@@ -211,7 +211,10 @@ export default class AVLTree {
 
 		this.updateAllNodes();
 
-		this.states.push(this);
+		this.states.push({
+			type: 'insert',
+			tree: this.toHeapString()
+		});
 
 		if (rebalance) {
 			this.rebalanceAllNodes();
@@ -236,33 +239,61 @@ export default class AVLTree {
 			if (node.right.balance >= 0) {
 				// Right-right
 				this.rotateLeftIndex(node);
+				this.states.push({
+					type: 'rebalance',
+					tree: this.toHeapString()
+				});
 			} else {
 				// Right-left
 				this.rotateRightIndex(node.right);
-				this.states.push(this);
+				this.states.push({
+					type: 'rebalance',
+					tree: this.toHeapString()
+				});
 				this.rotateLeftIndex(node);
+				this.states.push({
+					type: 'rebalance',
+					tree: this.toHeapString()
+				});
 			}
 		} else if (node.balance === -2) {
 			if (node.left.balance <= 0) {
 				// Left-left
 				this.rotateRightIndex(node);
+				this.states.push({
+					type: 'rebalance',
+					tree: this.toHeapString()
+				});
 			} else {
 				// Left-right
 				this.rotateLeftIndex(node.left);
-				this.states.push(this);
+				this.states.push({
+					type: 'rebalance',
+					tree: this.toHeapString()
+				});
 				this.rotateRightIndex(node);
+				this.states.push({
+					type: 'rebalance',
+					tree: this.toHeapString()
+				});
 			}
 		}
 	};
 
 	insert = val => {
 		this.insertValFromRoot(val);
-		this.states.push(this);
+		this.states.push({
+			type: 'insert',
+			tree: this.toHeapString()
+		});
 	};
 
 	insertUnbalanced = val => {
 		this.insertValFromRoot(val, false);
-		this.states.push(this);
+		this.states.push({
+			type: 'insert',
+			tree: this.toHeapString()
+		});
 	};
 
 	toString = () => {
