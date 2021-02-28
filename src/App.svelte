@@ -264,7 +264,8 @@
 		appendChildrenToParents(tree);
 		drawEdges(tree);
 		// renderTree();
-		console.log("HEAP STRING", tree.toHeapString())
+		console.log("HEAP STRING", tree.toHeapString());
+		console.log("STATES", tree.states);
 	};
 
 

@@ -16,6 +16,7 @@ export class Node {
 export default class AVLTree {
 	constructor(inputArray) {
 		this.root = null;
+		this.states = [];
 		if (inputArray) {
 			for (const val of inputArray) {
 				this.insert(val);
@@ -184,10 +185,12 @@ export default class AVLTree {
 
 	insert = val => {
 		this.root = this.insertValFromNode(val, this.root);
+		this.states.push(this.heap);
 	};
 
 	insertUnbalanced = val => {
 		this.root = this.insertValFromNode(val, this.root, false);
+		this.states.push(this.heap);
 	};
 
 	toString = () => {
