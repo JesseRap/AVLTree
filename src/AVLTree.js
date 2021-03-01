@@ -239,6 +239,8 @@ export default class AVLTree {
 			this.rebalanceAllNodes();
 		}
 
+		this.updateAllNodes();
+
 		// if (node.val >= val) {
 		// 	console.log('go left');
 		// 	node.left = this.insertValFromRoot(val, node.left, rebalance);

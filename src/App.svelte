@@ -205,9 +205,15 @@
 		});
 	};
 
-	const createPath = i => {
+	const createPath = (tree, node) => {
+		if (!node) return;
+		const i = tree.getNodeIndex(node);
+		if (i === 0) return;
+		const nodeId = node.id;
+		const parent = i === 0 ? null : tree.heap[Math.floor((i - 1) / 2)];
+		const parentId = parent.id;
 		const path = document.createElementNS(XMLNS, 'path');
-		path.setAttribute('id', `${i}-${parentArray[i]}`);
+		path.setAttribute('id', `${nodeId}-${parentId}`);
 		path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[parentArray[i]]} ${cyArr[parentArray[i]]}`);
 		path.setAttributeNS(null, "stroke", "black");
 		path.setAttributeNS(null, "fill", "transparent");
@@ -233,7 +239,7 @@
 			}
 			if (heap[i] && heap[parentArray[i]]) {
 				if (!edgesMemo?.[i]) {
-					const path = createPath(i);
+					const path = createPath(tree, heap[i]);
 					svg.append(path);
 					anime({
 						targets: path,
