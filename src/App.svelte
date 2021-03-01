@@ -213,7 +213,8 @@
 		const parent = i === 0 ? null : tree.heap[Math.floor((i - 1) / 2)];
 		const parentId = parent.id;
 		const path = document.createElementNS(XMLNS, 'path');
-		path.setAttribute('id', `${nodeId}-${parentId}`);
+		const pathId = `${nodeId}-${parentId}`
+		path.setAttribute('id', pathId);
 		path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[parentArray[i]]} ${cyArr[parentArray[i]]}`);
 		path.setAttributeNS(null, "stroke", "black");
 		path.setAttributeNS(null, "fill", "transparent");
@@ -221,6 +222,31 @@
 		path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
 		return path;
 	};
+
+	const updateEdgesMemo = (tree, memp) => {
+		if (!tree.root) return new Array(0);
+		const heap = tree.heap;
+		heap.forEach((node, index) => {
+			const nodeId = node.id;
+			const parent = index === 0 ? null : heap[Math.floor((index - 1) /  2)];
+			const parentId = parent.id;
+			const pathId = `${nodeId}-${parentId}`;
+			if (edgesMemo[pathId]) {
+				const path = edgesMemo[pathId];
+				path.setAttributeNS(null, 'd', `M ${cxArr[index]} ${cyArr[index]} L ${cxArr[parentArray[index]]} ${cyArr[parentArray[index]]}`);
+			} else {
+				const path = createPath(tree, heap[index]);
+				edgesMemo[pathId] = path;
+				svg.append(path);
+				anime({
+					targets: path,
+					'stroke-dashoffset': '0%',
+					duration: 1,
+					delay: 1000
+				});
+			}
+		});
+	}
 
 	let edgesMemo = {};
 	const drawEdges = tree => {
