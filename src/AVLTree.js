@@ -293,7 +293,7 @@ export default class AVLTree {
 	};
 
 	find = val => {
-		const dfs = (node, svgEl) => {
+		const dfs = node => {
 			console.log('dfs', node?.val);
 			if (!node) {
 				return;
@@ -314,33 +314,44 @@ export default class AVLTree {
 	toHeapString = () => {
 		const heap = this.heap;
 		return heap.map(el => el?.val || null);
+	};
+
+	copy = () => {
+		const newTree = new TreeCopier(this).copy();
+		return newTree;
+	};
+}
+
+class TreeCopier {
+	constructor(tree) {
+		this.tree = tree;
 	}
+
+	copyNodeData = (sourceNode, destNode) => {
+		destNode.id = sourceNode.id;
+		destNode.height = sourceNode.height;
+		destNode.balance = sourceNode.balance;
+	};
 
 	copy = () => {
 		const newTree = new AVLTree([], false);
-		if (!this.root) return newTree;
-		const newRoot = new Node(this.root.val);
+		if (!this.tree.root) return newTree;
+		const newRoot = new Node(this.tree.root.val);
 		newTree.root = newRoot;
-		newRoot.id = this.root.id;
-		newRoot.height = this.root.height;
-		newRoot.balance = this.root.balance;
+		this.copyNodeData(this.tree.root, newRoot);
 		const dfs = (node, current) => {
 			if (node.left) {
 				current.left = new Node(node.left.val);
-				current.left.id = node.left.id;
-				current.left.height = node.left.height;
-				current.left.balance = node.left.balance;
+				this.copyNodeData(node.left, current.left);
 				dfs(node.left, current.left);
 			}
 			if (node.right) {
 				current.right = new Node(node.right.val);
-				current.right.id = node.right.id;
-				current.right.height = node.right.height;
-				current.right.balance = node.right.balance;
+				this.copyNodeData(node.right, current.right);
 				dfs(node.right, current.right);
 			}
 		};
-		dfs(this.root, newRoot);
+		dfs(this.tree.root, newRoot);
 		return newTree
 	};
 }

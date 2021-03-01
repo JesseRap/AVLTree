@@ -306,7 +306,7 @@
 		console.log('runAnimation', states);
 		// edgesMemo = {};
 		for (let i = 0; i < states[index].length; i++) {
-			edgesMemo = {};
+			// edgesMemo = {};
 			updateSvg(states[index][i].tree);
 			// await tick();
 			await wait(1000);
