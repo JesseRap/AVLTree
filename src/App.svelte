@@ -13,11 +13,17 @@
 	const XMLNS = 'http://www.w3.org/2000/svg';
 
 	let child;
-	let tree;
+	let theTree = new AVLTree();
 	let svg;
 	let svgHeap = new Array(0);
 	let parentArray = new Array(0);
 	let rotateIndex = 0;
+
+ 	$: states = theTree.states;
+
+	$: {
+		console.log('STATES!!!!!', states);
+	}
 
 
 	let cxArr = [];
@@ -33,7 +39,7 @@
 		return svg;
 	};
 
-	const updateCxArr = tree => {
+	const getCxArr = tree => {
 		if (!tree.root) return new Array(0);
 		const levels = tree.getLevels();
 		const result = levels.reduce((acc, level, index) => {
@@ -44,7 +50,7 @@
 		return result;
 	};
 
-	const updateCyArr = tree => {
+	const getCyArr = tree => {
 		if (!tree.root) return new Array(0);
 		// vertical space between nodes.
 		const cyInc = 1 / (tree.root.height + 1) * 100;
@@ -60,17 +66,17 @@
 	const updateSVGHeap = tree => {
 		if (!tree.root) return new Array(0);
 		const heap = tree.heap;
-		svgHeap = heap.map((node, index) => {
+		svgHeap = heap.map(node => {
 			if (!node) return null;
-			return svgHeap.find(el => el?.id === String(node.id)) || createNodeSVG(node, index);
+			return svgHeap.find(el => el?.id === String(node.id)) || createNodeSVG(node);
 		});
 	}
 
 	const rotateLeft = () => {
 		// tree.root = tree.rotateLeft(tree.root);
-		tree.rotateLeftIndex(tree.heap[rotateIndex]);
-		tree = tree;
-		updateSvg(tree);
+		theTree.rotateLeftIndex(theTree.heap[rotateIndex]);
+		theTree = theTree;
+		updateSvg(theTree);
 	};
 
 	const updateParentArray = tree => {
@@ -91,7 +97,7 @@
 		arr[i2] = temp
 	};
 
-	const createNodeSVG = (node, index) => {
+	const createNodeSVG = node => {
 		console.log('createNodeSVG!!');
 
 		const g = document.createElementNS(XMLNS, 'g');
@@ -124,12 +130,9 @@
 
 	const removeOldNodes = (tree) => {
 		const heap = tree.heap;
-		for (let i = 0; i < heap.length; i++) {
-			for (let j = 0; j < svgHeap.length; j++) {
-				if (heap[i] === null) {
-					if (svgHeap[i]) {
-						svgHeap[i].innerHTML = '';
-					}
+		for (let i = 0; i < Math.max(heap.length, svgHeap.length); i++) {
+			for (let j = 0; j < Math.max(svgHeap.length, heap.length); j++) {
+				if (heap[i] === null && i < svgHeap.length) {
 					svgHeap[i] = null;
 				}
 			}
@@ -247,27 +250,37 @@
 		}
 	};
 
-	const updateSvg = (tree) => {
-		console.log('updateSvg', tree, cxArr, cyArr)
+	const updateSvg = (t) => {
+		const myTree = t || theTree;
+		console.log('updateSvg', myTree, cxArr, cyArr)
 		// const temp = svg;
-		// svg = tree.renderTree();
+		// svg = myTree.renderTree();
 		// container.replaceChild(svg, temp);
-		// console.log('cyArr prev', cyArr);
-		cyArr = updateCyArr(tree);
-		// console.log('cyArr post', cyArr);
+		console.log('cyArr prev', cyArr);
+		cyArr = getCyArr(myTree);
+		console.log('cyArr post', cyArr);
 
-		// console.log('cxArr prev', cxArr);
-		cxArr = updateCxArr(tree);
-		// console.log('cxArr post', cxArr);
-		updateSVGHeap(tree);
-		removeOldNodes(tree);
-		updateParentArray(tree);
-		drawEdges(tree);
-		updateNodeCoords(tree);
-		appendChildrenToParents(tree);
+		console.log('cxArr prev', cxArr);
+		cxArr = getCxArr(myTree);
+		console.log('cxArr post', cxArr);
+		console.log('updateSVGHeap');
+		updateSVGHeap(myTree);
+		console.log('removeOldNodes');
+		removeOldNodes(myTree);
+		console.log('updateParentArray');
+		updateParentArray(myTree);
+		console.log('drawEdges');
+		drawEdges(myTree);
+		console.log('updateNodeCoords');
+		updateNodeCoords(myTree);
+		console.log('appendChildrenToParents');
+		appendChildrenToParents(myTree);
 		// renderTree();
-		console.log("HEAP STRING", tree.toHeapString());
-		console.log("STATES", tree.states);
+		// console.log("HEAP STRING", theTree.toHeapString());
+		// console.log("HEAP STRING 2", myTree.toHeapString());
+		console.log("STATES", theTree.states);
+		// const copy = theTree.copy();
+		// console.log("COPY", copy);
 	};
 
 
@@ -276,14 +289,51 @@
 
 	let newVal = 0;
 	const onNewValue = () => {
-		tree.insert(newVal);
-		updateSvg(tree);
+		theTree.insert(newVal);
+		theTree = theTree;
+		updateSvg(theTree);
 	};
 
 	let findVal = null;
 	const onFindValue = () => {
 		console.log("FINDVAL", findVal)
-		tree.find(findVal);
+		theTree.find(findVal);
+	};
+
+	const wait = ms => new Promise(res => setTimeout(res, ms));
+
+	const runAnimation = async index => {
+		console.log('runAnimation', states);
+		// edgesMemo = {};
+		for (let i = 0; i < states[index].length; i++) {
+			edgesMemo = {};
+			updateSvg(states[index][i].tree);
+			// await tick();
+			await wait(1000);
+		}
+	};
+
+	const runAnimations = async () => {
+		console.log('runAnimations', states);
+		// updateSvg(states[0][0].tree);
+		// await wait(1000);
+		// updateSvg(states[1][0].tree);
+		// await wait(1000);
+		// updateSvg(states[2][0].tree);
+		for (let i = 0; i < states.length; i++) {
+			await runAnimation(i);
+		}
+		// updateSvg(states[0][0].tree);
+		// edgesMemo = {};
+		// let t = states[0][0].tree
+		// updateSvg(t)
+		// edgesMemo = {};
+		// updateSvg(states[1][0].tree);
+		// edgesMemo = {};
+		// t = states[0][0].tree
+		// updateSvg(t)
+		// edgesMemo = {};
+		// updateSvg(states[2][0].tree);
 	};
 
 	const onInsertRandVal = () => {
@@ -292,34 +342,31 @@
 			randVal = Math.floor(Math.random() * 50);
 		}
 		console.log('onInsertRandVal *!@#!&@#&*', randVal);
-		tree.insert(randVal);
+		theTree.insert(randVal);
 		// tree.insertUnbalanced(randVal);
-		updateSvg(tree);
+		theTree = theTree;
+		updateSvg(theTree);
 	}
 
 	const onReset = () => {
-		tree = new AVLTree();
+		theTree = states[0][0].tree
 		edgesMemo = {};
-		updateSvg(tree);
+		updateSvg(theTree);
 	}
 
 	const update = tree => {
 		console.log('UPDATE!!!');
-		tree = tree;
+		theTree = tree;
 		updateSvg(tree);
 	}
 
 	onMount(() => {
-		tree = new AVLTree();
-
-		console.log('root', tree.root);
-
 		svg = createSVGElement();
 
 		console.log('svgHeap', svgHeap)
 
 		container.appendChild(svg);
-		updateSvg(tree);
+		updateSvg(theTree);
 
 		console.log('svgHeap', svgHeap);
 
@@ -348,5 +395,8 @@
 	<div>
 		<input type='number' bind:value={rotateIndex} />
 		<button on:click={rotateLeft}>ROTATE LEFT</button>
+	</div>
+	<div>
+		<button on:click={runAnimations}>ANIMATE</button>
 	</div>
 </div>

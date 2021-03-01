@@ -14,9 +14,16 @@ export class Node {
 }
 
 export default class AVLTree {
-	constructor(inputArray) {
+	constructor(inputArray, copy = true) {
 		this.root = null;
 		this.states = [];
+		if (copy) {
+			this.stateGroup = [{
+				type: 'initial',
+				tree: this.copy()
+			}];
+			this.states.push(this.stateGroup);
+		}
 		if (inputArray) {
 			for (const val of inputArray) {
 				this.insert(val);
@@ -78,9 +85,9 @@ export default class AVLTree {
 			this.root = rotated;
 		}
 		this.updateAllNodes();
-		this.states.push({
+		this.stateGroup.push({
 			type: 'rebalance',
-			tree: this.toHeapString()
+			tree: this.copy()
 		});
 		return rotated;
 	};
@@ -101,9 +108,9 @@ export default class AVLTree {
 		}
 		this.updateAllNodes();
 		// parent[isLeft ? 'left' : 'right'] = rotated;
-		this.states.push({
+		this.stateGroup.push({
 			type: 'rebalance',
-			tree: this.toHeapString()
+			tree: this.copy()
 		});
 		return rotated;
 	};
@@ -119,7 +126,7 @@ export default class AVLTree {
 		this.updateNode(node);
 		this.updateNode(temp);
 
-		// this.states.push(this);
+		// this.stateGroup.push(this);
 
 		return temp;
 	};
@@ -135,7 +142,7 @@ export default class AVLTree {
 		this.updateNode(node);
 		this.updateNode(temp);
 
-		// this.states.push(this);
+		// this.stateGroup.push(this);
 
 		return temp;
 	};
@@ -189,9 +196,9 @@ export default class AVLTree {
 		console.log('INSERT', val);
 		if (!this.root) {
 			this.root = new Node(val);
-			this.states.push({
+			this.stateGroup.push({
 				type: 'insert',
-				tree: this.toHeapString()
+				tree: this.copy()
 			});
 			return;
 		}
@@ -223,9 +230,9 @@ export default class AVLTree {
 
 		this.updateAllNodes();
 
-		this.states.push({
+		this.stateGroup.push({
 			type: 'insert',
-			tree: this.toHeapString()
+			tree: this.copy()
 		});
 
 		if (rebalance) {
@@ -269,11 +276,15 @@ export default class AVLTree {
 	};
 
 	insert = val => {
+		this.stateGroup = [];
 		this.insertValFromRoot(val);
+		this.states.push(this.stateGroup);
 	};
 
 	insertUnbalanced = val => {
+		this.stateGroup = [];
 		this.insertValFromRoot(val, false);
+		this.states.push(this.stateGroup);
 	};
 
 	toString = () => {
@@ -304,4 +315,32 @@ export default class AVLTree {
 		const heap = this.heap;
 		return heap.map(el => el?.val || null);
 	}
+
+	copy = () => {
+		const newTree = new AVLTree([], false);
+		if (!this.root) return newTree;
+		const newRoot = new Node(this.root.val);
+		newTree.root = newRoot;
+		newRoot.id = this.root.id;
+		newRoot.height = this.root.height;
+		newRoot.balance = this.root.balance;
+		const dfs = (node, current) => {
+			if (node.left) {
+				current.left = new Node(node.left.val);
+				current.left.id = node.left.id;
+				current.left.height = node.left.height;
+				current.left.balance = node.left.balance;
+				dfs(node.left, current.left);
+			}
+			if (node.right) {
+				current.right = new Node(node.right.val);
+				current.right.id = node.right.id;
+				current.right.height = node.right.height;
+				current.right.balance = node.right.balance;
+				dfs(node.right, current.right);
+			}
+		};
+		dfs(this.root, newRoot);
+		return newTree
+	};
 }
