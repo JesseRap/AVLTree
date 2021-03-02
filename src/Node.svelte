@@ -3,7 +3,7 @@
   export let balance;
 </script>
 
-<!-- <style>
+<style>
 svg {
   background-color: #353b48;
 }
@@ -21,7 +21,7 @@ path {
 polygon {
   transform: translate(45px, 20px);
 }
-</style> -->
+</style>
 
 <g style="transform: translate(-12.5%, -12.5%);"><svg class="node-svg" id="svg" width="25%" height="25%" viewBox="0 0 100 100">
   <defs>

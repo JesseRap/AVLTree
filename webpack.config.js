@@ -4,7 +4,7 @@ const path = require('path')
 const mode = process.env.NODE_ENV || 'development'
 const prod = mode === 'production'
 
-const sveltePath = path.resolve('node_modules', 'svelte')
+const sveltePath = path.resolve(__dirname, 'node_modules', 'svelte')
 
 module.exports = {
   entry: {
@@ -34,7 +34,7 @@ module.exports = {
         // explicitely included.
         // see: https://github.com/babel/babel-loader/issues/171#issuecomment-486380160
         //
-        include: [path.resolve(__dirname, 'src'), path.dirname(sveltePath)],
+        include: [path.resolve(__dirname, 'src'), sveltePath],
         use: {
           loader: 'babel-loader',
           options: {
@@ -70,7 +70,8 @@ module.exports = {
            * MiniCssExtractPlugin doesn't support HMR.
            * For developing, use 'style-loader' instead.
            * */
-          'style-loader'
+          'style-loader',
+          'css-loader'
         ],
       },
     ],
