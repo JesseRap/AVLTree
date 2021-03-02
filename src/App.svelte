@@ -267,10 +267,12 @@
 				const path = createPath(tree, heap[index]);
 				edgesMemo[pathId] = path;
 				svg.append(path);
+				path.setAttributeNS(null, 'stroke-dasharray', '100');
+				path.setAttributeNS(null, 'stroke-dasharray', '-100%');
 				anime({
 					targets: path,
 					'stroke-dashoffset': '0%',
-					duration: 1,
+					duration: 1000,
 					delay: 1000
 				});
 			}
@@ -296,13 +298,14 @@
 				if (!edgesMemo?.[i]) {
 					const path = createPath(tree, heap[i]);
 					svg.append(path);
+					path.setAttributeNS(null, 'stroke-dasharray', '100');
+					path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
 					anime({
 						targets: path,
 						'stroke-dashoffset': '0%',
-						duration: 1,
+						duration: 1000,
 						delay: 1000
 					});
-					// path.setAttributeNS(null, 'stroke-dashoffset', '0%');
 					edgesMemo[i] = path;
 				}
 			} else {
