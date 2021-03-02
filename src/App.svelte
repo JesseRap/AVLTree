@@ -116,29 +116,35 @@
 		}
 	};
 
-	const appendChildrenToParents = (tree) => {
-		if (!tree.root) {
-			Array.from(svg.children).forEach(child => {
-				svg.removeChild(child);
-			});
-			return;
-		}
-		const heap = tree.heap;
+	const removeAllChildrenFromNode = node => {
+		Array.from(node.children).forEach(child => {
+			svg.removeChild(child);
+		});
+	};
 
+	const childExistsInNode = (child, node) => Array.from(node.children).some(childNode =>
+		childNode.id === child.id
+	);
 
-
-		svgHeap.forEach((group, index) => {
+	const insertElementsIntoNode = (svgHeap, svg) => {
+		svgHeap.forEach(group => {
 			if (!group) {
 				return;
 			}
 			Array.from(svg.children).forEach(child => {
 			})
-			if (group && !Array.from(svg.children).some(child => {
-				return child.id === group.id
-			})) {
+			if (!childExistsInNode(group, svg)) {
 				svg.appendChild(group);
 			}
 		})
+	}
+
+	const putElementsOnSVG = tree => {
+		if (!tree.root) {
+			removeAllChildrenFromNode(svg);
+			return;
+		}
+		insertElementsIntoNode(svgHeap, svg);
 	};
 
 	const getHeapSubtreeIndices = (heap, index) => {
@@ -280,8 +286,8 @@
 		drawEdges(myTree);
 		console.log('updateNodeCoords');
 		updateNodeCoords(myTree);
-		console.log('appendChildrenToParents');
-		appendChildrenToParents(myTree);
+		console.log('putElementsOnSVG');
+		putElementsOnSVG(myTree);
 		// renderTree();
 		// console.log("HEAP STRING", theTree.toHeapString());
 		// console.log("HEAP STRING 2", myTree.toHeapString());
