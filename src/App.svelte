@@ -3,6 +3,7 @@
 
 	import { afterUpdate, onMount, tick } from 'svelte';
 	import AVLTree from './AVLTree.js';
+	import Node from './Node.svelte';
 
 	let container;
 
@@ -24,8 +25,8 @@
 
 	const createSVGElement = () => {
 		const svg = document.createElementNS(XMLNS, 'svg');
-    svg.setAttributeNS(null, 'width', '100%');
-    svg.setAttributeNS(null, 'height', '100%');
+    svg.setAttributeNS(null, 'width', '600px');
+    svg.setAttributeNS(null, 'height', '600px');
     svg.style.border = '1px solid black';
     svg.setAttribute('class', 'svg-main');
     svg.setAttributeNS(null, 'viewBox', '0 0 100 100');
@@ -93,42 +94,52 @@
 		console.log('createNodeSVG!!');
 
 		const g = document.createElementNS(XMLNS, 'g');
-		// g.setAttribute('viewBox', '0 0 100 100');
-		g.setAttribute('width', '100');
-		g.setAttribute('height', 'auto');
-		g.setAttribute('id', String(node.id));
-		
-		const circle = document.createElementNS(XMLNS, 'circle');
-		circle.setAttributeNS(null, 'cx', '0');
-		circle.setAttributeNS(null, 'cy', '0');
-		circle.setAttributeNS(null, 'r', '5');
-		circle.setAttributeNS(null, 'fill', '#00a8ff');
-		circle.setAttributeNS(null, 'filter', 'url(#shadow)');
-		g.appendChild(circle);
+		g.setAttribute('id', node.id);
+		const n = new Node({
+			target: g,
+			props: {
+				balance: node.balance,
+				value: node.val
+			}
+		});
 
-		const text = document.createElementNS(XMLNS, 'text');
-		text.setAttributeNS(null, 'x', '0');
-		text.setAttributeNS(null, 'text-anchor', 'middle');
-		text.setAttributeNS(null, 'y', '1');
-		text.setAttribute('font-size', '5px');
-		text.style.color = "#192a56";
-		text.style.fontSize = "10pxs";
-		text.innerHTML = String(node.val);
+		// // g.setAttribute('viewBox', '0 0 100 100');
+		// g.setAttribute('width', '100');
+		// g.setAttribute('height', 'auto');
+		// g.setAttribute('id', String(node.id));
+		//
+		// const circle = document.createElementNS(XMLNS, 'circle');
+		// circle.setAttributeNS(null, 'cx', '0');
+		// circle.setAttributeNS(null, 'cy', '0');
+		// circle.setAttributeNS(null, 'r', '5');
+		// circle.setAttributeNS(null, 'fill', '#00a8ff');
+		// circle.setAttributeNS(null, 'filter', 'url(#shadow)');
+		// g.appendChild(circle);
+		//
+		// const text = document.createElementNS(XMLNS, 'text');
+		// text.setAttributeNS(null, 'x', '0');
+		// text.setAttributeNS(null, 'text-anchor', 'middle');
+		// text.setAttributeNS(null, 'y', '1');
+		// text.setAttribute('font-size', '5px');
+		// text.style.color = "#192a56";
+		// text.style.fontSize = "10pxs";
+		// text.innerHTML = String(node.val);
+		//
+		// const balance = document.createElementNS(XMLNS, 'text');
+		// balance.setAttributeNS(null, 'x', '-1px');
+		// balance.setAttributeNS(null, 'y', '-10px');
+		// balance.setAttribute('font-size', '5px');
+		// balance.setAttribute('class', 'balance');
+		// balance.innerHTML = String(node.balance);
+		//
+		// const path = document.createElementNS(XMLNS, 'path');
+		// path.setAttributeNS(null, 'd', 'M -5 -5 H 5');
+		// path.setAttributeNS(null, 'stroke', '#000');
+		//
+		// g.appendChild(text);
+		// g.appendChild(balance);
+		// g.appendChild(path);
 
-		const balance = document.createElementNS(XMLNS, 'text');
-		balance.setAttributeNS(null, 'x', '-1px');
-		balance.setAttributeNS(null, 'y', '-10px');
-		balance.setAttribute('font-size', '5px');
-		balance.setAttribute('class', 'balance');
-		balance.innerHTML = String(node.balance);
-
-		const path = document.createElementNS(XMLNS, 'path');
-		path.setAttributeNS(null, 'd', 'M -5 -5 H 5');
-		path.setAttributeNS(null, 'stroke', '#000');
-
-		g.appendChild(text);
-		g.appendChild(balance);
-		g.appendChild(path);
 		return g;
 	};
 
@@ -178,40 +189,47 @@
 		if (!tree.root) svgHeap = [];
 		svgHeap.forEach((group, index) => {
 			if (group) {
-				const circle = Array.from(group.children).find(g => g.tagName === 'circle');
 				anime({
-					targets: circle,
+					targets: group,
 					translateX: `${cxArr[index]}%`,
 					translateY: `${cyArr[index]}%`,
-					duration: circle.getAttributeNS(null, 'translateX') === null ? 0 : 100
+					duration: group.getAttributeNS(null, 'translateX') === null ? 0 : 100
 				});
 
-				const text = Array.from(group.children).find(g => g.tagName === 'text' && g.getAttribute('class') !== 'balance');
-				const heap = tree.heap;
-				text.innerHTML = heap[index].val;
-				anime({
-					targets: text,
-					translateX: `${cxArr[index]}%`,
-					translateY: `${cyArr[index]}%`,
-					duration: text.getAttributeNS(null, 'translateX') === null ? 0 : 2000
-				});
-
-				const bar = Array.from(group.children).find(g => g.tagName === 'path');
-				anime({
-					targets: bar,
-					translateX: `${cxArr[index]}%`,
-					translateY: `${cyArr[index]}%`,
-					duration: bar.getAttributeNS(null, 'translateX') === null ? 0 : 2000
-				});
-
-				const balance = Array.from(group.children).find(g => g.tagName === 'text' && g.getAttribute('class') === 'balance');
-				balance.innerHTML = heap[index].balance;
-				anime({
-					targets: balance,
-					translateX: `${cxArr[index]}%`,
-					translateY: `${cyArr[index] + 5}%`,
-					duration: balance.getAttributeNS(null, 'translateX') === null ? 0 : 2000
-				});
+				// const circle = group.querySelector('circle');
+				// anime({
+				// 	targets: circle,
+				// 	translateX: `${cxArr[index]}%`,
+				// 	translateY: `${cyArr[index]}%`,
+				// 	duration: circle.getAttributeNS(null, 'translateX') === null ? 0 : 100
+				// });
+				//
+				// const text = group.querySelector('.value');
+				// const heap = tree.heap;
+				// text.innerHTML = heap[index].val;
+				// anime({
+				// 	targets: text,
+				// 	translateX: `${cxArr[index]}%`,
+				// 	translateY: `${cyArr[index]}%`,
+				// 	duration: text.getAttributeNS(null, 'translateX') === null ? 0 : 2000
+				// });
+				//
+				// const bar = group.querySelector('path');
+				// anime({
+				// 	targets: bar,
+				// 	translateX: `${cxArr[index]}%`,
+				// 	translateY: `${cyArr[index]}%`,
+				// 	duration: bar.getAttributeNS(null, 'translateX') === null ? 0 : 2000
+				// });
+				//
+				// const balance = group.querySelector('.balance');
+				// balance.innerHTML = heap[index].balance;
+				// anime({
+				// 	targets: balance,
+				// 	translateX: `${cxArr[index]}%`,
+				// 	translateY: `${cyArr[index] + 5}%`,
+				// 	duration: balance.getAttributeNS(null, 'translateX') === null ? 0 : 2000
+				// });
 			}
 		});
 	};

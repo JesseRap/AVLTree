@@ -31,6 +31,14 @@ path {
 	transition: d 1s;
 }
 
+.node-svg path {
+  transform: translate(-25%, -30%);
+}
+
+.node-svg polygon {
+  transform: translate(45px, 20px);
+}
+
 a {
 	color: rgb(0,100,200);
 	text-decoration: none;
