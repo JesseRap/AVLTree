@@ -57,7 +57,7 @@ polygon {
       <feDropShadow dx="1" dy="1.2" stdDeviation="0.5" flood-opacity="0.8"/>
     </filter>
   </defs>
-      <polygon points="5,10 0,0 10, 0 0, Z" fill="#7f8fa6" stroke="#000" stroke-width="0.5"/>
+      <polygon points="0 10, 5 0, 10 10" fill="#7f8fa6" stroke="#000" stroke-width="0.5"/>
 
   <g>
     <g class="balance-line-group">

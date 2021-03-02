@@ -210,7 +210,7 @@
 				balance.setAttributeNS(null, 'fill', (Math.abs(heap[index].balance)) === 0 ? '#7f8fa6' : (Math.abs(heap[index].balance)) === 1 ? '#c23616' : '#e84118');
 
 				const balanceLineGroup = group.querySelector('.balance-line-group');
-				balanceLineGroup.setAttribute('style', (Math.abs(heap[index].balance)) === 0 ? 'transform: rotate(0)' : (Math.abs(heap[index].balance)) === 1 ? 'transform: rotate(-5deg) translateY(5px);' : 'transform: rotate(5deg) translateY(5px)');
+				balanceLineGroup.setAttribute('style', (Math.abs(heap[index].balance)) === 0 ? 'transform: rotate(0)' : (Math.abs(heap[index].balance)) === 1 ? 'transform: rotate(5deg) translateY(-5px);' : 'transform: rotate(-5deg) translateY(-5px)');
 
 
 				// anime({
