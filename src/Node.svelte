@@ -26,9 +26,9 @@
 <style>
 @keyframes wobble {
   0% { transform: rotate(0) }
-  25% { transform: rotate(1deg) }
+  25% { transform: rotate(5deg) }
   50% { transform: rotate(0) }
-  75% { transform: rotate(-1deg) }
+  75% { transform: rotate(-5deg) }
   100% { transform: rotate(0) }
 }
 
@@ -58,9 +58,14 @@ polygon {
   transition: all 1s ease;
 }
 
-.wobble {
-  animation: wobble 0.2s infinite;
+.balance-line-group, .wobble-group {
+  transform-origin: 50% 25%;
 }
+
+.wobble {
+  animation: wobble 1s infinite;
+}
+
 
 </style>
 
@@ -73,7 +78,7 @@ polygon {
       <polygon points="0 10, 5 0, 10 10" fill="#7f8fa6" stroke="#000" stroke-width="0.5"/>
 
   <g>
-    <g class={Math.abs(balance) > 0 ? 'wobble' : ' '}>
+    <g class={Math.abs(balance) > 0 ? 'wobble-group wobble' : 'wobble-group'}>
       <g class="balance-number-group">
         <text class="balance" x="50" y="9" text-anchor="middle" fill={color}>{balance}</text>
       </g>
