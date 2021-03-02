@@ -204,16 +204,16 @@
 				// 	duration: circle.getAttributeNS(null, 'translateX') === null ? 0 : 100
 				// });
 				//
-				// const text = group.querySelector('.value');
-				// const heap = tree.heap;
-				// text.innerHTML = heap[index].val;
+				const balance = group.querySelector('.balance');
+				const heap = tree.heap;
+				balance.innerHTML = heap[index].balance;
 				// anime({
 				// 	targets: text,
 				// 	translateX: `${cxArr[index]}%`,
 				// 	translateY: `${cyArr[index]}%`,
 				// 	duration: text.getAttributeNS(null, 'translateX') === null ? 0 : 2000
 				// });
-				//
+
 				// const bar = group.querySelector('path');
 				// anime({
 				// 	targets: bar,
