@@ -20,6 +20,8 @@
 		console.log('STATES!!!!!', states);
 	}
 
+	$: runLatestAnimation(states.length);
+
 	let cxArr = [];
 	let cyArr = [];
 
@@ -178,7 +180,7 @@
 	}
 
 	const putElementsOnSVG = tree => {
-		if (!tree.root) {
+		if (svg && !tree.root) {
 			removeAllChildrenFromNode(svg);
 			return;
 		}
@@ -380,6 +382,10 @@
 
 	const wait = ms => new Promise(res => setTimeout(res, ms));
 
+	const runLatestAnimation = async () => {
+		runAnimation(states.length - 1)
+	}
+
 	const runAnimation = async index => {
 		console.log('runAnimation', states);
 		// edgesMemo = {};
@@ -406,7 +412,7 @@
 		console.log('onInsertRandVal *!@#!&@#&*', randVal);
 		theTree.insert(randVal);
 		theTree = theTree;
-		updateSvg(theTree);
+		// updateSvg(theTree);
 	}
 
 	const onReset = () => {
