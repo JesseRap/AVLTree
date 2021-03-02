@@ -193,7 +193,7 @@
 					targets: group,
 					translateX: `${cxArr[index]}%`,
 					translateY: `${cyArr[index]}%`,
-					duration: group.getAttributeNS(null, 'translateX') === null ? 0 : 100
+					duration: 2000
 				});
 
 				// const circle = group.querySelector('circle');
