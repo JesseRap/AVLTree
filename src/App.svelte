@@ -147,13 +147,6 @@
 		insertElementsIntoNode(svgHeap, svg);
 	};
 
-	const getHeapSubtreeIndices = (heap, index) => {
-		if (index > heap.length / 2) {
-			return [];
-		}
-		return [heap[index], ...getHeapSubtreeIndices(heap, index * 2), ...getHeapSubtreeIndices(heap, index * 2 + 1)];
-	};
-
 	const updateNodeCoords = tree => {
 		if (!tree.root) svgHeap = [];
 		svgHeap.forEach((group, index) => {
@@ -328,25 +321,9 @@
 
 	const runAnimations = async () => {
 		console.log('runAnimations', states);
-		// updateSvg(states[0][0].tree);
-		// await wait(1000);
-		// updateSvg(states[1][0].tree);
-		// await wait(1000);
-		// updateSvg(states[2][0].tree);
 		for (let i = 0; i < states.length; i++) {
 			await runAnimation(i);
 		}
-		// updateSvg(states[0][0].tree);
-		// edgesMemo = {};
-		// let t = states[0][0].tree
-		// updateSvg(t)
-		// edgesMemo = {};
-		// updateSvg(states[1][0].tree);
-		// edgesMemo = {};
-		// t = states[0][0].tree
-		// updateSvg(t)
-		// edgesMemo = {};
-		// updateSvg(states[2][0].tree);
 	};
 
 	const onInsertRandVal = () => {
@@ -356,7 +333,6 @@
 		}
 		console.log('onInsertRandVal *!@#!&@#&*', randVal);
 		theTree.insert(randVal);
-		// tree.insertUnbalanced(randVal);
 		theTree = theTree;
 		updateSvg(theTree);
 	}
