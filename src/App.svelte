@@ -3,20 +3,14 @@
 
 	import { afterUpdate, onMount, tick } from 'svelte';
 	import AVLTree from './AVLTree.js';
-	// import SVGTree from './SVGTree.svelte';
-	// import Tree from './Tree.svelte';
-	let name = 'world';
-	let container;
 
-	let groupId = 0;
+	let container;
 
 	const XMLNS = 'http://www.w3.org/2000/svg';
 
-	let child;
 	let theTree = new AVLTree();
 	let svg;
 	let svgHeap = new Array(0);
-	let parentArray = new Array(0);
 	let rotateIndex = 0;
 
  	$: states = theTree.states;
@@ -24,7 +18,6 @@
 	$: {
 		console.log('STATES!!!!!', states);
 	}
-
 
 	let cxArr = [];
 	let cyArr = [];
@@ -46,15 +39,12 @@
 			const cxInc = 1 / Math.pow(2, index) * 100;
 			return [...acc, ...level.map((_, idx) => (cxInc / 2) + (cxInc * idx))];
 		}, []);
-		// console.log('CXARR', result);
 		return result;
 	};
 
 	const getCyArr = tree => {
 		if (!tree.root) return new Array(0);
-		// vertical space between nodes.
 		const cyInc = 1 / (tree.root.height + 1) * 100;
-		// vertical offset for current node.
 		const levels = tree.getLevels();
 		const result = levels.reduce((acc, level, index) => (
 			[...acc, ...level.map(_ => (cyInc / 2) + (cyInc * index))]
@@ -79,18 +69,6 @@
 		updateSvg(theTree);
 	};
 
-	const updateParentArray = tree => {
-		if (!tree.root) return [];
-		 // TODO: make so it doesn't replace entity.
-		 parentArray = svgHeap.map((_, index) => {
-			 if (index === 0) {
-				 return null;
-			 } else {
-				 return Math.floor((index - 1) / 2);
-			 }
-		 });
-	};
-
 	const swap = (arr, i1, i2) => {
 		const temp = arr[i1];
 		arr[i1] = arr[i2];
@@ -102,7 +80,6 @@
 
 		const g = document.createElementNS(XMLNS, 'g');
 		g.id = String(node.id);
-		// g.id = String(groupId++);
 		const circle = document.createElementNS(XMLNS, 'circle');
 		circle.setAttributeNS(null, 'cx', '0');
 		circle.setAttributeNS(null, 'cy', '0');
@@ -215,7 +192,7 @@
 		const path = document.createElementNS(XMLNS, 'path');
 		const pathId = `${nodeId}-${parentId}`
 		path.setAttribute('id', pathId);
-		path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[parentArray[i]]} ${cyArr[parentArray[i]]}`);
+		path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[tree.parentArray[i]]} ${cyArr[tree.parentArray[i]]}`);
 		path.setAttributeNS(null, "stroke", "black");
 		path.setAttributeNS(null, "fill", "transparent");
 		path.setAttributeNS(null, 'stroke-dasharray', '100');
@@ -233,7 +210,7 @@
 			const pathId = `${nodeId}-${parentId}`;
 			if (edgesMemo[pathId]) {
 				const path = edgesMemo[pathId];
-				path.setAttributeNS(null, 'd', `M ${cxArr[index]} ${cyArr[index]} L ${cxArr[parentArray[index]]} ${cyArr[parentArray[index]]}`);
+				path.setAttributeNS(null, 'd', `M ${cxArr[index]} ${cyArr[index]} L ${cxArr[tree.parentArray[index]]} ${cyArr[tree.parentArray[index]]}`);
 			} else {
 				const path = createPath(tree, heap[index]);
 				edgesMemo[pathId] = path;
@@ -258,12 +235,12 @@
 					svg.removeChild(path);
 					delete edgesMemo[i];
 				}
-				path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[parentArray[i]]} ${cyArr[parentArray[i]]}`);
+				path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[tree.parentArray[i]]} ${cyArr[tree.parentArray[i]]}`);
 				if (!heap[i] && edgesMemo[i]) {
 					svg.removeChild(path);
 				}
 			}
-			if (heap[i] && heap[parentArray[i]]) {
+			if (heap[i] && heap[tree.parentArray[i]]) {
 				if (!edgesMemo?.[i]) {
 					const path = createPath(tree, heap[i]);
 					svg.append(path);
@@ -299,8 +276,6 @@
 		updateSVGHeap(myTree);
 		console.log('removeOldNodes');
 		removeOldNodes(myTree);
-		console.log('updateParentArray');
-		updateParentArray(myTree);
 		console.log('drawEdges');
 		drawEdges(myTree);
 		console.log('updateNodeCoords');
@@ -405,7 +380,7 @@
 	});
 </script>
 
-<h1 class="hello">Hello {name}!</h1>
+<h1 class="hello">Hello world!</h1>
 
 <div bind:this={container} style="width: 600px; height: 600px; margin: auto;"/>
 

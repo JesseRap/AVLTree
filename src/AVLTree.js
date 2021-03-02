@@ -64,21 +64,14 @@ export default class AVLTree {
 	 */
 	updateNode = node => this.updateNodeHeight(this.updateNodeBalance(node));
 
-	rotateRootLeft = () => {
-		this.root = this.rotateLeft(this.root);
-	};
-
 	getNodeIndex = node => this.heap.indexOf(node);
 
-	rotateLeftIndex = (node) => {
+	rotateLeftNode = (node) => {
 		const index = this.getNodeIndex(node)
 		const heap = this.heap;
-		// const node = heap[index];
 		const parent = index === 0 ? null : heap[Math.floor((index - 1) / 2)];
 		const isLeft = index % 2 === 1;
 		const rotated = this.rotateLeft(node);
-		// this.updateNode(node);
-		// this.updateNode(rotated);
 		if (parent) {
 			parent[isLeft ? 'left' : 'right'] = rotated;
 		} else {
@@ -92,22 +85,28 @@ export default class AVLTree {
 		return rotated;
 	};
 
-	rotateRightIndex = (node) => {
+	get parentArray() {
+		return this.heap.map((_, index) => {
+			if (index === 0) {
+				return null;
+			} else {
+				return Math.floor((index - 1) / 2);
+			}
+		});
+	}
+
+	rotateRightNode = (node) => {
 		const index = this.getNodeIndex(node)
 		const heap = this.heap;
-		// const node = heap[index];
 		const parent = index === 0 ? null : heap[Math.floor((index - 1) / 2)];
 		const isLeft = index % 2 === 1;
 		const rotated = this.rotateRight(node);
-		// this.updateNode(node);
-		// this.updateNode(rotated);
 		if (parent) {
 			parent[isLeft ? 'left' : 'right'] = rotated;
 		} else {
 			this.root = rotated;
 		}
 		this.updateAllNodes();
-		// parent[isLeft ? 'left' : 'right'] = rotated;
 		this.stateGroup.push({
 			type: 'rebalance',
 			tree: this.copy()
@@ -240,17 +239,6 @@ export default class AVLTree {
 		}
 
 		this.updateAllNodes();
-
-		// if (node.val >= val) {
-		// 	console.log('go left');
-		// 	node.left = this.insertValFromRoot(val, node.left, rebalance);
-		// } else {
-		// 	console.log('go right');
-		// 	node.right = this.insertValFromRoot(val, node.right, rebalance);
-		// }
-		// this.updateNodeHeight(node);
-		// this.updateNodeBalance(node);
-		// return rebalance ? this.rebalance(node) : node;
 	};
 
 	// TODO: Refactor for readability.
@@ -259,20 +247,20 @@ export default class AVLTree {
 		if (node.balance === 2) {
 			if (node.right.balance >= 0) {
 				// Right-right
-				this.rotateLeftIndex(node);
+				this.rotateLeftNode(node);
 			} else {
 				// Right-left
-				this.rotateRightIndex(node.right);
-				this.rotateLeftIndex(node);
+				this.rotateRightNode(node.right);
+				this.rotateLeftNode(node);
 			}
 		} else if (node.balance === -2) {
 			if (node.left.balance <= 0) {
 				// Left-left
-				this.rotateRightIndex(node);
+				this.rotateRightNode(node);
 			} else {
 				// Left-right
-				this.rotateLeftIndex(node.left);
-				this.rotateRightIndex(node);
+				this.rotateLeftNode(node.left);
+				this.rotateRightNode(node);
 			}
 		}
 	};
