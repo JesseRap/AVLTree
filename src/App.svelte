@@ -29,6 +29,20 @@
     svg.style.border = '1px solid black';
     svg.setAttribute('class', 'svg-main');
     svg.setAttributeNS(null, 'viewBox', '0 0 100 100');
+
+		const defs = document.createElementNS(XMLNS, 'defs');
+		const filter = document.createElementNS(XMLNS, 'filter');
+		filter.setAttribute('id', 'shadow');
+		const feDropShadow = document.createElementNS(XMLNS, 'feDropShadow');
+		feDropShadow.setAttributeNS(null, 'dx', '2');
+		feDropShadow.setAttributeNS(null, 'dy', '1.4');
+		feDropShadow.setAttributeNS(null, 'stdDeviation', '1.2');
+		filter.appendChild(feDropShadow);
+		defs.appendChild(filter);
+		svg.appendChild(defs);
+
+		console.log('asfjkahsldjf;m', svg);
+
 		return svg;
 	};
 
@@ -79,29 +93,42 @@
 		console.log('createNodeSVG!!');
 
 		const g = document.createElementNS(XMLNS, 'g');
-		g.id = String(node.id);
+		// g.setAttribute('viewBox', '0 0 100 100');
+		g.setAttribute('width', '100');
+		g.setAttribute('height', 'auto');
+		g.setAttribute('id', String(node.id));
+		
 		const circle = document.createElementNS(XMLNS, 'circle');
 		circle.setAttributeNS(null, 'cx', '0');
 		circle.setAttributeNS(null, 'cy', '0');
 		circle.setAttributeNS(null, 'r', '5');
-		circle.setAttributeNS(null, 'fill', 'red');
+		circle.setAttributeNS(null, 'fill', '#00a8ff');
+		circle.setAttributeNS(null, 'filter', 'url(#shadow)');
 		g.appendChild(circle);
 
 		const text = document.createElementNS(XMLNS, 'text');
 		text.setAttributeNS(null, 'x', '0');
-		text.setAttributeNS(null, 'y', '0');
+		text.setAttributeNS(null, 'text-anchor', 'middle');
+		text.setAttributeNS(null, 'y', '1');
 		text.setAttribute('font-size', '5px');
+		text.style.color = "#192a56";
+		text.style.fontSize = "10pxs";
 		text.innerHTML = String(node.val);
 
 		const balance = document.createElementNS(XMLNS, 'text');
-		balance.setAttributeNS(null, 'x', '0');
-		balance.setAttributeNS(null, 'y', '10');
+		balance.setAttributeNS(null, 'x', '-1px');
+		balance.setAttributeNS(null, 'y', '-10px');
 		balance.setAttribute('font-size', '5px');
 		balance.setAttribute('class', 'balance');
 		balance.innerHTML = String(node.balance);
 
+		const path = document.createElementNS(XMLNS, 'path');
+		path.setAttributeNS(null, 'd', 'M -5 -5 H 5');
+		path.setAttributeNS(null, 'stroke', '#000');
+
 		g.appendChild(text);
 		g.appendChild(balance);
+		g.appendChild(path);
 		return g;
 	};
 
@@ -169,6 +196,14 @@
 					duration: text.getAttributeNS(null, 'translateX') === null ? 0 : 2000
 				});
 
+				const bar = Array.from(group.children).find(g => g.tagName === 'path');
+				anime({
+					targets: bar,
+					translateX: `${cxArr[index]}%`,
+					translateY: `${cyArr[index]}%`,
+					duration: bar.getAttributeNS(null, 'translateX') === null ? 0 : 2000
+				});
+
 				const balance = Array.from(group.children).find(g => g.tagName === 'text' && g.getAttribute('class') === 'balance');
 				balance.innerHTML = heap[index].balance;
 				anime({
@@ -194,7 +229,7 @@
 		path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[tree.parentArray[i]]} ${cyArr[tree.parentArray[i]]}`);
 		path.setAttributeNS(null, "stroke", "black");
 		path.setAttributeNS(null, "fill", "transparent");
-		path.setAttributeNS(null, 'stroke-dasharray', '100');
+		// path.setAttributeNS(null, 'stroke-dasharray', '100');
 		path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
 		return path;
 	};
@@ -364,7 +399,7 @@
 
 <h1 class="hello">Hello world!</h1>
 
-<div bind:this={container} style="width: 600px; height: 600px; margin: auto;"/>
+<div bind:this={container} class="container" style="width: 600px; height: 600px; margin: auto;"/>
 
 <div style="display: flex; width: 100%; justify-content: space-between">
 	<div>

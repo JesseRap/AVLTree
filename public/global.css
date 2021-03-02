@@ -16,13 +16,11 @@ body {
 	box-sizing: border-box;
 }
 
-circle {
-	/* transition: cx 1s; */
-	/* transition: cy 1s; */
-	transition: transform 1s;
+svg {
+	background-color: #353b48;
 }
 
-text {
+text, circle {
 	/* transition: x 1s; */
 	/* transition: y 1s; */
 	transition: transform 1s;
