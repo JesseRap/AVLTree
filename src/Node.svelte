@@ -34,8 +34,8 @@ polygon {
   <g>
     <g>
       <path d="M 50 50 H 100" stroke="black" stroke-width="3.5px" stroke-linecap="round"/>
-    <path d="M 50 50 H 100" stroke="#00a8ff" stroke-width="1px" color="#00a8ff" fill="#00a8ff" stroke-linecap="round" />
-      <text class="balance" x="50" y="5" text-anchor="middle" fill="#fbc531">{balance}</text>
+      <path d="M 50 50 H 100" stroke="#00a8ff" stroke-width="1px" color="#00a8ff" fill="#00a8ff" stroke-linecap="round" />
+      <text class="balance" x="50" y="16" text-anchor="middle" fill="#fbc531">{balance}</text>
     </g>
     <g style="filter: url(#shadow-1)">
       <circle id="circle" cx="50" cy="50" r="20" fill="#00a8ff" stroke="#192a56" />
