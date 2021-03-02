@@ -206,11 +206,20 @@
 				//
 				const balance = group.querySelector('.balance');
 				const heap = tree.heap;
-				balance.innerHTML = heap[index].balance;
+				// balance.innerHTML = heap[index].balance;
 				balance.setAttributeNS(null, 'fill', (Math.abs(heap[index].balance)) === 0 ? '#7f8fa6' : (Math.abs(heap[index].balance)) === 1 ? '#c23616' : '#e84118');
 
 				const balanceLineGroup = group.querySelector('.balance-line-group');
-				balanceLineGroup.setAttribute('style', (Math.abs(heap[index].balance)) === 0 ? 'transform: rotate(0)' : (Math.abs(heap[index].balance)) === 1 ? 'transform: rotate(5deg) translateY(-5px);' : 'transform: rotate(-5deg) translateY(-5px)');
+				balanceLineGroup.setAttribute('style', heap[index].balance === 0 ? 'transform: translateY(0) rotate(0);' : heap[index].balance === 1 ? 'transform: translateY(-5px) rotate(7deg);' : 'transform: translateY(5px) rotate(-7deg)');
+
+				const balanceNumberGroup = group.querySelector('.balance-number-group');
+				balanceNumberGroup.setAttribute('style', heap[index].balance === 0 ? 'transform: translate(0, 0)' : heap[index].balance === 1 ? 'transform: translate(20px, 5px);' : 'transform: translate(-20px, 5px)');
+
+				if (Math.abs(heap[index].balance) > 0) {
+					balanceLineGroup.parentElement.classList.add('wobble');
+				} else {
+					balanceLineGroup.parentElement.classList.remove('wobble');
+				}
 
 
 				// anime({

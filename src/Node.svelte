@@ -1,7 +1,7 @@
 <script>
   export let value;
   export let balance;
-  let color = (Math.abs(balance)) === 0 ? '#7f8fa6' : (Math.abs(balance)) === 1 ? '#c23616' : '#e84118';
+  $: color = (Math.abs(balance)) === 0 ? '#7f8fa6' : (Math.abs(balance)) === 1 ? '#c23616' : '#e84118';
 
   // $: {
   //   switch (Math.abs(balance)) {
@@ -24,6 +24,14 @@
 </script>
 
 <style>
+@keyframes wobble {
+  0% { transform: rotate(0) }
+  25% { transform: rotate(1deg) }
+  50% { transform: rotate(0) }
+  75% { transform: rotate(-1deg) }
+  100% { transform: rotate(0) }
+}
+
 svg {
   background-color: #353b48;
 }
@@ -46,9 +54,14 @@ polygon {
   transition: fill 1s ease;
 }
 
-.balance-line-group {
+.balance-line-group, .balance-number-group {
   transition: all 1s ease;
 }
+
+.wobble {
+  animation: wobble 0.2s infinite;
+}
+
 </style>
 
 <g style="transform: translate(-12.5%, -12.5%);"><svg class="node-svg" id="svg" width="25%" height="25%" viewBox="0 0 100 100">
@@ -60,11 +73,15 @@ polygon {
       <polygon points="0 10, 5 0, 10 10" fill="#7f8fa6" stroke="#000" stroke-width="0.5"/>
 
   <g>
-    <g class="balance-line-group">
-      <path d="M 50 50 H 100" stroke="black" stroke-width="3.5px" stroke-linecap="round"/>
-      <path d="M 50 50 H 100" stroke="#00a8ff" stroke-width="1px" color="#00a8ff" fill="#00a8ff" stroke-linecap="round" />
+    <g class={Math.abs(balance) > 0 ? 'wobble' : ' '}>
+      <g class="balance-number-group">
+        <text class="balance" x="50" y="9" text-anchor="middle" fill={color}>{balance}</text>
+      </g>
+      <g class="balance-line-group">
+        <path d="M 50 50 H 100" stroke="black" stroke-width="3.5px" stroke-linecap="round"/>
+        <path d="M 50 50 H 100" stroke="#00a8ff" stroke-width="1px" color="#00a8ff" fill="#00a8ff" stroke-linecap="round" />
+      </g>
     </g>
-    <text class="balance" x="50" y="9" text-anchor="middle" fill={color}>{balance}</text>
     <g style="filter: url(#shadow-1)">
       <circle id="circle" cx="50" cy="50" r="20" fill="#00a8ff" stroke="#192a56" />
       <text class="value" id="text" x="50" y="50" text-anchor="middle">{value}</text>
