@@ -80,7 +80,9 @@ export default class AVLTree {
 		this.updateAllNodes();
 		this.stateGroup.push({
 			type: 'rebalance',
-			tree: this.copy()
+			tree: this.copy(),
+			pivotId: node.id,
+			rotatedId: rotated.id
 		});
 		return rotated;
 	};
@@ -109,7 +111,7 @@ export default class AVLTree {
 		this.updateAllNodes();
 		this.stateGroup.push({
 			type: 'rebalance',
-			tree: this.copy()
+			tree: this.copy(),
 		});
 		return rotated;
 	};
@@ -213,7 +215,7 @@ export default class AVLTree {
 			const n = copy.heap.find(el => el?.id === node.id);
 			this.stateGroup.push({
 				type: 'visitNode',
-				tree: this,
+				tree: this.copy(),
 				node: n
 			});
 			previous = node;
@@ -253,8 +255,22 @@ export default class AVLTree {
 
 		this.stateGroup.push({
 			type: 'insertFinish',
-			tree: this,
+			tree: this.copy(),
 		});
+	};
+
+	getParentNode (tree, node) => {
+		const nodeIndex = this.getNodeIndex(tree, node);
+		return nodeIndex === 0 ? null : this.heap[Math.floor(nodeIndex - 1) / 2];
+	}
+
+	switchParentEdges = (tree, child) => {
+		const parent = this.getParentNode(child);
+		const oldPath = `${child.id}-${parent.id}`;
+		const newPath = `${parent.id}-${child.id}`;
+		const path = edgesMemo[oldPath];
+		edgesMemo[newPath] = path;
+		delete edgesMemo[oldPath];
 	};
 
 	// TODO: Refactor for readability.

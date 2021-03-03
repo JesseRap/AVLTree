@@ -195,7 +195,7 @@
 					targets: group,
 					translateX: `${cxArr[index]}%`,
 					translateY: `${cyArr[index]}%`,
-					duration: 2000
+					duration: 1000
 				});
 
 				// const circle = group.querySelector('circle');
