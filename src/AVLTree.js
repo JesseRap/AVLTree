@@ -210,7 +210,7 @@ export default class AVLTree {
 
 		while (node) {
 			const copy = this.copy();
-			const n = copy.heap.find(el => el.id === node.id);
+			const n = copy.heap.find(el => el?.id === node.id);
 			this.stateGroup.push({
 				type: 'visitNode',
 				tree: this,

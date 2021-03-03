@@ -256,8 +256,9 @@
 		if (!node) return;
 		const i = tree.getNodeIndex(node);
 		if (i === 0) return;
+		if (i === -1) throw new Error('Node not found.');
 		const nodeId = node.id;
-		const parent = i === 0 ? null : tree.heap[Math.floor((i - 1) / 2)];
+		const parent = tree.heap[Math.floor((i - 1) / 2)];
 		const parentId = parent.id;
 		const path = document.createElementNS(XMLNS, 'path');
 		const pathId = `${nodeId}-${parentId}`
@@ -270,32 +271,32 @@
 		return path;
 	};
 
-	const updateEdgesMemo = (tree, memp) => {
-		if (!tree.root) return new Array(0);
-		const heap = tree.heap;
-		heap.forEach((node, index) => {
-			const nodeId = node.id;
-			const parent = index === 0 ? null : heap[Math.floor((index - 1) /  2)];
-			const parentId = parent.id;
-			const pathId = `${nodeId}-${parentId}`;
-			if (edgesMemo[pathId]) {
-				const path = edgesMemo[pathId];
-				path.setAttributeNS(null, 'd', `M ${cxArr[index]} ${cyArr[index]} L ${cxArr[tree.parentArray[index]]} ${cyArr[tree.parentArray[index]]}`);
-			} else {
-				const path = createPath(tree, heap[index]);
-				edgesMemo[pathId] = path;
-				svg.append(path);
-				path.setAttributeNS(null, 'stroke-dasharray', '100');
-				path.setAttributeNS(null, 'stroke-dasharray', '-100%');
-				anime({
-					targets: path,
-					'stroke-dashoffset': '0%',
-					duration: 1000,
-					delay: 1000
-				});
-			}
-		});
-	}
+	// const updateEdgesMemo = (tree, memp) => {
+	// 	if (!tree.root) return new Array(0);
+	// 	const heap = tree.heap;
+	// 	heap.forEach((node, index) => {
+	// 		const nodeId = node.id;
+	// 		const parent = index === 0 ? null : heap[Math.floor((index - 1) /  2)];
+	// 		const parentId = parent.id;
+	// 		const pathId = `${nodeId}-${parentId}`;
+	// 		if (edgesMemo[pathId]) {
+	// 			const path = edgesMemo[pathId];
+	// 			path.setAttributeNS(null, 'd', `M ${cxArr[index]} ${cyArr[index]} L ${cxArr[tree.parentArray[index]]} ${cyArr[tree.parentArray[index]]}`);
+	// 		} else {
+	// 			const path = createPath(tree, heap[index]);
+	// 			edgesMemo[pathId] = path;
+	// 			svg.append(path);
+	// 			path.setAttributeNS(null, 'stroke-dasharray', '100');
+	// 			path.setAttributeNS(null, 'stroke-dasharray', '-100%');
+	// 			anime({
+	// 				targets: path,
+	// 				'stroke-dashoffset': '0%',
+	// 				duration: 1000,
+	// 				delay: 1000
+	// 			});
+	// 		}
+	// 	});
+	// }
 
 	let edgesMemo = {};
 	const drawEdges = tree => {
@@ -386,7 +387,7 @@
 	}
 
 	const animateNode = (tree, node) => {
-		const s = svgHeap.find(el => el.id === String(node.id));
+		const s = svgHeap.find(el => el?.id === String(node.id));
 		console.log('animateNode', s);
 		if (s) {
 			const circle = s.querySelector('circle');
@@ -418,6 +419,8 @@
 			if (state[i].type === 'insertFinish') {
 				clearAllVisitedNodes(state[i].tree);
 			}
+
+			drawEdges(state[i].tree);
 
 			updateSvg(state[i].tree);
 			// await tick();
