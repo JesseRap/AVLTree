@@ -192,6 +192,10 @@ export default class AVLTree {
 	 * @return {Node} The input `node` with the new node inserted.
 	 */
 	insertValFromRoot = (val, rebalance = true) => {
+		this.stateGroup.push({
+			type: 'insertStart',
+			tree: this.copy()
+		});
 		console.log('INSERT', val);
 		if (!this.root) {
 			this.root = new Node(val);
@@ -205,6 +209,13 @@ export default class AVLTree {
 		let [node, previous] = [this.root, null];
 
 		while (node) {
+			const copy = this.copy();
+			const n = copy.heap.find(el => el.id === node.id);
+			this.stateGroup.push({
+				type: 'visitNode',
+				tree: this,
+				node: n
+			});
 			previous = node;
 			if (node.val > val) {
 				node = node.left;
@@ -239,6 +250,11 @@ export default class AVLTree {
 		}
 
 		this.updateAllNodes();
+
+		this.stateGroup.push({
+			type: 'insertFinish',
+			tree: this,
+		});
 	};
 
 	// TODO: Refactor for readability.

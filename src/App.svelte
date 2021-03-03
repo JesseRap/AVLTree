@@ -371,7 +371,6 @@
 	const onNewValue = () => {
 		theTree.insert(newVal);
 		theTree = theTree;
-		updateSvg(theTree);
 	};
 
 	let findVal = null;
@@ -386,12 +385,41 @@
 		runAnimation(states.length - 1)
 	}
 
+	const animateNode = (tree, node) => {
+		const s = svgHeap.find(el => el.id === String(node.id));
+		console.log('animateNode', s);
+		if (s) {
+			const circle = s.querySelector('circle');
+			circle.setAttributeNS(null, 'fill', '#4cd137');
+			circle.classList.add('visited-node');
+		}
+	};
+
+	const clearAllVisitedNodes = tree => {
+		const visitedCircles = Array.from(document.querySelectorAll('.visited-node'));
+		visitedCircles.forEach(circle => {
+			circle.setAttributeNS(null, 'fill', '#00a8ff');
+			circle.classList.remove('visited-node');
+		});
+	};
+
 	const runAnimation = async index => {
 		console.log('runAnimation', states);
 		// edgesMemo = {};
-		for (let i = 0; i < states[index].length; i++) {
+		const state = states[index];
+		for (let i = 0; i < state.length; i++) {
+			console.log('STATE!', state[i].type, state);
 			// edgesMemo = {};
-			updateSvg(states[index][i].tree);
+
+			if (state[i].type === 'visitNode') {
+				animateNode(state[i].tree, state[i].node);
+			}
+
+			if (state[i].type === 'insertFinish') {
+				clearAllVisitedNodes(state[i].tree);
+			}
+
+			updateSvg(state[i].tree);
 			// await tick();
 			await wait(1000);
 		}

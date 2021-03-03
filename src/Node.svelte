@@ -66,6 +66,9 @@ polygon {
   animation: wobble 1s infinite;
 }
 
+.visited-node {
+  box-shadow: 0 0 10px 10px yellow;
+}
 
 </style>
 
