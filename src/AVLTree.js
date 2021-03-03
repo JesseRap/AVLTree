@@ -259,7 +259,7 @@ export default class AVLTree {
 		});
 	};
 
-	getParentNode (tree, node) => {
+	getParentNode = (tree, node) => {
 		const nodeIndex = this.getNodeIndex(tree, node);
 		return nodeIndex === 0 ? null : this.heap[Math.floor(nodeIndex - 1) / 2];
 	}
