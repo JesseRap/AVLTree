@@ -82,7 +82,7 @@ export default class AVLTree {
 			type: 'rebalance',
 			tree: this.copy(),
 			pivotId: node.id,
-			rotatedId: rotated.id
+			rotatedId: rotated.id,
 		});
 		return rotated;
 	};
@@ -112,6 +112,8 @@ export default class AVLTree {
 		this.stateGroup.push({
 			type: 'rebalance',
 			tree: this.copy(),
+			pivotId: node.id,
+			rotatedId: rotated.id
 		});
 		return rotated;
 	};
@@ -198,7 +200,7 @@ export default class AVLTree {
 			type: 'insertStart',
 			tree: this.copy()
 		});
-		console.log('INSERT', val);
+		// console.log('INSERT', val);
 		if (!this.root) {
 			this.root = new Node(val);
 			this.stateGroup.push({
@@ -266,7 +268,7 @@ export default class AVLTree {
 
 	// TODO: Refactor for readability.
 	rebalance = node => {
-		console.log('rebalance', node);
+		// console.log('rebalance', node);
 		if (node.balance === 2) {
 			if (node.right.balance >= 0) {
 				// Right-right
@@ -307,7 +309,7 @@ export default class AVLTree {
 
 	find = val => {
 		const dfs = node => {
-			console.log('dfs', node?.val);
+			// console.log('dfs', node?.val);
 			if (!node) {
 				return;
 			}

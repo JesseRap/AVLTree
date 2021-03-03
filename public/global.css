@@ -23,12 +23,12 @@ svg {
 text, circle {
 	/* transition: x 1s; */
 	/* transition: y 1s; */
-	transition: transform 1s;
+	transition: transform 1.5s;
 }
 
 path {
 	/* transition: stroke-dashoffset 1s; */
-	transition: d 1s;
+	transition: d 1.5s;
 }
 
 a {

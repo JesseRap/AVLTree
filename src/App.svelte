@@ -195,27 +195,32 @@
 		return path;
 	};
 
-	const switchParentEdges = (tree, child) => {
-		const parent = tree.getParentNode(child);
-		const oldPath = `${child.id}-${parent.id}`;
-		const newPath = `${parent.id}-${child.id}`;
-		const path = edgesMemo[oldPath];
-		edgesMemo[newPath] = path;
-		delete edgesMemo[oldPath];
-	};
+	// const switchParentEdges = (tree, child) => {
+	// 	const parent = tree.getParentNode(child);
+	// 	const oldPath = `${child.id}-${parent.id}`;
+	// 	const newPath = `${parent.id}-${child.id}`;
+	// 	const path = edgesMemo[oldPath];
+	// 	edgesMemo[newPath] = path;
+	// 	delete edgesMemo[oldPath];
+	// };
 
 	let edgesMemo = {};
 	const drawEdges = tree => {
 		const heap = tree.heap;
 
+		const keys = [];
+
 		for (let i = 0; i < heap.length; i++) {
 			const node = heap[i];
-			const parent = heap[Math.floor((i - 1) / 2)];
 			if (i === 0 || !node) continue;
+			const parent = heap[Math.floor((i - 1) / 2)];
 			const nodeId = node.id;
 			const parentId = parent.id;
 			const key = `${nodeId}-${parentId}`;
+			keys.push(key);
+			console.log("KEY", key)
 			if (edgesMemo[key]) {
+				console.log("edgesMemo 1", JSON.stringify(edgesMemo));
 				const path = edgesMemo[key];
 				// if (path && !heap[i]) {
 				// 	svg.removeChild(path);
@@ -226,6 +231,7 @@
 				// 	svg.removeChild(path);
 				// }
 			} else {
+				console.log("NEW PATH");
 				const path = createPath(tree, node);
 				svg.append(path);
 				path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
@@ -237,7 +243,26 @@
 				});
 				edgesMemo[key] = path;
 			}
+			console.log("edgesMemo 2", JSON.stringify(edgesMemo));
 		}
+
+		console.log('SOY!', keys, Object.keys(edgesMemo))
+
+		Object.keys(edgesMemo).forEach(key => {
+			if (!keys.includes(key)) {
+				anime({
+					targets: edgesMemo[key],
+					opacity: 0,
+					duration: 500,
+					delay: 1000
+				});
+				const path = edgesMemo[key];
+				setTimeout(() => {
+					svg.removeChild(path);
+				}, 1000);
+				delete edgesMemo[key];
+			}
+		})
 
 
 		// for (let i = 0; i < svgHeap.length; i++) {
@@ -344,8 +369,30 @@
 		// edgesMemo = {};
 		const state = states[index];
 		for (let i = 0; i < state.length; i++) {
-			console.log('STATE!', state[i].type, state);
+			console.log('STATE!', state[i].type, state, edgesMemo);
 			// edgesMemo = {};
+
+			if (state[i].type === 'rebalance') {
+				const { pivotId, rotatedId } = state[i];
+				const oldPath = `${rotatedId}-${pivotId}`;
+				const newPath = `${pivotId}-${rotatedId}`;
+				const edge = edgesMemo[oldPath];
+				edgesMemo[newPath] = edge;
+				delete edgesMemo[oldPath];
+
+				// const pivotIndex = state[i].tree.heap.findIndex(el => el?.id === pivotId);
+				// const rotatedIndex = state[i].tree.heap.findIndex(el => el?.id === rotatedId);
+				//
+				// const parent = pivotIndex === 0 ? null : state[i].tree.heap[Math.floor((pivotIndex - 1) / 2)];
+				// if (parent) {
+				// 	const parentId  = parent.id;
+				// 	const oldPath = `${pivotId}-${parentId}`;
+				// 	const path = edgesMemo[oldPath];
+				// 	const newPath = `${parentId}-${parentId}`;
+				// 	edgesMemo[newPath] = path;
+				// 	delete edgesMemo[oldPath];
+				// }
+			}
 
 			if (state[i].type === 'visitNode') {
 				animateNode(state[i].tree, state[i].node);
