@@ -264,15 +264,6 @@ export default class AVLTree {
 		return nodeIndex === 0 ? null : this.heap[Math.floor(nodeIndex - 1) / 2];
 	}
 
-	switchParentEdges = (tree, child) => {
-		const parent = this.getParentNode(child);
-		const oldPath = `${child.id}-${parent.id}`;
-		const newPath = `${parent.id}-${child.id}`;
-		const path = edgesMemo[oldPath];
-		edgesMemo[newPath] = path;
-		delete edgesMemo[oldPath];
-	};
-
 	// TODO: Refactor for readability.
 	rebalance = node => {
 		console.log('rebalance', node);

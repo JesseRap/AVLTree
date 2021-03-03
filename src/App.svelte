@@ -195,38 +195,80 @@
 		return path;
 	};
 
+	const switchParentEdges = (tree, child) => {
+		const parent = tree.getParentNode(child);
+		const oldPath = `${child.id}-${parent.id}`;
+		const newPath = `${parent.id}-${child.id}`;
+		const path = edgesMemo[oldPath];
+		edgesMemo[newPath] = path;
+		delete edgesMemo[oldPath];
+	};
+
 	let edgesMemo = {};
 	const drawEdges = tree => {
 		const heap = tree.heap;
-		for (let i = 0; i < svgHeap.length; i++) {
-			if (edgesMemo[i]) {
-				const path = edgesMemo[i];
-				if (path && !heap[i]) {
-					svg.removeChild(path);
-					delete edgesMemo[i];
-				}
+
+		for (let i = 0; i < heap.length; i++) {
+			const node = heap[i];
+			const parent = heap[Math.floor((i - 1) / 2)];
+			if (i === 0 || !node) continue;
+			const nodeId = node.id;
+			const parentId = parent.id;
+			const key = `${nodeId}-${parentId}`;
+			if (edgesMemo[key]) {
+				const path = edgesMemo[key];
+				// if (path && !heap[i]) {
+				// 	svg.removeChild(path);
+				// 	delete edgesMemo[i];
+				// }
 				path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[tree.parentArray[i]]} ${cyArr[tree.parentArray[i]]}`);
-				if (!heap[i] && edgesMemo[i]) {
-					svg.removeChild(path);
-				}
-			}
-			if (heap[i] && heap[tree.parentArray[i]]) {
-				if (!edgesMemo?.[i]) {
-					const path = createPath(tree, heap[i]);
-					svg.append(path);
-					path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
-					anime({
-						targets: path,
-						'stroke-dashoffset': '0%',
-						duration: 1000,
-						delay: 1000
-					});
-					edgesMemo[i] = path;
-				}
+				// if (!heap[i] && edgesMemo[i]) {
+				// 	svg.removeChild(path);
+				// }
 			} else {
-				delete edgesMemo[i];
+				const path = createPath(tree, node);
+				svg.append(path);
+				path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
+				anime({
+					targets: path,
+					'stroke-dashoffset': '0%',
+					duration: 1000,
+					delay: 1000
+				});
+				edgesMemo[key] = path;
 			}
 		}
+
+
+		// for (let i = 0; i < svgHeap.length; i++) {
+		// 	if (edgesMemo[i]) {
+		// 		const path = edgesMemo[i];
+		// 		if (path && !heap[i]) {
+		// 			svg.removeChild(path);
+		// 			delete edgesMemo[i];
+		// 		}
+		// 		path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[tree.parentArray[i]]} ${cyArr[tree.parentArray[i]]}`);
+		// 		if (!heap[i] && edgesMemo[i]) {
+		// 			svg.removeChild(path);
+		// 		}
+		// 	}
+		// 	if (heap[i] && heap[tree.parentArray[i]]) {
+		// 		if (!edgesMemo?.[i]) {
+		// 			const path = createPath(tree, heap[i]);
+		// 			svg.append(path);
+		// 			path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
+		// 			anime({
+		// 				targets: path,
+		// 				'stroke-dashoffset': '0%',
+		// 				duration: 1000,
+		// 				delay: 1000
+		// 			});
+		// 			edgesMemo[i] = path;
+		// 		}
+		// 	} else {
+		// 		delete edgesMemo[i];
+		// 	}
+		// }
 	};
 
 	const updateSvg = (t) => {
