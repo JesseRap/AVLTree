@@ -155,7 +155,7 @@
 					translateY: `${cyArr[index]}%`,
 					duration: 1000
 				});
-				
+
 				const balance = group.querySelector('.balance');
 				const heap = tree.heap;
 				balance.innerHTML = heap[index].balance;
@@ -190,37 +190,10 @@
 		path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[tree.parentArray[i]]} ${cyArr[tree.parentArray[i]]}`);
 		path.setAttributeNS(null, "stroke", "black");
 		path.setAttributeNS(null, "fill", "transparent");
-		// path.setAttributeNS(null, 'stroke-dasharray', '100');
+		path.setAttributeNS(null, 'stroke-dasharray', '100');
 		path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
 		return path;
 	};
-
-	// const updateEdgesMemo = (tree, memp) => {
-	// 	if (!tree.root) return new Array(0);
-	// 	const heap = tree.heap;
-	// 	heap.forEach((node, index) => {
-	// 		const nodeId = node.id;
-	// 		const parent = index === 0 ? null : heap[Math.floor((index - 1) /  2)];
-	// 		const parentId = parent.id;
-	// 		const pathId = `${nodeId}-${parentId}`;
-	// 		if (edgesMemo[pathId]) {
-	// 			const path = edgesMemo[pathId];
-	// 			path.setAttributeNS(null, 'd', `M ${cxArr[index]} ${cyArr[index]} L ${cxArr[tree.parentArray[index]]} ${cyArr[tree.parentArray[index]]}`);
-	// 		} else {
-	// 			const path = createPath(tree, heap[index]);
-	// 			edgesMemo[pathId] = path;
-	// 			svg.append(path);
-	// 			path.setAttributeNS(null, 'stroke-dasharray', '100');
-	// 			path.setAttributeNS(null, 'stroke-dasharray', '-100%');
-	// 			anime({
-	// 				targets: path,
-	// 				'stroke-dashoffset': '0%',
-	// 				duration: 1000,
-	// 				delay: 1000
-	// 			});
-	// 		}
-	// 	});
-	// }
 
 	let edgesMemo = {};
 	const drawEdges = tree => {
@@ -241,7 +214,6 @@
 				if (!edgesMemo?.[i]) {
 					const path = createPath(tree, heap[i]);
 					svg.append(path);
-					path.setAttributeNS(null, 'stroke-dasharray', '100');
 					path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
 					anime({
 						targets: path,
@@ -260,9 +232,6 @@
 	const updateSvg = (t) => {
 		const myTree = t || theTree;
 		console.log('updateSvg', myTree, cxArr, cyArr)
-		// const temp = svg;
-		// svg = myTree.renderTree();
-		// container.replaceChild(svg, temp);
 		console.log('cyArr prev', cyArr);
 		cyArr = getCyArr(myTree);
 		console.log('cyArr post', cyArr);
