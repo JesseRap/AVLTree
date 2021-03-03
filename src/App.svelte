@@ -70,6 +70,9 @@
 		return result;
 	};
 
+	/**
+	 * Takes heap from tree and updates global `svgHeap`, copying nodes with equal id's.
+	 */
 	const updateSVGHeap = tree => {
 		if (!tree.root) return new Array(0);
 		const heap = tree.heap;
@@ -86,12 +89,6 @@
 		updateSvg(theTree);
 	};
 
-	const swap = (arr, i1, i2) => {
-		const temp = arr[i1];
-		arr[i1] = arr[i2];
-		arr[i2] = temp
-	};
-
 	const createNodeSVG = node => {
 		console.log('createNodeSVG!!');
 
@@ -105,53 +102,14 @@
 			}
 		});
 
-		// // g.setAttribute('viewBox', '0 0 100 100');
-		// g.setAttribute('width', '100');
-		// g.setAttribute('height', 'auto');
-		// g.setAttribute('id', String(node.id));
-		//
-		// const circle = document.createElementNS(XMLNS, 'circle');
-		// circle.setAttributeNS(null, 'cx', '0');
-		// circle.setAttributeNS(null, 'cy', '0');
-		// circle.setAttributeNS(null, 'r', '5');
-		// circle.setAttributeNS(null, 'fill', '#00a8ff');
-		// circle.setAttributeNS(null, 'filter', 'url(#shadow)');
-		// g.appendChild(circle);
-		//
-		// const text = document.createElementNS(XMLNS, 'text');
-		// text.setAttributeNS(null, 'x', '0');
-		// text.setAttributeNS(null, 'text-anchor', 'middle');
-		// text.setAttributeNS(null, 'y', '1');
-		// text.setAttribute('font-size', '5px');
-		// text.style.color = "#192a56";
-		// text.style.fontSize = "10pxs";
-		// text.innerHTML = String(node.val);
-		//
-		// const balance = document.createElementNS(XMLNS, 'text');
-		// balance.setAttributeNS(null, 'x', '-1px');
-		// balance.setAttributeNS(null, 'y', '-10px');
-		// balance.setAttribute('font-size', '5px');
-		// balance.setAttribute('class', 'balance');
-		// balance.innerHTML = String(node.balance);
-		//
-		// const path = document.createElementNS(XMLNS, 'path');
-		// path.setAttributeNS(null, 'd', 'M -5 -5 H 5');
-		// path.setAttributeNS(null, 'stroke', '#000');
-		//
-		// g.appendChild(text);
-		// g.appendChild(balance);
-		// g.appendChild(path);
-
 		return g;
 	};
 
 	const removeOldNodes = (tree) => {
 		const heap = tree.heap;
 		for (let i = 0; i < Math.max(heap.length, svgHeap.length); i++) {
-			for (let j = 0; j < Math.max(svgHeap.length, heap.length); j++) {
-				if (heap[i] === null && i < svgHeap.length) {
-					svgHeap[i] = null;
-				}
+			if (heap[i] === null && i < svgHeap.length) {
+				svgHeap[i] = null;
 			}
 		}
 	};
@@ -176,7 +134,7 @@
 			if (!childExistsInNode(group, svg)) {
 				svg.appendChild(group);
 			}
-		})
+		});
 	}
 
 	const putElementsOnSVG = tree => {
@@ -197,15 +155,7 @@
 					translateY: `${cyArr[index]}%`,
 					duration: 1000
 				});
-
-				// const circle = group.querySelector('circle');
-				// anime({
-				// 	targets: circle,
-				// 	translateX: `${cxArr[index]}%`,
-				// 	translateY: `${cyArr[index]}%`,
-				// 	duration: circle.getAttributeNS(null, 'translateX') === null ? 0 : 100
-				// });
-				//
+				
 				const balance = group.querySelector('.balance');
 				const heap = tree.heap;
 				balance.innerHTML = heap[index].balance;
@@ -213,7 +163,6 @@
 
 				const balanceLineGroup = group.querySelector('.balance-line-group');
 				balanceLineGroup.setAttribute('style', heap[index].balance === 0 ? 'transform: rotate(0);' : heap[index].balance === 1 ? 'transform: rotate(7deg);' : 'transform: rotate(-7deg)');
-				// balanceLineGroup.setAttribute('style', heap[index].balance === 0 ? 'transform: translateY(0) rotate(0);' : heap[index].balance === 1 ? 'transform: translateY(-5px) rotate(7deg);' : 'transform: translateY(5px) rotate(-7deg)');
 
 				const balanceNumberGroup = group.querySelector('.balance-number-group');
 				balanceNumberGroup.setAttribute('style', heap[index].balance === 0 ? 'transform: translate(0, 0)' : heap[index].balance === 1 ? 'transform: translate(20px, 5px);' : 'transform: translate(-20px, 5px)');
@@ -223,31 +172,6 @@
 				} else {
 					balanceLineGroup.parentElement.classList.remove('wobble');
 				}
-
-
-				// anime({
-				// 	targets: text,
-				// 	translateX: `${cxArr[index]}%`,
-				// 	translateY: `${cyArr[index]}%`,
-				// 	duration: text.getAttributeNS(null, 'translateX') === null ? 0 : 2000
-				// });
-
-				// const bar = group.querySelector('path');
-				// anime({
-				// 	targets: bar,
-				// 	translateX: `${cxArr[index]}%`,
-				// 	translateY: `${cyArr[index]}%`,
-				// 	duration: bar.getAttributeNS(null, 'translateX') === null ? 0 : 2000
-				// });
-				//
-				// const balance = group.querySelector('.balance');
-				// balance.innerHTML = heap[index].balance;
-				// anime({
-				// 	targets: balance,
-				// 	translateX: `${cxArr[index]}%`,
-				// 	translateY: `${cyArr[index] + 5}%`,
-				// 	duration: balance.getAttributeNS(null, 'translateX') === null ? 0 : 2000
-				// });
 			}
 		});
 	};
