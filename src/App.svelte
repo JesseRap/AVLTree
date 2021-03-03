@@ -27,8 +27,8 @@
 
 	const createSVGElement = () => {
 		const svg = document.createElementNS(XMLNS, 'svg');
-    svg.setAttributeNS(null, 'width', '600px');
-    svg.setAttributeNS(null, 'height', '600px');
+    svg.setAttributeNS(null, 'width', '100%');
+    svg.setAttributeNS(null, 'height', '100%');
     svg.style.border = '1px solid black';
     svg.setAttribute('class', 'svg-main');
     svg.setAttributeNS(null, 'viewBox', '0 0 100 100');
@@ -453,9 +453,15 @@
 	});
 </script>
 
-<h1 class="hello">Hello world!</h1>
+<header class="svg-container-header">
+	<div class="svg-container">
+		<svg class="header-svg" width="100%" height="200" viewBox="0 0 100 100">
+			<text x="50%" y="50%" text-anchor="middle" >pretty avl tree</text>
+		</svg>
+	</div>
+</header>
 
-<div bind:this={container} class="container" style="width: 600px; height: 600px; margin: auto;"/>
+<div bind:this={container} class="container" style="width: 100%; max-width: 1000px; margin: auto;"/>
 
 <div style="display: flex; width: 100%; justify-content: space-between">
 	<div>
