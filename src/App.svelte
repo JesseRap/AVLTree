@@ -1,3 +1,14 @@
+<style>
+	.svg-main {
+		/* backgrosund-color: #3557ca; */
+		background-color: #2b5ada;
+
+	}
+	.container-container {
+		height: 90%;
+		background: linear-gradient(#2c5bd9 0%, #273c75 50%, #2c5bd9 100%);
+	}
+</style>
 <script>
 	import anime from 'animejs/lib/anime.es.js';
 
@@ -27,9 +38,10 @@
 
 	const createSVGElement = () => {
 		const svg = document.createElementNS(XMLNS, 'svg');
-    svg.setAttributeNS(null, 'width', '100%');
-    svg.setAttributeNS(null, 'height', '100%');
+    svg.setAttributeNS(null, 'width', '80%');
+    svg.setAttributeNS(null, 'height', '80%');
     svg.style.border = '1px solid black';
+    svg.style.marginLeft   = '10%';
     svg.setAttribute('class', 'svg-main');
     svg.setAttributeNS(null, 'viewBox', '0 0 100 100');
 
@@ -442,6 +454,8 @@
 
 	onMount(() => {
 		svg = createSVGElement();
+		svg.classList.add('svg-tree');
+		svg.style['background-color'] = "#2b5ada";
 
 		console.log('svgHeap', svgHeap)
 
@@ -452,16 +466,18 @@
 
 	});
 </script>
-
+<div>
 <header class="svg-container-header">
 	<div class="svg-container">
-		<svg class="header-svg" width="100%" height="200" viewBox="0 0 100 100">
+		<svg class="header-svg" width="100%" height="100" viewBox="0 0 100 100">
 			<text x="50%" y="50%" text-anchor="middle" >pretty avl tree</text>
 		</svg>
 	</div>
 </header>
 
+<div class="container-container" width="100%">
 <div bind:this={container} class="container" style="width: 100%; max-width: 1000px; margin: auto;"/>
+</div>
 
 <div style="display: flex; width: 100%; justify-content: space-between">
 	<div>
@@ -485,4 +501,5 @@
 	<div>
 		<button on:click={runAnimations}>ANIMATE</button>
 	</div>
+</div>
 </div>
