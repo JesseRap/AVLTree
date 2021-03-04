@@ -385,6 +385,10 @@
 			console.log('STATE!', state[i].type, state, edgesMemo);
 			// edgesMemo = {};
 
+			if (state[i].type === 'insert') {
+
+			}
+
 			if (state[i].type === 'rebalance') {
 				const { pivotId, rotatedId } = state[i];
 				const oldPath = `${rotatedId}-${pivotId}`;

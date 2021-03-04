@@ -1,17 +1,5 @@
 import { tick } from 'svelte';
-
-let id = 0;
-
-export class Node {
-	constructor(val) {
-		this.val = val;
-		this.left = null;
-		this.right = null;
-		this.balance = 0;
-		this.height = 0;
-		this.id = id++;
-	}
-}
+import Node from './Node.js'
 
 export default class AVLTree {
 	constructor(inputArray, copy = true) {
@@ -205,7 +193,8 @@ export default class AVLTree {
 			this.root = new Node(val);
 			this.stateGroup.push({
 				type: 'insert',
-				tree: this.copy()
+				tree: this.copy(),
+				node: this.root
 			});
 			return;
 		}
@@ -246,7 +235,8 @@ export default class AVLTree {
 
 		this.stateGroup.push({
 			type: 'insert',
-			tree: this.copy()
+			tree: this.copy(),
+			node: previous
 		});
 
 		if (rebalance) {
