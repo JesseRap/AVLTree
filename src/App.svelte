@@ -16,14 +16,13 @@
 	import AVLTree from './AVLTree.js';
 	import Node from './Node.svelte';
 
-	let container;
+	let container; // The container for the AVL SVG.
 
 	const XMLNS = 'http://www.w3.org/2000/svg';
 
 	let theTree = new AVLTree();
 	let svg;
 	let svgHeap = new Array(0);
-	let rotateIndex = 0;
 
  	$: states = theTree.states;
 
@@ -93,13 +92,6 @@
 			return svgHeap.find(el => el?.id === String(node.id)) || createNodeSVG(node);
 		});
 	}
-
-	const rotateLeft = () => {
-		// tree.root = tree.rotateLeft(tree.root);
-		theTree.rotateLeftIndex(theTree.heap[rotateIndex]);
-		theTree = theTree;
-		updateSvg(theTree);
-	};
 
 	const createNodeSVG = node => {
 		console.log('createNodeSVG!!');
@@ -386,7 +378,6 @@
 			// edgesMemo = {};
 
 			if (state[i].type === 'insert') {
-
 			}
 
 			if (state[i].type === 'rebalance') {
@@ -498,10 +489,6 @@
 	</div>
 	<div>
 		<button on:click={onReset}>RESET</button>
-	</div>
-	<div>
-		<input type='number' bind:value={rotateIndex} />
-		<button on:click={rotateLeft}>ROTATE LEFT</button>
 	</div>
 	<div>
 		<button on:click={runAnimations}>ANIMATE</button>

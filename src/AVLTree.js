@@ -1,5 +1,5 @@
 import { tick } from 'svelte';
-import Node from './Node.js'
+import Node from './Node.js';
 
 export default class AVLTree {
 	constructor(inputArray, copy = true) {
