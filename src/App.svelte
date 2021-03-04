@@ -15,6 +15,8 @@
 	import { afterUpdate, onMount, tick } from 'svelte';
 	import AVLTree from './AVLTree.js';
 	import Node from './Node.svelte';
+	import Buttons from './Buttons.svelte'
+	import Header from './Header.svelte'
 
 	let container; // The container for the AVL SVG.
 
@@ -267,38 +269,7 @@
 				}, 1000);
 				delete edgesMemo[key];
 			}
-		})
-
-
-		// for (let i = 0; i < svgHeap.length; i++) {
-		// 	if (edgesMemo[i]) {
-		// 		const path = edgesMemo[i];
-		// 		if (path && !heap[i]) {
-		// 			svg.removeChild(path);
-		// 			delete edgesMemo[i];
-		// 		}
-		// 		path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[tree.parentArray[i]]} ${cyArr[tree.parentArray[i]]}`);
-		// 		if (!heap[i] && edgesMemo[i]) {
-		// 			svg.removeChild(path);
-		// 		}
-		// 	}
-		// 	if (heap[i] && heap[tree.parentArray[i]]) {
-		// 		if (!edgesMemo?.[i]) {
-		// 			const path = createPath(tree, heap[i]);
-		// 			svg.append(path);
-		// 			path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
-		// 			anime({
-		// 				targets: path,
-		// 				'stroke-dashoffset': '0%',
-		// 				duration: 1000,
-		// 				delay: 1000
-		// 			});
-		// 			edgesMemo[i] = path;
-		// 		}
-		// 	} else {
-		// 		delete edgesMemo[i];
-		// 	}
-		// }
+		});
 	};
 
 	const updateSvg = (t) => {
@@ -327,22 +298,6 @@
 		console.log("STATES", theTree.states);
 		// const copy = theTree.copy();
 		// console.log("COPY", copy);
-	};
-
-
-
-
-
-	let newVal = 0;
-	const onNewValue = () => {
-		theTree.insert(newVal);
-		theTree = theTree;
-	};
-
-	let findVal = null;
-	const onFindValue = () => {
-		console.log("FINDVAL", findVal)
-		theTree.find(findVal);
 	};
 
 	const wait = ms => new Promise(res => setTimeout(res, ms));
@@ -387,19 +342,6 @@
 				const edge = edgesMemo[oldPath];
 				edgesMemo[newPath] = edge;
 				delete edgesMemo[oldPath];
-
-				// const pivotIndex = state[i].tree.heap.findIndex(el => el?.id === pivotId);
-				// const rotatedIndex = state[i].tree.heap.findIndex(el => el?.id === rotatedId);
-				//
-				// const parent = pivotIndex === 0 ? null : state[i].tree.heap[Math.floor((pivotIndex - 1) / 2)];
-				// if (parent) {
-				// 	const parentId  = parent.id;
-				// 	const oldPath = `${pivotId}-${parentId}`;
-				// 	const path = edgesMemo[oldPath];
-				// 	const newPath = `${parentId}-${parentId}`;
-				// 	edgesMemo[newPath] = path;
-				// 	delete edgesMemo[oldPath];
-				// }
 			}
 
 			if (state[i].type === 'visitNode') {
@@ -424,17 +366,6 @@
 			await runAnimation(i);
 		}
 	};
-
-	const onInsertRandVal = () => {
-		let randVal = Math.floor(Math.random() * 50);
-		if (edgesMemo[randVal]) {
-			randVal = Math.floor(Math.random() * 50);
-		}
-		console.log('onInsertRandVal *!@#!&@#&*', randVal);
-		theTree.insert(randVal);
-		theTree = theTree;
-		// updateSvg(theTree);
-	}
 
 	const onReset = () => {
 		theTree = states[0][0].tree
@@ -463,35 +394,12 @@
 	});
 </script>
 <div>
-<header class="svg-container-header">
-	<div class="svg-container">
-		<svg class="header-svg" width="100%" height="100" viewBox="0 0 100 100">
-			<text x="50%" y="50%" text-anchor="middle" >pretty avl tree</text>
-		</svg>
-	</div>
-</header>
+<Header />
 
 <div class="container-container" width="100%">
-<div bind:this={container} class="container" style="width: 100%; max-width: 1000px; margin: auto;"/>
-</div>
 
-<div style="display: flex; width: 100%; justify-content: space-between">
-	<div>
-		<input type='number' bind:value={newVal} />
-		<button on:click={onNewValue}>New Value</button>
-	</div>
-	<div>
-		<input type='number' bind:value={findVal} />
-		<button on:click={onFindValue}>Find Value</button>
-	</div>
-	<div>
-		<button on:click={onInsertRandVal}>Insert Random Value</button>
-	</div>
-	<div>
-		<button on:click={onReset}>RESET</button>
-	</div>
-	<div>
-		<button on:click={runAnimations}>ANIMATE</button>
-	</div>
+<div bind:this={container} class="container" style="width: 100%; max-width: 1000px; margin: auto;"/>
+
 </div>
+	<Buttons bind:tree={theTree} {onReset} {runAnimations} />
 </div>
