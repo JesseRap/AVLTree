@@ -28,13 +28,6 @@ body {
 	background-color: rgb(44, 91, 217);
 }
 
-header {
-	min-height: 100px;
-	height: 10%;
-	/* background: linear-gradient(to bottom, #0e3436 50%, rgb(44, 91, 217)); */
-	/* opacity: 0.5; */
-}
-
 * {
 	box-sizing: border-box;
 }
@@ -88,11 +81,12 @@ input, button, select, textarea {
 	border-radius: 2px;
 }
 
-.header-svg  {
+/* .header-svg  {
 	fill: white;
 	margin: auto;
-	font-size: calc(40px + 60 * ((100vw - 500px) / 720));
-}
+	font-size: calc(50px + 60 * ((100vw - 300px) / 1000));
+	y: calc(100px + 10vh);
+} */
 
 .svg-container-container {
 	background: linear-gradient(
@@ -107,10 +101,10 @@ input, button, select, textarea {
 	animation: morphword 2s;
 } */
 
-.svg-container {
+/* .svg-container {
 	margin: auto;
 	min-width: 360px;
-}
+} */
 
 input:disabled {
 	color: #ccc;
