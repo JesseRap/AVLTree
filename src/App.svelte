@@ -245,7 +245,8 @@
 			} else {
 				console.log("NEW PATH");
 				const path = createPath(tree, node);
-				svg.append(path);
+				const firstNode = svg.children[0];
+				svg.insertBefore(path, firstNode);
 				path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
 				anime({
 					targets: path,
