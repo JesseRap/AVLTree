@@ -81,13 +81,6 @@ input, button, select, textarea {
 	border-radius: 2px;
 }
 
-/* .header-svg  {
-	fill: white;
-	margin: auto;
-	font-size: calc(50px + 60 * ((100vw - 300px) / 1000));
-	y: calc(100px + 10vh);
-} */
-
 .svg-container-container {
 	background: linear-gradient(
 		to bottom,
@@ -99,11 +92,6 @@ input, button, select, textarea {
 
 /* .header-svg text {
 	animation: morphword 2s;
-} */
-
-/* .svg-container {
-	margin: auto;
-	min-width: 360px;
 } */
 
 input:disabled {
