@@ -70,6 +70,10 @@ polygon {
   box-shadow: 0 0 10px 10px yellow;
 }
 
+.value {
+  text-shadow: -1px -1px #fbc531;
+}
+
 </style>
 
 <g style="transform: translate(-12.5%, -12.5%);"><svg class="node-svg" id="svg" width="25%" height="25%" viewBox="0 0 100 100">
