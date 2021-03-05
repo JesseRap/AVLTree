@@ -331,6 +331,7 @@
 				const edge = edgesMemo[oldPath];
 				edgesMemo[newPath] = edge;
 				delete edgesMemo[oldPath];
+				edge.setAttribute('id', newPath);
 
 				// deleteEdges(state[i].tree);
 
@@ -341,6 +342,7 @@
 					const parentEdge = edgesMemo[oldParentPath];
 					edgesMemo[newParentPath] = parentEdge;
 					delete edgesMemo[oldParentPath];
+					parentEdge.setAttribute('id', newParentPath);
 				}
 
 				const heap = state[i - 1].tree.heap;
@@ -359,6 +361,7 @@
 					const edge = edgesMemo[oldPath];
 					edgesMemo[newPath] = edge;
 					delete edgesMemo[oldPath]
+					edge.setAttribute('id', newPath);
 				}
 
 				// const pivotNode = svg.querySelector(oldPath);
