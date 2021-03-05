@@ -377,7 +377,7 @@
 				clearAllVisitedNodes(state[i].tree);
 			}
 
-			drawEdges(state[i].tree);
+			// drawEdges(state[i].tree);
 
 			updateSvg(state[i].tree);
 			await wait(500);
