@@ -17,10 +17,10 @@
   //   }
   // }
 
-  $: {
-    console.log('COLOR', color);
-    // console.log('ABS', abs);
-  }
+  // $: {
+  //   console.log('COLOR', color);
+  //   // console.log('ABS', abs);
+  // }
 </script>
 
 <style>

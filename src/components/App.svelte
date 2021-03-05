@@ -76,8 +76,8 @@
 		}
 	};
 
-	const removeAllChildrenFromNode = node => {
-		Array.from(node.children).forEach(child => {
+	const removeAllChildrenFromSVG = () => {
+		Array.from(svg.children).forEach(child => {
 			svg.removeChild(child);
 		});
 	};
@@ -86,7 +86,7 @@
 		childNode.id === child.id
 	);
 
-	const insertElementsIntoNode = (svgHeap, svg) => {
+	const insertNewNodesIntoSVG = (svgHeap, svg) => {
 		svgHeap.forEach(group => {
 			if (!group) {
 				return;
@@ -101,10 +101,10 @@
 
 	const putElementsOnSVG = tree => {
 		if (svg && !tree.root) {
-			removeAllChildrenFromNode(svg);
+			removeAllChildrenFromSVG(svg);
 			return;
 		}
-		insertElementsIntoNode(svgHeap, svg);
+		insertNewNodesIntoSVG(svgHeap, svg);
 	};
 
 	const updateNodeCoords = tree => {
@@ -117,6 +117,8 @@
 					translateY: `${cyArr[index]}%`,
 					duration: 1000
 				});
+
+				// group.style.transform = `translate(${cxArr[index]}%, ${cyArr[index]}%)`;
 
 				const balance = group.querySelector('.balance');
 				const heap = tree.heap;
@@ -153,7 +155,14 @@
 		path.setAttributeNS(null, "stroke", "black");
 		path.setAttributeNS(null, "fill", "transparent");
 		path.setAttributeNS(null, 'stroke-dasharray', '100');
+		// path.setAttributeNS(null, 'stroke-dashoffset', '0%');
 		path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
+		anime({
+			targets: path,
+			'stroke-dashoffset': '0%',
+			duration: 1000,
+			delay: 1000
+		});
 		return path;
 	};
 
@@ -181,8 +190,9 @@
 			const key = `${nodeId}-${parentId}`;
 			keys.push(key);
 			console.log("KEY", key)
+			console.log("edgesMemo", edgesMemo)
+			console.log("svgHeap", svgHeap)
 			if (edgesMemo[key]) {
-				console.log("edgesMemo 1", JSON.stringify(edgesMemo));
 				const path = edgesMemo[key];
 				// if (path && !heap[i]) {
 				// 	svg.removeChild(path);
@@ -193,10 +203,11 @@
 				// 	svg.removeChild(path);
 				// }
 			} else {
-				console.log("NEW PATH");
+				console.log('NEW PATH');
 				const path = createPath(tree, node);
 				const firstNode = svg.children[0];
 				svg.insertBefore(path, firstNode);
+				path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[tree.parentArray[i]]} ${cyArr[tree.parentArray[i]]}`);
 				path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
 				anime({
 					targets: path,
@@ -206,10 +217,7 @@
 				});
 				edgesMemo[key] = path;
 			}
-			console.log("edgesMemo 2", JSON.stringify(edgesMemo));
 		}
-
-		console.log('SOY!', keys, Object.keys(edgesMemo))
 
 		Object.keys(edgesMemo).forEach(key => {
 			if (!keys.includes(key)) {
@@ -231,11 +239,11 @@
 	const updateSvg = (t) => {
 		const myTree = t || theTree;
 		console.log('updateSvg', myTree, cxArr, cyArr)
-		console.log('cyArr prev', cyArr);
+		// console.log('cyArr prev', cyArr);
 		cyArr = getCyArr(myTree);
 		console.log('cyArr post', cyArr);
 
-		console.log('cxArr prev', cxArr);
+		// console.log('cxArr prev', cxArr);
 		cxArr = getCxArr(myTree);
 		console.log('cxArr post', cxArr);
 		console.log('updateSVGHeap');
@@ -244,6 +252,8 @@
 		removeOldNodes(myTree);
 		console.log('drawEdges');
 		drawEdges(myTree);
+		// await wait(1000);
+		// await tick();
 		console.log('updateNodeCoords');
 		updateNodeCoords(myTree);
 		console.log('putElementsOnSVG');
@@ -261,6 +271,28 @@
 	const runLatestAnimation = async () => {
 		runAnimation(states.length - 1)
 	}
+
+	// const deleteEdges = tree => {
+	// 	const heap = tree.heap;
+	// 	const paths = [];
+	// 	for (let i = heap.length; i >=0; i--) {
+	// 		const node = heap[i];
+	// 		if (i === 0 || !node) return;
+	// 		const nodeId = node.id;
+	// 		const parent = tree.getParentNode(node);
+	// 		if (!parent) return;
+	// 		const parentId = parent.id;
+	// 		const path = `${nodeId}-${parentId}`;
+	// 		paths.push(path);
+	// 	}
+	// 	Object.keys(edgesMemo).forEach(key => {
+	// 		if (!paths.includes(key)) {
+	// 			delete edgesMemo[key];
+	// 			const edge = svg.querySelector(`#${key}`);
+	// 			svg.removeChild(edge);
+	// 		}
+	// 	})
+	// };
 
 	const animateNode = (tree, node) => {
 		const s = svgHeap.find(el => el?.id === String(node.id));
@@ -285,19 +317,56 @@
 		// edgesMemo = {};
 		const state = states[index];
 		for (let i = 0; i < state.length; i++) {
-			console.log('STATE!', state[i].type, state, edgesMemo);
+			console.log('STATE!', state[i].type, state, Object.keys(edgesMemo), svgHeap);
 			// edgesMemo = {};
 
 			if (state[i].type === 'insert') {
 			}
 
 			if (state[i].type === 'rebalance') {
-				const { pivotId, rotatedId } = state[i];
+				const { pivotId, rotatedId, parentId } = state[i];
 				const oldPath = `${rotatedId}-${pivotId}`;
 				const newPath = `${pivotId}-${rotatedId}`;
+
 				const edge = edgesMemo[oldPath];
 				edgesMemo[newPath] = edge;
 				delete edgesMemo[oldPath];
+
+				// deleteEdges(state[i].tree);
+
+				if (parentId !== undefined) {
+					const oldParentPath = `${pivotId}-${parentId}`;
+					const newParentPath = `${rotatedId}-${parentId}`;
+
+					const parentEdge = edgesMemo[oldParentPath];
+					edgesMemo[newParentPath] = parentEdge;
+					delete edgesMemo[oldParentPath];
+				}
+
+				const heap = state[i - 1].tree.heap;
+				const pivotNode = heap.find(el => el?.id === pivotId);
+				const rotatedNode = heap.find(el => el?.id === rotatedId);
+				const rotatedNodeIndex = heap.indexOf(rotatedNode);
+
+				const isRight = rotatedNodeIndex % 2 === 0;
+
+				const grandChild = rotatedNode[isRight ? 'left' : 'right']
+
+				if (grandChild) {
+					console.log('grandchild', grandChild);
+					const oldPath = `${grandChild.id}-${rotatedNode.id}`;
+					const newPath = `${grandChild.id}-${pivotNode.id}`;
+					const edge = edgesMemo[oldPath];
+					edgesMemo[newPath] = edge;
+					delete edgesMemo[oldPath]
+				}
+
+				// const pivotNode = svg.querySelector(oldPath);
+				// const pivotNodeIndex = state[i].heap.indexOf(pivotNode);
+				//
+				// const parent = pivotNodeIndex === 0 ? null state[i].tree.heap[Math.floor((pivotNodeIndex - 1) / 2)];
+				//
+				// const otherChild = Array.from(parent.children).find(child =>)
 			}
 
 			if (state[i].type === 'visitNode') {
@@ -311,8 +380,10 @@
 			drawEdges(state[i].tree);
 
 			updateSvg(state[i].tree);
+			await wait(500);
 			// await tick();
-			await wait(1000);
+			console.log('STATE FINISHED!', state[i].type, Object.keys(edgesMemo), svgHeap);
+			//
 		}
 	};
 

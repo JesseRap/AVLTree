@@ -65,12 +65,13 @@ export default class AVLTree {
 		} else {
 			this.root = rotated;
 		}
-		this.updateAllNodes();
+		// this.updateAllNodes();
 		this.stateGroup.push({
 			type: 'rebalance',
 			tree: this.copy(),
 			pivotId: node.id,
 			rotatedId: rotated.id,
+			parentId: parent?.id
 		});
 		return rotated;
 	};
@@ -96,12 +97,13 @@ export default class AVLTree {
 		} else {
 			this.root = rotated;
 		}
-		this.updateAllNodes();
+		// this.updateAllNodes();
 		this.stateGroup.push({
 			type: 'rebalance',
 			tree: this.copy(),
 			pivotId: node.id,
-			rotatedId: rotated.id
+			rotatedId: rotated.id,
+			parentId: parent?.id
 		});
 		return rotated;
 	};
@@ -195,6 +197,10 @@ export default class AVLTree {
 				type: 'insert',
 				tree: this.copy(),
 				node: this.root
+			});
+			this.stateGroup.push({
+				type: 'insertFinish',
+				tree: this.copy(),
 			});
 			return;
 		}
