@@ -13,13 +13,14 @@
 	import anime from 'animejs/lib/anime.es.js';
 
 	import { afterUpdate, onMount, tick } from 'svelte';
-	import AVLTree from './AVLTree.js';
+	import AVLTree from '../lib/AVLTree.js';
 	import Node from './Node.svelte';
 	import Buttons from './Buttons.svelte'
 	import Header from './Header.svelte';
-	import { createSVGElement } from './svg';
+	import { createSVGElement } from '../utils/svg';
+	import { getCxArr, getCyArr } from '../utils/tree';
 
-	let container; // The container for the AVL SVG.
+	let svgContainer; // The container for the AVL SVG.
 
 	const XMLNS = 'http://www.w3.org/2000/svg';
 
@@ -37,27 +38,6 @@
 
 	let cxArr = [];
 	let cyArr = [];
-
-	const getCxArr = tree => {
-		if (!tree.root) return new Array(0);
-		const levels = tree.getLevels();
-		const result = levels.reduce((acc, level, index) => {
-			const cxInc = 1 / Math.pow(2, index) * 100;
-			return [...acc, ...level.map((_, idx) => (cxInc / 2) + (cxInc * idx))];
-		}, []);
-		return result;
-	};
-
-	const getCyArr = tree => {
-		if (!tree.root) return new Array(0);
-		const cyInc = 1 / (tree.root.height + 1) * 100;
-		const levels = tree.getLevels();
-		const result = levels.reduce((acc, level, index) => (
-			[...acc, ...level.map(_ => (cyInc / 2) + (cyInc * index))]
-		), []);
-		// console.log('CYARR', result);
-		return result;
-	};
 
 	/**
 	 * Takes heap from tree and updates global `svgHeap`, copying nodes with equal id's.
@@ -356,13 +336,15 @@
 	}
 
 	onMount(() => {
+		// Create root SVG.
 		svg = createSVGElement();
 		svg.classList.add('svg-tree');
 		svg.style['background-color'] = "#2b5ada";
 
 		console.log('svgHeap', svgHeap)
 
-		container.appendChild(svg);
+		// Append root SVG to svgContainer
+		svgContainer.appendChild(svg);
 		updateSvg(theTree);
 
 		console.log('svgHeap', svgHeap);
@@ -374,7 +356,7 @@
 
 <div class="container-container" width="100%">
 
-<div bind:this={container} class="container" style="width: 100%; max-width: 1000px; margin: auto;"/>
+<div bind:this={svgContainer} class="container" style="width: 100%; max-width: 1000px; margin: auto;"/>
 
 </div>
 	<Buttons bind:tree={theTree} {onReset} {runAnimations} />

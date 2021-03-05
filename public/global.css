@@ -47,7 +47,7 @@ text, circle {
 
 path {
 	/* transition: stroke-dashoffset 1s; */
-	transition: d 1.5s;
+	/* transition: d 1.5s; */
 }
 
 a {
