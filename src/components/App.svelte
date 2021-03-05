@@ -155,14 +155,14 @@
 		path.setAttributeNS(null, "stroke", "black");
 		path.setAttributeNS(null, "fill", "transparent");
 		path.setAttributeNS(null, 'stroke-dasharray', '100');
-		// path.setAttributeNS(null, 'stroke-dashoffset', '0%');
-		path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
-		anime({
-			targets: path,
-			'stroke-dashoffset': '0%',
-			duration: 1000,
-			delay: 1000
-		});
+		path.setAttributeNS(null, 'stroke-dashoffset', '0%');
+		// path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
+		// anime({
+		// 	targets: path,
+		// 	'stroke-dashoffset': '0%',
+		// 	duration: 1000,
+		// 	delay: 100
+		// });
 		return path;
 	};
 
@@ -208,12 +208,13 @@
 				const firstNode = svg.children[0];
 				svg.insertBefore(path, firstNode);
 				path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[tree.parentArray[i]]} ${cyArr[tree.parentArray[i]]}`);
+				// path.setAttributeNS(null, 'stroke-dashoffset', '0%');
 				path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
 				anime({
 					targets: path,
 					'stroke-dashoffset': '0%',
-					duration: 1000,
-					delay: 1000
+					duration: 500,
+					delay: 200
 				});
 				edgesMemo[key] = path;
 			}
