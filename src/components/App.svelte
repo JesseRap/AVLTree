@@ -321,7 +321,8 @@
 			console.log('STATE!', state[i].type, state, Object.keys(edgesMemo), svgHeap);
 			// edgesMemo = {};
 
-			if (state[i].type === 'insert') {
+			if (state[i].type === 'insertStart') {
+				applyScaleToAllBalances();
 			}
 
 			if (state[i].type === 'rebalance') {
@@ -389,6 +390,12 @@
 			console.log('STATE FINISHED!', state[i].type, Object.keys(edgesMemo), svgHeap);
 			//
 		}
+	};
+
+	const applyScaleToAllBalances = () => {
+		Array.from(document.querySelectorAll('.top-container')).forEach(node => {
+			node.setAttributeNS(null, 'transform', 'scale(0)');
+		})
 	};
 
 	const runAnimations = async () => {

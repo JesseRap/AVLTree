@@ -83,16 +83,18 @@ polygon {
       <feDropShadow dx="1" dy="1.2" stdDeviation="0.5" flood-opacity="0.8"/>
     </filter>
   </defs>
-      <polygon points="0 10, 5 0, 10 10" fill="#7f8fa6" stroke="#000" stroke-width="0.5"/>
 
-  <g>
-    <g class={Math.abs(balance) > 0 ? 'wobble-group wobble' : 'wobble-group'}>
-      <g class="balance-number-group">
-        <text class="balance" x="50" y="9" text-anchor="middle" fill={color}>{balance}</text>
-      </g>
-      <g class="balance-line-group">
-        <path d="M 50 50 H 100" stroke="black" stroke-width="3.5px" stroke-linecap="round"/>
-        <path d="M 50 50 H 100" stroke="#00a8ff" stroke-width="1px" color="#00a8ff" fill="#00a8ff" stroke-linecap="round" />
+  <g class="container">
+    <g class="top-container">
+      <polygon points="0 10, 5 0, 10 10" fill="#7f8fa6" stroke="#000" stroke-width="0.5"/>
+      <g class={Math.abs(balance) > 0 ? 'wobble-group wobble' : 'wobble-group'}>
+        <g class="balance-number-group">
+          <text class="balance" x="50" y="9" text-anchor="middle" fill={color}>{balance}</text>
+        </g>
+        <g class="balance-line-group">
+          <path d="M 50 50 H 100" stroke="black" stroke-width="3.5px" stroke-linecap="round"/>
+          <path d="M 50 50 H 100" stroke="#00a8ff" stroke-width="1px" color="#00a8ff" fill="#00a8ff" stroke-linecap="round" />
+        </g>
       </g>
     </g>
     <g style="filter: url(#shadow-1)">
