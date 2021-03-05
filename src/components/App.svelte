@@ -351,13 +351,14 @@
 
 	});
 </script>
+
 <div>
-<Header />
+	<Header />
 
-<div class="container-container" width="100%">
+	<div class="container-container" width="100%">
 
-<div bind:this={svgContainer} class="container" style="width: 100%; max-width: 1000px; margin: auto;"/>
+		<div bind:this={svgContainer} class="container" style="width: 100%; max-width: 1000px; margin: auto;"/>
 
-</div>
+	</div>
 	<Buttons bind:tree={theTree} {onReset} {runAnimations} />
 </div>

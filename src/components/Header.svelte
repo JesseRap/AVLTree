@@ -1,4 +1,6 @@
 <style>
+  /* font-size: calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width]))); */
+
   header {
   	min-height: 100px;
   	height: 10%;
@@ -9,7 +11,6 @@
   .header-svg  {
     fill: white;
     margin: auto;
-    font-size: calc(50px + 60 * ((100vw - 300px) / 1000));
   }
 
   .svg-container {
@@ -18,13 +19,15 @@
   }
 
   .header-text {
-    transform: translateY(2.5vw);
+    transform: translateY(calc(30px + 10 * ((100vw - 300px) / 1000)));
+    /* transform: translateY(30px); */
+    font-size: calc(50px + 50 * ((100vw - 300px) / 1000));
   }
 </style>
 
-<header class="svg-container-header">
+<header>
 	<div class="svg-container">
-		<svg class="header-svg" width="100%" height="100" viewBox="0 0 100 100">
+		<svg class="header-svg" width="100%" height="100px" viewBox="0 0 100 100">
 			<text class="header-text" x="50%" y="50%" text-anchor="middle" >pretty avl tree</text>
 		</svg>
 	</div>
