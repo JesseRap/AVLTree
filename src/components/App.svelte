@@ -371,6 +371,7 @@
 					target: svg,
 					props: {
 						value: state[i].insertValue,
+						anchor: svg.children[0],
 						balance: 0,
 						id: 'start-node',
 						isFirstNode: true,

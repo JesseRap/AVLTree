@@ -36,7 +36,9 @@ svg {
   </defs>
 
   <g class="container">
-    <NodeBalance {balance} {color} />
+    {#if !isFirstNode}
+      <NodeBalance {balance} {color} {isFirstNode} />
+    {/if}
     <NodeCircle {value} />
   </g>
 </svg></g></g>

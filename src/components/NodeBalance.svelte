@@ -74,9 +74,10 @@
 <script>
   export let color;
   export let balance;
+  export let isFirstNode = false;
 </script>
 
-<g class="top-container spin">
+<g class:spin={!isFirstNode} class="top-container spin">
   <polygon class="triangle" points="45 30, 50 21, 55 30" fill="#7f8fa6" stroke="#000" stroke-width="0.5"/>
   <!-- <polygon points="0 10, 5 0, 10 10" fill="#7f8fa6" stroke="#000" stroke-width="0.5"/> -->
   <g class="scale-group">
