@@ -9,7 +9,7 @@
 
   @keyframes spin {
   	0% { transform: rotate(0deg) }
-  	100% { transform: rotate(360deg) }
+  	100% { transform: rotate(1080deg) }
   }
 
   .scale-group {
@@ -27,7 +27,8 @@
   }
 
   .spin {
-    animation: spin 5s ease 1s;
+    animation: spin 2s cubic-bezier(0.16, 1, 0.3, 1) 1s;
+    transform-origin: center;
   }
 
   .balance {
@@ -75,8 +76,8 @@
   export let balance;
 </script>
 
-<g class="top-container">
-  <polygon class="triangle spin" points="45 30, 50 21, 55 30" fill="#7f8fa6" stroke="#000" stroke-width="0.5"/>
+<g class="top-container spin">
+  <polygon class="triangle" points="45 30, 50 21, 55 30" fill="#7f8fa6" stroke="#000" stroke-width="0.5"/>
   <!-- <polygon points="0 10, 5 0, 10 10" fill="#7f8fa6" stroke="#000" stroke-width="0.5"/> -->
   <g class="scale-group">
     <g class={Math.abs(balance) > 0 ? 'wobble-group wobble' : 'wobble-group'}>
