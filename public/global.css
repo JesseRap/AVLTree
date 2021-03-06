@@ -28,10 +28,12 @@ body {
 	box-sizing: border-box;
 }
 
+/* nice gold fbc531 */
+
 .svg-main {
 	background-color: #2b5ada;
 	filter: blur(0.5px) contrast(70);
-	box-shadow: 5px 5px 15px 5px;
+	box-shadow: 2px 2px 0px 1px #2f3640, 3px 3px 15px 2px black;
 	margin-left: 10%;
 }
 

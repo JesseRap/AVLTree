@@ -394,7 +394,7 @@
 
 			if (state[i].type === 'insertStart') {
 				// applyScaleToAllBalances();
-				balanceScaleDown();
+				// balanceScaleDown();
 			}
 
 			if (state[i].type === 'insertFinish') {
