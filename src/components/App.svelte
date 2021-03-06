@@ -22,8 +22,8 @@
 }
 
 	.container-container {
-		height: 90%;
-		background-color: #00a8ff;
+		/* height: 90%; */
+		/* background-color: #00a8ff; */
 		/* background: linear-gradient(#2c5bd9 0%, #273c75 50%, #2c5bd9 100%); */
 	}
 
@@ -524,7 +524,7 @@
 	});
 </script>
 
-<div>
+<div style="display: flex; flex-direction: column;">
 
 	<Header />
 

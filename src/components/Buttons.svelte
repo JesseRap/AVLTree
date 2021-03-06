@@ -24,7 +24,7 @@
 	};
 </script>
 
-<div style="display: flex; width: 100%; justify-content: space-between">
+<div style="background-color: #353b48;display: flex;width: 70%;justify-content: space-between;max-width: 1000px;margin: auto auto 32px auto;flex-wrap: wrap;padding: 24px;">
 	<div>
 		<input type='number' bind:value={newVal} />
 		<button on:click={onNewValue}>New Value</button>
