@@ -64,6 +64,9 @@
 			}
 		});
 
+		const scaleGroup = g.querySelector('.scale-group');
+		scaleGroup.setAttribute('style', 'transform: scale(0);');
+
 		return g;
 	};
 
@@ -322,7 +325,13 @@
 			// edgesMemo = {};
 
 			if (state[i].type === 'insertStart') {
-				applyScaleToAllBalances();
+				// applyScaleToAllBalances();
+				balanceScaleDown();
+			}
+
+			if (state[i].type === 'insertFinish') {
+				// applyScaleToAllBalances();
+				balanceScaleUp();
 			}
 
 			if (state[i].type === 'rebalance') {
@@ -403,6 +412,16 @@
 		for (let i = 0; i < states.length; i++) {
 			await runAnimation(i);
 		}
+	};
+
+	const balanceScaleDown = () => {
+		Array.from(document.querySelectorAll('.scale-group')).forEach(node => node.setAttribute('style', 'transform: scale(0)'));
+		Array.from(document.querySelectorAll('polygon')).forEach(node => node.setAttribute('style', 'transform: scale(0)'));
+	};
+
+	const balanceScaleUp = () => {
+		Array.from(document.querySelectorAll('.scale-group')).forEach(node => node.setAttribute('style', 'transform: scale(1)'));
+		Array.from(document.querySelectorAll('polygon')).forEach(node => node.setAttribute('style', 'transform: scale(1)'));
 	};
 
 	const onReset = () => {

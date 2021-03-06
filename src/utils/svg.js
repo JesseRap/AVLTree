@@ -20,7 +20,5 @@ export const createSVGElement = () => {
   defs.appendChild(filter);
   svg.appendChild(defs);
 
-  console.log('asfjkahsldjf;m', svg);
-
   return svg;
 };
