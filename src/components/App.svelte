@@ -348,6 +348,7 @@
 
 		const edgeCircle = new NodeEdgeCircle({
 			target: svg,
+			anchor: svg.children[0],
 			props: {
 				cx: cxArr[sourceIndex],
 				cy: cyArr[sourceIndex]
@@ -364,8 +365,13 @@
 			targets: circle,
 			translateX: `${cxArr[destinationIndex] - cxArr[sourceIndex]}%`,
 			translateY: `${cyArr[destinationIndex] - cyArr[sourceIndex]}%`,
-			duration: 1000
+			duration: 1000,
+			easing: 'easeInOutQuad'
 		});
+
+		await wait(1000);
+
+		svg.removeChild(circle);
 
 		// circle.setAttribute('style', `transform: translate(${cxArr[destinationIndex] - cxArr[sourceIndex]}%, ${cyArr[destinationIndex] - cyArr[sourceIndex]}%)`);
 	};
@@ -446,7 +452,6 @@
 			}
 
 			if (state[i].type === 'visitNode') {
-				animateNode(state[i].tree, state[i].node);
 				const index = state[i].tree.heap.findIndex(el => el?.id === state[i].node.id);
 				const parent = index === 0 ? null : state[i].tree.heap[Math.floor((index - 1) / 2)]
 				if (parent) {
@@ -456,6 +461,7 @@
 						state[i].node
 					);
 				}
+				animateNode(state[i].tree, state[i].node);
 			}
 
 			if (state[i].type === 'insertFinish') {
@@ -509,16 +515,8 @@
 
 	onMount(() => {
 		// Create root SVG.
-		// svg = createSVGElement();
 		svg = document.getElementById('svg-main');
 
-		// svg.classList.add('svg-tree');
-		// svg.style['background-color'] = "#2b5ada";
-
-		// console.log('svgHeap', svgHeap)
-
-		// Append root SVG to svgContainer
-		// svgContainer.appendChild(svg);
 		updateSvg(theTree);
 
 		console.log('svgHeap', svgHeap);
