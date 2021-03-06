@@ -6,7 +6,7 @@ export const createSVGElement = () => {
   svg.setAttributeNS(null, 'height', '80%');
   svg.style.border = '1px solid black';
   svg.style.marginLeft   = '10%';
-  svg.setAttribute('class', 'svg-main');
+  svg.classList.add('svg-main');
   svg.setAttributeNS(null, 'viewBox', '0 0 100 100');
 
   const defs = document.createElementNS(XMLNS, 'defs');

@@ -16,20 +16,20 @@ html, body {
 	height: 100%;
 }
 
-.svg-main {
-	background-color: #273c75;
-}
-
 body {
 	color: #333;
 	margin: 0;
 	box-sizing: border-box;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-	background-color: rgb(44, 91, 217);
+	background-color: #00a8ff;
 }
 
 * {
 	box-sizing: border-box;
+}
+
+.svg-main {
+	background-color: #2b5ada;
 }
 
 .container {

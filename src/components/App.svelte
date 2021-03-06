@@ -1,12 +1,37 @@
 <style>
-	.svg-main {
-		/* backgrosund-color: #3557ca; */
-		background-color: #2b5ada;
-
+@keyframes demonstration{
+	0%{
+		filter:blur(0) contrast(1);
 	}
+	25%{
+		filter:blur(0) contrast(1);
+	}
+	30%{
+		filter:blur(20px) contrast(1);
+	}
+	55%{
+		filter:blur(20px) contrast(1);
+		animation-timing-function:ease-in;
+	}
+	80%{
+		filter:blur(20px) contrast(30);
+	}
+	100%{
+		filter:blur(20px) contrast(30);
+	}
+}
+
 	.container-container {
 		height: 90%;
-		background: linear-gradient(#2c5bd9 0%, #273c75 50%, #2c5bd9 100%);
+		background-color: #00a8ff;
+		/* background: linear-gradient(#2c5bd9 0%, #273c75 50%, #2c5bd9 100%); */
+	}
+
+	.edge-circle {
+		/* transition: transform 1s; */
+		/* filter: blur(20px) contrast(30); */
+		filter: url(#edgeBlur);
+	  /* animation: demonstration 10s linear; */
 	}
 </style>
 <script>
@@ -15,6 +40,7 @@
 	import { afterUpdate, onMount, tick } from 'svelte';
 	import AVLTree from '../lib/AVLTree.js';
 	import Node from './Node.svelte';
+	import NodeEdgeCircle from './NodeEdgeCircle.svelte';
 	import Buttons from './Buttons.svelte'
 	import Header from './Header.svelte';
 	import { createSVGElement } from '../utils/svg';
@@ -152,6 +178,7 @@
 		const parent = tree.heap[Math.floor((i - 1) / 2)];
 		const parentId = parent.id;
 		const path = document.createElementNS(XMLNS, 'path');
+		path.classList.add('edge-circle');
 		const pathId = `${nodeId}-${parentId}`
 		path.setAttribute('id', pathId);
 		path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[tree.parentArray[i]]} ${cyArr[tree.parentArray[i]]}`);
@@ -308,6 +335,36 @@
 		}
 	};
 
+	const animateEdge = async (tree, source, destination) => {
+		const sourceIndex = tree.heap.findIndex(el => el?.id === source.id);
+		const destinationIndex = tree.heap.findIndex(el => el?.id === destination.id);
+
+		console.log('HIIIIIIIII', cxArr, cyArr, sourceIndex, destinationIndex)
+
+		const edgeCircle = new NodeEdgeCircle({
+			target: svg,
+			props: {
+				cx: cxArr[sourceIndex],
+				cy: cyArr[sourceIndex]
+			}
+		});
+
+		const circle = document.getElementById('edge-circle');
+
+		console.log('edgeCircle', edgeCircle, circle)
+
+		await tick();
+
+		anime({
+			targets: circle,
+			translateX: `${cxArr[destinationIndex] - cxArr[sourceIndex]}%`,
+			translateY: `${cyArr[destinationIndex] - cyArr[sourceIndex]}%`,
+			duration: 1000
+		});
+
+		// circle.setAttribute('style', `transform: translate(${cxArr[destinationIndex] - cxArr[sourceIndex]}%, ${cyArr[destinationIndex] - cyArr[sourceIndex]}%)`);
+	};
+
 	const clearAllVisitedNodes = tree => {
 		const visitedCircles = Array.from(document.querySelectorAll('.visited-node'));
 		visitedCircles.forEach(circle => {
@@ -385,6 +442,15 @@
 
 			if (state[i].type === 'visitNode') {
 				animateNode(state[i].tree, state[i].node);
+				const index = state[i].tree.heap.findIndex(el => el?.id === state[i].node.id);
+				const parent = index === 0 ? null : state[i].tree.heap[Math.floor((index - 1) / 2)]
+				if (parent) {
+					await animateEdge(
+						state[i].tree,
+						parent,
+						state[i].node
+					);
+				}
 			}
 
 			if (state[i].type === 'insertFinish') {
@@ -439,8 +505,8 @@
 	onMount(() => {
 		// Create root SVG.
 		svg = createSVGElement();
-		svg.classList.add('svg-tree');
-		svg.style['background-color'] = "#2b5ada";
+		// svg.classList.add('svg-tree');
+		// svg.style['background-color'] = "#2b5ada";
 
 		console.log('svgHeap', svgHeap)
 
