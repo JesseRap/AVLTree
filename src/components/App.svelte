@@ -30,7 +30,7 @@
 	.edge-circle {
 		/* transition: transform 1s; */
 		/* filter: blur(20px) contrast(30); */
-		filter: url(#edgeBlur);
+		/* filter: url(#edgeBlur); */
 	  /* animation: demonstration 10s linear; */
 	}
 </style>
@@ -41,12 +41,13 @@
 	import AVLTree from '../lib/AVLTree.js';
 	import Node from './Node.svelte';
 	import NodeEdgeCircle from './NodeEdgeCircle.svelte';
+	import MainSVG from './MainSVG.svelte';
 	import Buttons from './Buttons.svelte'
 	import Header from './Header.svelte';
 	import { createSVGElement } from '../utils/svg';
 	import { getCxArr, getCyArr } from '../utils/tree';
 
-	let svgContainer; // The container for the AVL SVG.
+	// let svgContainer; // The container for the AVL SVG.
 
 	const XMLNS = 'http://www.w3.org/2000/svg';
 
@@ -107,7 +108,10 @@
 
 	const removeAllChildrenFromSVG = () => {
 		Array.from(svg.children).forEach(child => {
-			svg.removeChild(child);
+			// TODO: Brittle.
+			if (child.tagName === 'g' || child.tagName === 'path') {
+				svg.removeChild(child);
+			}
 		});
 	};
 
@@ -130,7 +134,7 @@
 
 	const putElementsOnSVG = tree => {
 		if (svg && !tree.root) {
-			removeAllChildrenFromSVG(svg);
+			removeAllChildrenFromSVG();
 			return;
 		}
 		insertNewNodesIntoSVG(svgHeap, svg);
@@ -181,6 +185,7 @@
 		path.classList.add('edge-circle');
 		const pathId = `${nodeId}-${parentId}`
 		path.setAttribute('id', pathId);
+		path.setAttributeNS(null, 'filter', 'url(#edgeBlur)');
 		path.setAttributeNS(null, 'd', `M ${cxArr[i]} ${cyArr[i]} L ${cxArr[tree.parentArray[i]]} ${cyArr[tree.parentArray[i]]}`);
 		path.setAttributeNS(null, "stroke", "black");
 		path.setAttributeNS(null, "fill", "transparent");
@@ -504,14 +509,16 @@
 
 	onMount(() => {
 		// Create root SVG.
-		svg = createSVGElement();
+		// svg = createSVGElement();
+		svg = document.getElementById('svg-main');
+
 		// svg.classList.add('svg-tree');
 		// svg.style['background-color'] = "#2b5ada";
 
-		console.log('svgHeap', svgHeap)
+		// console.log('svgHeap', svgHeap)
 
 		// Append root SVG to svgContainer
-		svgContainer.appendChild(svg);
+		// svgContainer.appendChild(svg);
 		updateSvg(theTree);
 
 		console.log('svgHeap', svgHeap);
@@ -520,11 +527,14 @@
 </script>
 
 <div>
+
 	<Header />
 
 	<div class="container-container" width="100%">
 
-		<div bind:this={svgContainer} class="container" style="width: 100%; max-width: 1000px; margin: auto;"/>
+		<div class="container" style="width: 100%; max-width: 1000px; margin: auto;">
+			<MainSVG />
+		</div>
 
 	</div>
 	<Buttons bind:tree={theTree} {onReset} {runAnimations} />

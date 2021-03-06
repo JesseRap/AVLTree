@@ -18,7 +18,7 @@ export const createSVGElement = () => {
   feDropShadow.setAttributeNS(null, 'stdDeviation', '1.2');
   filter.appendChild(feDropShadow);
   defs.appendChild(filter);
-  svg.appendChild(defs);
+  svg.append(defs);
 
   return svg;
 };

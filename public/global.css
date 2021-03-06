@@ -30,6 +30,9 @@ body {
 
 .svg-main {
 	background-color: #2b5ada;
+	filter: blur(0.5px) contrast(70);
+	box-shadow: 5px 5px 15px 5px;
+	margin-left: 10%;
 }
 
 .container {
