@@ -530,10 +530,11 @@
 
 	<div class="container-container" width="100%">
 
-		<div class="container" style="width: 100%; max-width: 1000px; margin: auto;">
-			<MainSVG />
+		<div class="container">
+			<Buttons bind:tree={theTree} {onReset} {runAnimations}>
+				<MainSVG />
+			</Buttons>
 		</div>
 
 	</div>
-	<Buttons bind:tree={theTree} {onReset} {runAnimations} />
 </div>

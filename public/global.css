@@ -30,29 +30,21 @@ body {
 
 /* nice gold fbc531 */
 
-.svg-main {
-	background-color: #2b5ada;
-	filter: blur(0.5px) contrast(70);
-	box-shadow: 2px 2px 11px 1px #2f3640, 3px 3px 15px 2px #000;
-	margin-left: 10%;
-}
-
 .container {
-	width: 100%;
-	height: auto;
-	max-width: 1000px;
+	/* width: 100%; */
+	/* height: auto; */
+	/* max-width: 1000px; */
 	padding: 50px;
 }
 
-text, circle {
-	/* transition: x 1s; */
-	/* transition: y 1s; */
-	/* transition: transform 1s; */
+@media (min-width: 1200px) {
+	.container {
+		display: flex;
+	}
 }
 
 path {
-	/* transition: stroke-dashoffset 1s; */
-	/* transition: d 1s; */
+	transition: d 0.2s;
 }
 
 a {
