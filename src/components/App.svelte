@@ -1,38 +1,4 @@
 <style>
-@keyframes demonstration{
-	0%{
-		filter:blur(0) contrast(1);
-	}
-	25%{
-		filter:blur(0) contrast(1);
-	}
-	30%{
-		filter:blur(20px) contrast(1);
-	}
-	55%{
-		filter:blur(20px) contrast(1);
-		animation-timing-function:ease-in;
-	}
-	80%{
-		filter:blur(20px) contrast(30);
-	}
-	100%{
-		filter:blur(20px) contrast(30);
-	}
-}
-
-	.container-container {
-		/* height: 90%; */
-		/* background-color: #00a8ff; */
-		/* background: linear-gradient(#2c5bd9 0%, #273c75 50%, #2c5bd9 100%); */
-	}
-
-	.edge-circle {
-		/* transition: transform 1s; */
-		/* filter: blur(20px) contrast(30); */
-		/* filter: url(#edgeBlur); */
-	  /* animation: demonstration 10s linear; */
-	}
 </style>
 <script>
 	import anime from 'animejs/lib/anime.es.js';
@@ -74,7 +40,7 @@
 		const heap = tree.heap;
 		svgHeap = heap.map(node => {
 			if (!node) return null;
-			return svgHeap.find(el => el?.id === String(node.id)) || createNodeSVG(node);
+			return svgHeap.find(el => el?.id === `g-${node.id}`) || createNodeSVG(node);
 		});
 	}
 
@@ -82,7 +48,7 @@
 		console.log('createNodeSVG!!');
 
 		const g = document.createElementNS(XMLNS, 'g');
-		g.setAttribute('id', node.id);
+		g.setAttribute('id', `g-${node.id}`); // TODO - FIXME - duplicate IDs.
 		const n = new Node({
 			target: g,
 			props: {
@@ -108,8 +74,8 @@
 
 	const removeAllChildrenFromSVG = () => {
 		Array.from(svg.children).forEach(child => {
-			// TODO: Brittle.
-			if (child.tagName === 'g' || child.tagName === 'path') {
+			// TODO: Brittle. Meant to not delete the edge circle.
+			if (child.tagName === 'g' || child.tagName === 'path' ) {
 				svg.removeChild(child);
 			}
 		});
@@ -133,10 +99,10 @@
 	}
 
 	const putElementsOnSVG = tree => {
-		if (svg && !tree.root) {
-			removeAllChildrenFromSVG();
-			return;
-		}
+		// if (svg && !tree.root) {
+		// 	removeAllChildrenFromSVG();
+		// 	return;
+		// }
 		insertNewNodesIntoSVG(svgHeap, svg);
 	};
 
@@ -144,11 +110,12 @@
 		if (!tree.root) svgHeap = [];
 		svgHeap.forEach((group, index) => {
 			if (group) {
+				console.log("GROUP", JSON.stringify(group.style.transform), group.id)
 				anime({
 					targets: group,
 					translateX: `${cxArr[index]}%`,
 					translateY: `${cyArr[index]}%`,
-					duration: 1000
+					duration: group.style.transform === "" ? 0 : 1000,
 				});
 
 				// group.style.transform = `translate(${cxArr[index]}%, ${cyArr[index]}%)`;
@@ -284,8 +251,8 @@
 		console.log('cxArr post', cxArr);
 		console.log('updateSVGHeap');
 		updateSVGHeap(myTree);
-		console.log('removeOldNodes');
-		removeOldNodes(myTree);
+		// console.log('removeOldNodes');
+		// removeOldNodes(myTree);
 		console.log('drawEdges');
 		drawEdges(myTree);
 		// await wait(1000);
@@ -331,7 +298,7 @@
 	// };
 
 	const animateNode = (tree, node) => {
-		const s = svgHeap.find(el => el?.id === String(node.id));
+		const s = svgHeap.find(el => el?.id === `g-${node.id}`);
 		console.log('animateNode', s);
 		if (s) {
 			const circle = s.querySelector('circle');
@@ -392,7 +359,58 @@
 			console.log('STATE!', state[i].type, state, Object.keys(edgesMemo), svgHeap);
 			// edgesMemo = {};
 
+			if (state[i].type === 'insert') {
+
+			}
+
 			if (state[i].type === 'insertStart') {
+				let startNode = document.getElementById('start-node');
+				if (startNode) svg.removeChild(startNode);
+				// QUESTION: Need to await tick()?
+				const newNode = new Node({
+					target: svg,
+					props: {
+						value: state[i].insertValue,
+						balance: 0,
+						id: 'start-node',
+						isFirstNode: true,
+					}
+				});
+				console.log('newNode!', newNode);
+
+				startNode = document.getElementById('start-node');
+				const transformGroup = startNode.querySelector('.node-transform-group');
+
+				console.log('startNode!', startNode);
+
+				transformGroup.setAttribute('style', 'opacity: 0');
+
+				const timeline = anime.timeline();
+
+				timeline.add({
+					targets: transformGroup,
+					translateX: '15%',
+					translateY: '15%',
+					opacity: 1,
+					duration: 1
+				})
+				.add({
+					targets: transformGroup,
+					translateX: `${cxArr[0] ?? 50}%`,
+					translateY: `${cyArr[0] ?? 50}%`,
+					duration: 500,
+					delay: 500
+				})
+				.add({
+					targets: transformGroup,
+					opacity: 0,
+					duration: 1,
+					delay: 200
+				});
+
+				// startNode.setAttributeNS(null, 'cx', '20%');
+				// startNode.setAttributeNS(null, 'cy', '20%');
+
 				// applyScaleToAllBalances();
 				// balanceScaleDown();
 			}

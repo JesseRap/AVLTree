@@ -188,7 +188,8 @@ export default class AVLTree {
 	insertValFromRoot = (val, rebalance = true) => {
 		this.stateGroup.push({
 			type: 'insertStart',
-			tree: this.copy()
+			tree: this.copy(),
+			insertValue: val
 		});
 		// console.log('INSERT', val);
 		if (!this.root) {
