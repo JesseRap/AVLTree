@@ -1,6 +1,10 @@
 <style>
+  .buttons {
+    /* background-color: #353b48; */
+    background-color: transparent;
+    border: 1px solid black;
+  }
   .buttons--desktop {
-    background-color: #353b48;
     display: flex;
     width: 100%;
     justify-content: space-between;
@@ -11,10 +15,25 @@
   }
 
   .buttons--mobile {
-    background-color: #353b48;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
     padding: 24px;
+  }
+
+  .buttons--mobile > div {
+    margin: 8px;
+  }
+
+  .buttons__button {
+    background-color: transparent;
+    color: #fbc531;
+  }
+
+  .buttons__input {
+    background-color: transparent;
+    color: #fbc531;
   }
 
   /* DESKTOP */
@@ -52,7 +71,7 @@
 		tree = tree;
 	};
 
-  let findVal = null;
+  let findVal = 0;
   const onFindValue = () => {
     console.log("FINDVAL", findVal)
     tree.find(findVal);
@@ -67,37 +86,17 @@
 	};
 </script>
 
-<div class="buttons buttons--mobile">
-	<div>
-		<input type='number' bind:value={newVal} />
-		<button on:click={onNewValue}>New Value</button>
-	</div>
-	<div>
-		<input type='number' bind:value={findVal} />
-		<button on:click={onFindValue}>Find Value</button>
-	</div>
-	<div>
-		<button on:click={onInsertRandVal}>Insert Random Value</button>
-	</div>
-	<div>
-		<button on:click={onReset}>RESET</button>
-	</div>
-	<div>
-		<button on:click={runAnimations}>ANIMATE</button>
-	</div>
-</div>
-
 <div class="buttons buttons--desktop buttons--desktop-left">
   <div>
-    <input type='number' bind:value={newVal} />
-    <button on:click={onNewValue}>New Value</button>
+    <input class="buttons__input" type='number' bind:value={newVal} />
+    <button class="buttons__button" on:click={onNewValue}>New Value</button>
   </div>
   <div>
-    <input type='number' bind:value={findVal} />
-    <button on:click={onFindValue}>Find Value</button>
+    <input class="buttons__input" type='number' bind:value={findVal} />
+    <button class="buttons__button" on:click={onFindValue}>Find Value</button>
   </div>
   <div>
-    <button on:click={onInsertRandVal}>Insert Random Value</button>
+    <button class="buttons__button" on:click={onInsertRandVal}>Insert Random Value</button>
   </div>
 </div>
 
@@ -105,9 +104,30 @@
 
 <div class="buttons buttons--desktop buttons--desktop-right">
   <div>
-    <button on:click={onReset}>RESET</button>
+    <button class="buttons__button" on:click={onReset}>RESET</button>
   </div>
   <div>
-    <button on:click={runAnimations}>ANIMATE</button>
+    <button class="buttons__button" on:click={runAnimations}>ANIMATE</button>
   </div>
+</div>
+
+
+<div class="buttons buttons--mobile">
+	<div>
+		<input class="buttons__input" type='number' bind:value={newVal} />
+		<button class="buttons__button" on:click={onNewValue}>New Value</button>
+	</div>
+	<div>
+		<input class="buttons__input" type='number' bind:value={findVal} />
+		<button class="buttons__button" on:click={onFindValue}>Find Value</button>
+	</div>
+	<div>
+		<button class="buttons__button" on:click={onInsertRandVal}>Insert Random Value</button>
+	</div>
+	<div>
+		<button class="buttons__button" on:click={onReset}>RESET</button>
+	</div>
+	<div>
+		<button class="buttons__button" on:click={runAnimations}>ANIMATE</button>
+	</div>
 </div>

@@ -3,7 +3,7 @@
     background-color: #2b5ada;
     filter: blur(0.5px) contrast(70);
     box-shadow: 2px 2px 11px 1px #2f3640, 3px 3px 15px 2px #000;
-    margin-top: 32px;
+    margin-bottom: 32px;
   }
 
   @media (max-width: 1199px) {
