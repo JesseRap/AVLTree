@@ -40,6 +40,8 @@
   .buttons__input {
     background-color: transparent;
     color: #fbc531;
+    text-align: center;
+    width: 100px;
   }
 
   /* DESKTOP */
