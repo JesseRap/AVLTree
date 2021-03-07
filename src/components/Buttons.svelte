@@ -3,6 +3,10 @@
     /* background-color: #353b48; */
     background-color: transparent;
     border: 1px solid black;
+    font-size: 20px;
+  }
+  .buttons * {
+    font-weight: bold;
   }
   .buttons--desktop {
     display: flex;
@@ -28,7 +32,9 @@
 
   .buttons__button {
     background-color: transparent;
+    /* background-color: #5d6a71e8; */
     color: #fbc531;
+    text-transform: uppercase;
   }
 
   .buttons__input {
