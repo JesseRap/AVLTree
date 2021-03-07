@@ -133,7 +133,7 @@
     <tspan letter-spacing="0.4px" font-size="3px" x="15%" dy="8%">An AVL tree is a</tspan>
     <tspan letter-spacing="0.4px" font-size="3px" x="15%" dy="8%">self-balancing binary search tree (BST).</tspan>
     <tspan letter-spacing="0.4px" font-size="3px" x="15%" dy="8%">It works by keeping track of each node's</tspan>
-    <tspan letter-spacing="0.4px" font-size="3px" x="15%" dy="8%">balance - the difference between</tspan>
+    <tspan letter-spacing="0.4px" font-size="3px" x="15%" dy="8%">balance factor - the difference between</tspan>
     <tspan letter-spacing="0.4px" font-size="3px" x="15%" dy="8%">the heights of the left and right subtrees.</tspan>
     <tspan letter-spacing="0.4px" font-size="3px" x="15%" dy="8%">If the balance of a node exceeds 1,</tspan>
     <tspan letter-spacing="0.4px" font-size="3px" x="15%" dy="8%">the AVL property is violated.</tspan>
