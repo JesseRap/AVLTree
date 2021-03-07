@@ -308,7 +308,7 @@ export default class AVLTree {
 		const dfs = node => {
 			// console.log('dfs', node?.val);
 			if (!node) {
-				return;
+				return null;
 			}
 			if (node.val === val) {
 				return node;
@@ -323,8 +323,72 @@ export default class AVLTree {
 		dfs(this.root);
 	};
 
-	delete = val => {
+	getSuccessor = node => {
+		if (!node.right) {
+			// No right sub-tree. Successor must be parent, node must be left child.
+			const isLeftChild = this.heap.indexOf(node) % 2 === 1;
+			if (!isLeftChild) {
+				return null;
+			}
+			const parent = this.getParentNode(node);
+			return parent;
+		}
 
+		// Successor is left-most child of right sub-tree.
+		node = node.right;
+
+		while (node.left) {
+			node = node.left
+		}
+
+		return node;
+	};
+
+	deleteRoot = () => {
+		if (this.root.isLeaf) {
+			this.root = null;
+		} else if (this.root.left && !this.root.right) {
+			this.root = this.root.left;
+		} else if (this.root.right && !this.root.left) {
+			this.root = this.root.right;
+		} else {
+			const successor = this.getSuccessor(this.root);
+			const parentOfSuccessor = this.getParentNode(successor);
+			const isLeftChild = this.heap.indexOf(successor);
+			parentOfSuccessor[isLeftChild ? 'left' : 'right'] = successor.right;
+			this.root.val = successor.val;
+			this.root.id = successor.id;
+		}
+	};
+
+	delete = val => {
+		const node = this.find(val);
+		if (node === null) return;
+
+		if (node === this.root) {
+			this.deleteRoot();
+		}
+
+		const parent = this.getParentNode(node);
+		if (node.isLeaf) {
+			const nodeIndex = this.heap.indexOf(node);
+			const isLeftChild = nodeIndex % 2 === 1;
+			parent[isLeftChild ? 'left' : 'right'] = null;
+		} else if (node.left && !node.right) {
+			parent[isLeftChild ? 'left' : 'right'] = node.left;
+		} else if (node.right && !node.left) {
+			parent[isLeftChild ? 'left' : 'right'] = node.right;
+		} else {
+			const successor = this.getSuccessor(node);
+			const parentOfSuccessor = this.getParentNode(successor);
+			const isLeftChild = this.heap.indexOf(successor);
+			parentOfSuccessor[isLeftChild ? 'left' : 'right'] = successor.right;
+			node.val = successor.val;
+			node.id = successor.id;
+		}
+		
+		this.updateAllNodes();
+		this.rebalanceAllNodes();
 	};
 
 	toHeapString = () => {

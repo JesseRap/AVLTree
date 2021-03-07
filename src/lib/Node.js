@@ -1,5 +1,4 @@
-// TODO: This might fail if module is imported multiple times.
-
+// TODO: This ID scheme might fail if module is imported multiple times.
 let id = 0;
 
 export default class Node {
@@ -10,5 +9,9 @@ export default class Node {
 		this.balance = 0;
 		this.height = 0;
 		this.id = id++;
+	}
+
+	get isLeaf() {
+		return this.left === null && this.right === null;
 	}
 }
