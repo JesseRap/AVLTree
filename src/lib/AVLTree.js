@@ -323,6 +323,10 @@ export default class AVLTree {
 		dfs(this.root);
 	};
 
+	delete = val => {
+
+	};
+
 	toHeapString = () => {
 		const heap = this.heap;
 		return heap.map(el => el?.val || null);
