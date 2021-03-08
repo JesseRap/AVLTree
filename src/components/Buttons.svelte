@@ -85,6 +85,12 @@
     tree.find(findVal);
   };
 
+  let deleteVal = 0;
+  const onDeleteVal = () => {
+    tree.delete(deleteVal);
+    tree = tree;
+  };
+
   const onInsertRandVal = () => {
 		let randVal = Math.floor(Math.random() * 50);
 		console.log('onInsertRandVal *!@#!&@#&*', randVal);
@@ -101,7 +107,11 @@
   </div>
   <div>
     <input class="buttons__input" type='number' bind:value={findVal} />
-    <button class="buttons__button" on:click={onFindValue}>Find Value</button>
+    <button class="buttons__button" on:click={onFindValue}>Find</button>
+  </div>
+  <div>
+    <input class="buttons__input" type='number' bind:value={deleteVal} />
+    <button class="buttons__button" on:click={onDeleteVal}>Delete</button>
   </div>
   <div>
     <button class="buttons__button" on:click={onInsertRandVal}>Insert Random Value</button>
@@ -128,6 +138,10 @@
 	<div>
 		<input class="buttons__input" type='number' bind:value={findVal} />
 		<button class="buttons__button" on:click={onFindValue}>Find Value</button>
+	</div>
+	<div>
+		<input class="buttons__input" type='number' bind:value={deleteVal} />
+		<button class="buttons__button" on:click={onDeleteVal}>Delete Value</button>
 	</div>
 	<div>
 		<button class="buttons__button" on:click={onInsertRandVal}>Insert Random Value</button>

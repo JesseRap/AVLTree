@@ -36,12 +36,25 @@
 	 * Takes heap from tree and updates global `svgHeap`, copying nodes with equal id's.
 	 */
 	const updateSVGHeap = tree => {
-		if (!tree.root) return new Array(0);
+		if (!tree.root) {
+			svgHeap.forEach(group => {
+				svg.removeChild(group);
+			});
+			svgHeap = new Array(0);
+			return;
+		}
 		const heap = tree.heap;
+		svgHeap.forEach(group => {
+			if (group && !heap.some(node => node?.id === `g-${group.id}`)) {
+				svg.removeChild(group);
+			}
+		});
 		svgHeap = heap.map(node => {
 			if (!node) return null;
 			return svgHeap.find(el => el?.id === `g-${node.id}`) || createNodeSVG(node);
 		});
+
+		console.log('HERE', svgHeap);
 	}
 
 	const createNodeSVG = node => {
@@ -65,8 +78,9 @@
 
 	const removeOldNodes = (tree) => {
 		const heap = tree.heap;
-		for (let i = 0; i < Math.max(heap.length, svgHeap.length); i++) {
-			if (heap[i] === null && i < svgHeap.length) {
+		for (let i = 0; i < svgHeap.length; i++) {
+			if (svgHeap[i] && heap[i] === null) {
+				svg.removeChild(svgHeap[i]);
 				svgHeap[i] = null;
 			}
 		}
