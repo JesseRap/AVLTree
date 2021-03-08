@@ -25,9 +25,24 @@ describe('AVL Tree', () => {
 
   describe('getLevels', () => {
     it('correctly produces levels', () => {
-      let tree = new AVLTree([1, 3, 2, 5, 4]);
+      const tree = new AVLTree([1, 3, 2, 5, 4]);
       const levels = tree.getLevels().map(level => level.map(node => node?.val));
       expect(levels).toEqual([[2], [1, 4], [undefined, undefined, 3, 5]]);
+    });
+  });
+
+  describe('heap', () => {
+    it('correctly produces heap representations', () => {
+      let tree = new AVLTree();
+      expect(tree.heap).toEqual([]);
+
+      tree = new AVLTree([1, 2]);
+      let heapValues = tree.heap.map(node => node?.val);
+      expect(heapValues).toEqual([1, undefined, 2]);
+
+      tree = new AVLTree([1, 3, 2, 5, 4]);
+      heapValues = tree.heap.map(node => node?.val);
+      expect(heapValues).toEqual([2, 1, 4, undefined, undefined, 3, 5]);
     });
   })
 })
