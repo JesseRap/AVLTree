@@ -406,26 +406,34 @@ export default class AVLTree {
 		const parentOfNode = this.getParentNode(node);
 		const nodeIsLeftChild = this.heap.indexOf(node) % 2 === 1;
 
-		const successor = this.getSuccessor(node);
-		if (!successor) {
-			parent[nodeIsLeftChild ? 'left' : 'right'] = null;
-			this.updateAllNodes();
-			this.rebalanceAllNodes();
+		if (!node.right && !node.right) {
+			parentOfNode[nodeIsLeftChild ? 'left' : 'right'] = null;
+		} else if (node.left && !node.right) {
+			parentOfNode[nodeIsLeftChild ? 'left' : 'right'] = node.left;
+		} else if (node.right && !node.left) {
+			parentOfNode[nodeIsLeftChild ? 'left' : 'right'] = node.right;
+		} else {
+			const successor = this.getSuccessor(node);
+			if (!successor) {
+				parent[nodeIsLeftChild ? 'left' : 'right'] = null;
+				this.updateAllNodes();
+				this.rebalanceAllNodes();
 
-			this.stateGroup.push({
-				type: 'deleteFinish',
-				tree: this.copy(),
-				deleteValue: val,
-				deleted: true
-			});
-			this.states.push(this.stateGroup);
-			return;
+				this.stateGroup.push({
+					type: 'deleteFinish',
+					tree: this.copy(),
+					deleteValue: val,
+					deleted: true
+				});
+				this.states.push(this.stateGroup);
+				return;
+			}
+			const parentOfSuccessor = this.getParentNode(successor);
+			const successorIsLeftChild = this.heap.indexOf(successor) % 2 === 1;
+			parentOfSuccessor[successorIsLeftChild ? 'left' : 'right'] = successor.right;
+			[successor.left, successor.right] = [node.left, node.right];
+			parent[nodeIsLeftChild ? 'left' : 'right'] = successor;
 		}
-		const parentOfSuccessor = this.getParentNode(successor);
-		const successorIsLeftChild = this.heap.indexOf(successor) % 2 === 1;
-		parentOfSuccessor[successorIsLeftChild ? 'left' : 'right'] = successor.right;
-		[successor.left, successor.right] = [node.left, node.right];
-		parent[nodeIsLeftChild ? 'left' : 'right'] = successor;
 
 		this.updateAllNodes();
 		this.rebalanceAllNodes();
