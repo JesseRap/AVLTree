@@ -5,6 +5,7 @@ export default class AVLTree {
 	constructor(inputArray, copy = true) {
 		this.root = null;
 		this.states = [];
+		this.stateGroup = [];
 		if (copy) {
 			this.stateGroup = [{
 				type: 'initial',
