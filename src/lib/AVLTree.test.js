@@ -74,8 +74,24 @@ describe('AVL Tree', () => {
   describe('delete', () => {
     it('correctly deletes values', () => {
       let tree = new AVLTree([1, 2, 3, 4, 5]);
+
       tree.delete(5);
       expect(tree.heap.map(node => node?.val)).toEqual([2, 1, 4, undefined, undefined, 3, undefined]);
+
+      tree.delete(2);
+      expect(tree.heap.map(node => node?.val)).toEqual([3, 1, 4]);
+
+      tree.delete(1);
+      expect(tree.heap.map(node => node?.val)).toEqual([3, undefined, 4]);
+
+      tree.delete(3);
+      expect(tree.heap.map(node => node?.val)).toEqual([4]);
+
+      tree.delete(5);
+      expect(tree.heap.map(node => node?.val)).toEqual([4]);
+
+      tree.delete(4);
+      expect(tree.heap.map(node => node?.val)).toEqual([]);
     });
   });
 })
