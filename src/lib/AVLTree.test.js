@@ -44,5 +44,30 @@ describe('AVL Tree', () => {
       heapValues = tree.heap.map(node => node?.val);
       expect(heapValues).toEqual([2, 1, 4, undefined, undefined, 3, 5]);
     });
-  })
+  });
+
+  describe('getSuccessor', () => {
+    it('correctly gets the successor', () => {
+      let tree = new AVLTree([1, 2, 3, 4, 5]);
+      let node = tree.find(1);
+      let successor = tree.getSuccessor(node);
+      expect(successor.val).toBe(2);
+
+      node = tree.find(2);
+      successor = tree.getSuccessor(node);
+      expect(successor.val).toBe(3);
+
+      node = tree.find(3);
+      successor = tree.getSuccessor(node);
+      expect(successor.val).toBe(4);
+
+      node = tree.find(4);
+      successor = tree.getSuccessor(node);
+      expect(successor.val).toBe(5);
+
+      node = tree.find(5);
+      successor = tree.getSuccessor(node);
+      expect(successor).toBeNull();
+    });
+  });
 })

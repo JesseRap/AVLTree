@@ -53,7 +53,12 @@ export default class AVLTree {
 	 */
 	updateNode = node => this.updateNodeHeight(this.updateNodeBalance(node));
 
-	getNodeIndex = node => this.heap.indexOf(node);
+	/**
+	 * Function that identifies a node in heap not by referential equality but by ID. This is because when we create copies of trees, we create new nodes with old IDs, and we may want to find the index of a referentially distinct node with the same ID.
+	 */
+	getNodeIndex = node => this.heap.findIndex(n => n?.id === node.id)
+
+	getNodeIndexStrict = node => this.heap.indexOf(node);
 
 	rotateLeftNode = (node) => {
 		const index = this.getNodeIndex(node)
@@ -259,9 +264,9 @@ export default class AVLTree {
 		});
 	};
 
-	getParentNode = (tree, node) => {
-		const nodeIndex = this.getNodeIndex(tree, node);
-		return nodeIndex === 0 ? null : this.heap[Math.floor(nodeIndex - 1) / 2];
+	getParentNode = (node, tree = this) => {
+		const nodeIndex = tree.getNodeIndex(node);
+		return nodeIndex === 0 ? null : tree.heap[Math.floor(nodeIndex - 1) / 2];
 	}
 
 	// TODO: Refactor for readability.
