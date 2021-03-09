@@ -70,4 +70,12 @@ describe('AVL Tree', () => {
       expect(successor).toBeNull();
     });
   });
+
+  describe('delete', () => {
+    it('correctly deletes values', () => {
+      let tree = new AVLTree([1, 2, 3, 4, 5]);
+      tree.delete(5);
+      expect(tree.heap.map(node => node?.val)).toEqual([2, 1, 4, undefined, undefined, 3, undefined]);
+    });
+  });
 })

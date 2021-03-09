@@ -264,9 +264,9 @@ export default class AVLTree {
 		});
 	};
 
-	getParentNode = (node, tree = this) => {
-		const nodeIndex = tree.getNodeIndex(node);
-		return nodeIndex === 0 ? null : tree.heap[Math.floor(nodeIndex - 1) / 2];
+	getParentNode = node => {
+		const nodeIndex = this.getNodeIndex(node);
+		return nodeIndex === 0 ? null : this.heap[Math.floor((nodeIndex - 1) / 2)];
 	}
 
 	// TODO: Refactor for readability.
@@ -352,7 +352,7 @@ export default class AVLTree {
 
 	deleteRoot = () => {
 		const deleteValue = this.root.val;
-		if (!this.root.right && !this.root.right) {
+		if (this.root.isLeaf) {
 			this.root = null;
 		} else if (this.root.left && !this.root.right) {
 			this.root = this.root.left;
@@ -412,7 +412,7 @@ export default class AVLTree {
 		const parentOfNode = this.getParentNode(node);
 		const nodeIsLeftChild = this.heap.indexOf(node) % 2 === 1;
 
-		if (!node.right && !node.right) {
+		if (node.isLeaf) {
 			parentOfNode[nodeIsLeftChild ? 'left' : 'right'] = null;
 		} else if (node.left && !node.right) {
 			parentOfNode[nodeIsLeftChild ? 'left' : 'right'] = node.left;
