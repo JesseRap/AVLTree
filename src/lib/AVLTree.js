@@ -75,9 +75,9 @@ export default class AVLTree {
 		this.stateGroup.push({
 			type: 'rebalance',
 			tree: this.copy(),
-			pivotId: node.id,
-			rotatedId: rotated.id,
-			parentId: parent?.id
+			pivot: node,
+			rotated: rotated,
+			parent: parent
 		});
 		return rotated;
 	};
@@ -107,9 +107,9 @@ export default class AVLTree {
 		this.stateGroup.push({
 			type: 'rebalance',
 			tree: this.copy(),
-			pivotId: node.id,
-			rotatedId: rotated.id,
-			parentId: parent?.id
+			pivot: node,
+			rotated: rotated,
+			parent: parent
 		});
 		return rotated;
 	};
@@ -197,17 +197,19 @@ export default class AVLTree {
 			tree: this.copy(),
 			insertValue: val
 		});
-		// console.log('INSERT', val);
 		if (!this.root) {
 			this.root = new Node(val);
 			this.stateGroup.push({
 				type: 'insert',
 				tree: this.copy(),
-				node: this.root
+				child: this.root,
+				parent: null,
+				insertValue: val
 			});
 			this.stateGroup.push({
 				type: 'insertFinish',
 				tree: this.copy(),
+				insertValue: val
 			});
 			return;
 		}
@@ -249,7 +251,9 @@ export default class AVLTree {
 		this.stateGroup.push({
 			type: 'insert',
 			tree: this.copy(),
-			node: previous
+			child: previous,
+			parent: this.getParentNode(previous),
+			insertValue: val
 		});
 
 		if (rebalance) {
@@ -261,6 +265,7 @@ export default class AVLTree {
 		this.stateGroup.push({
 			type: 'insertFinish',
 			tree: this.copy(),
+			insertValue: val
 		});
 	};
 

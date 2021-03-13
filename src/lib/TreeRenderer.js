@@ -193,17 +193,43 @@ export default class TreeRenderer {
   /**
    * Updates the edge memp based on the AVL tree after changes.
    */
-  updateEdgeMemoFromHeap = tree => {
-    if (!tree.root) {
+  updateEdgeMemoFromState = state {
+    console.log('updateSvgHeapFromHeap');
+    if (!state.tree.root) {
       this.edgeMemo = {};
-			return;
-		}
+		} else if (state.type ==== 'insert') {
+      const { pivot, rotated, parent } = state;
+      const key = `${child.id}-${parent.id}`;
+
+      this.edgeMemo[key] = this.createPath(child);
+    } else if (state.type === 'rebalance') {
+      const oldKey = `${pivot.id}-${rotated.id}`;
+      const newKey = `${rotated.id}-${pivot.id}`;
+      const path = edgeMemo[oldKey];
+      edgeMemo[newKey] = path;
+      delete edgeMemo[oldKey];
+
+      if (parent) {
+        const oldParentKey = `${parent.id}-${rotated.id}`;
+        const newParentKey = `${parent.id}-${rotated.id}`;
+        const path = edgeMemo[oldKey];
+        edgeMemo[newKey] = path;
+        delete edgeMemo[oldKey];
+      }
+
+      if ()
+
+    } else if (state.type === 'delete') {
+
+    }
+
   };
 
   /**
    * Updates the SVG heap based on the AVL tree after changes.
    */
   updateSvgHeapFromHeap = tree => {
+    console.log('updateSvgHeapFromHeap');
     if (!tree.root) {
       this.svgHeap = [];
 			return;
@@ -216,7 +242,7 @@ export default class TreeRenderer {
 
   update = state => {
     this.updateSvgHeapFromHeap(state.tree);
-    this.updateEdgeMemoFromHeap(state.tree);
+    this.updateEdgeMemoFromState(state);
   };
 
   animate = state => {
