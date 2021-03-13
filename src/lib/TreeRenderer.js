@@ -13,14 +13,16 @@ export default class TreeRenderer {
   tree;
   rootSVG;
 
-  constructor(svg, tree){
-    this.tree = tree ?? new AVLTree();
+  constructor(svg, tree, copy = true){
+    this.tree = tree || new AVLTree();
     this.rootSVG = svg;
-    this.stateGroup = [{
-      type: 'inial',
-      tree: tree.copy()
-    }];
-    this.stateGroups.push(this.stateGroup)
+    if (copy) {
+      this.stateGroup = [{
+        type: 'inial',
+        tree: this.tree.copy()
+      }];
+      this.stateGroups.push(this.stateGroup);
+    }
   }
 
   insert = val => {
