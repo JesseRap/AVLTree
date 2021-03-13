@@ -22,3 +22,28 @@ export const createSVGElement = () => {
 
   return svg;
 };
+
+export const createNodeSVG = node => {
+  console.log('createNodeSVG');
+
+  const g = document.createElementNS(XMLNS, 'g');
+  g.setAttribute('id', `g-${node.id}`); // TODO - FIXME - duplicate IDs.
+  const n = new Node({
+    target: g,
+    props: {
+      balance: node.balance,
+      value: node.val
+    }
+  });
+
+  const scaleGroup = g.querySelector('.scale-group');
+
+  // NB: Node starts with scale(0);
+  scaleGroup.setAttribute('style', 'transform: scale(0);');
+
+  return g;
+};
+
+export const childExistsInNode = (child, node) => Array.from(node.children).some(childNode =>
+  childNode.id === child?.id
+);

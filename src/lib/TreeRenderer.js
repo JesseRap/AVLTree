@@ -1,5 +1,6 @@
 import AVLTree from './AVLTree.js';
 import Node from '../components/Node.svelte';
+import { childExistsInNode, createNodeSVG } from '../utils/svg';
 
 const XMLNS = 'http://www.w3.org/2000/svg';
 
@@ -18,7 +19,7 @@ export default class TreeRenderer {
     this.rootSVG = svg;
     if (copy) {
       this.stateGroup = [{
-        type: 'inial',
+        type: 'initial',
         tree: this.tree.copy()
       }];
       this.stateGroups.push(this.stateGroup);
@@ -46,26 +47,6 @@ export default class TreeRenderer {
     this.edgeMemo = {};
   };
 
-  createNodeSVG = node => {
-		console.log('createNodeSVG');
-
-		const g = document.createElementNS(XMLNS, 'g');
-		g.setAttribute('id', `g-${node.id}`); // TODO - FIXME - duplicate IDs.
-		const n = new Node({
-			target: g,
-			props: {
-				balance: node.balance,
-				value: node.val
-			}
-		});
-
-		const scaleGroup = g.querySelector('.scale-group');
-
-    // NB: Node starts with scale(0);
-		scaleGroup.setAttribute('style', 'transform: scale(0);');
-
-		return g;
-	};
 
 	// removeOldNodes = () => {
 	// 	for (let i = 0; i < this.svgHeap.length; i++) {
@@ -84,10 +65,6 @@ export default class TreeRenderer {
 			}
 		});
 	};
-
-  childExistsInNode = (child, node) => Array.from(node.children).some(childNode =>
-		childNode.id === child.id
-	);
 
   animateUpdateNodeCoords = () => {
 		this.svgHeap.forEach((group, index) => {
@@ -151,6 +128,7 @@ export default class TreeRenderer {
 	};
 
   animateDrawEdges = tree => {
+    debugger;
 		const heap = tree.heap;
 
 		const keys = [];
@@ -180,7 +158,7 @@ export default class TreeRenderer {
 				console.log('NEW PATH');
 				const path = this.createPath(node);
 				const firstNode = tree.rootSVG.children[0];
-				svg.insertBefore(path, firstNode);
+				this.rootSVG.insertBefore(path, firstNode);
 				path.setAttributeNS(null, 'd', `M ${tree.cxArr[i]} ${tree.cyArr[i]} L ${tree.cxArr[tree.tree.parentArray[i]]} ${tree.cyArr[tree.tree.parentArray[i]]}`);
 				// path.setAttributeNS(null, 'stroke-dashoffset', '0%');
 				path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
@@ -194,22 +172,22 @@ export default class TreeRenderer {
 			}
 		}
 
-    // remove old edges
-		Object.keys(this.edgesMemo).forEach(key => {
-			if (!keys.includes(key)) {
-				anime({
-					targets: this.edgesMemo[key],
-					opacity: 0,
-					duration: 500,
-					delay: 1000
-				});
-				const path = this.edgesMemo[key];
-				setTimeout(() => {
-					svg.removeChild(path);
-				}, 1000);
-				delete tree.edgesMemo[key];
-			}
-		});
+    // // remove old edges
+		// Object.keys(this.edgesMemo).forEach(key => {
+		// 	if (!keys.includes(key)) {
+		// 		anime({
+		// 			targets: this.edgesMemo[key],
+		// 			opacity: 0,
+		// 			duration: 500,
+		// 			delay: 1000
+		// 		});
+		// 		const path = this.edgesMemo[key];
+		// 		setTimeout(() => {
+		// 			svg.removeChild(path);
+		// 		}, 1000);
+		// 		delete tree.edgesMemo[key];
+		// 	}
+		// });
 	};
 
   /**
