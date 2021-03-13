@@ -72,30 +72,39 @@
   export let tree;
   export let onReset;
   export let runAnimations;
+  export let renderer;
 
   let newVal = 0;
   const onNewValue = () => {
-		tree.insert(newVal);
-		tree = tree;
+		renderer.insert(newVal);
+		// tree = tree;
+		// tree.insert(newVal);
+		// tree = tree;
 	};
 
   let findVal = 0;
   const onFindValue = () => {
-    console.log("FINDVAL", findVal)
-    tree.find(findVal);
+    renderer.find(findVal);
+    // console.log("FINDVAL", findVal)
+    // tree.find(findVal);
   };
 
   let deleteVal = 0;
   const onDeleteVal = () => {
-    tree.delete(deleteVal);
-    tree = tree;
+    renderer.delete(deleteVal);
+    // tree.delete(deleteVal);
+    // tree = tree;
   };
 
   const onInsertRandVal = () => {
 		let randVal = Math.floor(Math.random() * 50);
 		console.log('onInsertRandVal *!@#!&@#&*', randVal);
-		tree.insert(randVal);
-		tree = tree;
+
+    renderer.insert(randVal);
+
+		// tree.insert(randVal);
+		// tree = tree;
+		//
 		// updateSvg(theTree);
 	};
 </script>

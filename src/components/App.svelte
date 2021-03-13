@@ -5,6 +5,7 @@
 
 	import { afterUpdate, onMount, tick } from 'svelte';
 	import AVLTree from '../lib/AVLTree.js';
+	import TreeRenderer from '../lib/TreeRenderer.js';
 	import Node from './Node.svelte';
 	import NodeEdgeCircle from './NodeEdgeCircle.svelte';
 	import MainSVG from './MainSVG.svelte';
@@ -21,13 +22,25 @@
 	let svg;
 	let svgHeap = new Array(0);
 
- 	$: states = theTree.states;
+ 	// $: states = theTree.states;
 
-	$: {
-		console.log('STATES!!!!!', states);
-	}
+	// $: {
+	// 	console.log('STATES!!!!!', states);
+	// }
+	// $: {
+	// 	console.log('STATES!!!!!', states);
+	// }
 
-	$: runLatestAnimation(states.length);
+	// $: runLatestAnimation(states.length);
+	$: animate(renderer?.stateGroups?.length);
+
+	let renderer;
+	const animate = () => {
+		console.log(renderer?.stateGroups);
+		if (renderer?.stateGroups?.length > 0) {
+			renderer.runLatestAnimationGroup();
+		}
+	};
 
 	let cxArr = [];
 	let cyArr = [];
@@ -550,9 +563,11 @@
 		// Create root SVG.
 		svg = document.getElementById('svg-main');
 
-		updateSvg(theTree);
+		renderer = new TreeRenderer(svg);
 
-		console.log('svgHeap', svgHeap);
+		// updateSvg(theTree);
+		//
+		// console.log('svgHeap', svgHeap);
 
 	});
 </script>
@@ -564,7 +579,7 @@
 	<div class="container-container" width="100%">
 
 		<div class="container">
-			<Buttons bind:tree={theTree} {onReset} {runAnimations}>
+			<Buttons bind:tree={theTree} {renderer} {onReset} {runAnimations}>
 				<MainSVG />
 			</Buttons>
 		</div>
