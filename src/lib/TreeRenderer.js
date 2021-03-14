@@ -1,5 +1,4 @@
 import AVLTree from './AVLTree.js';
-import Node from '../components/Node.svelte';
 import { childExistsInNode, createNodeSVG } from '../utils/svg';
 
 const XMLNS = 'http://www.w3.org/2000/svg';
@@ -19,7 +18,7 @@ export default class TreeRenderer {
   }
 
   get stateGroups() {
-    return this.tree.stateGroups;
+    return this.tree?.stateGroups ?? [];
   };
 
   insert = val => {

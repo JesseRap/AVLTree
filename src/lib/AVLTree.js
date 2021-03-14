@@ -1,6 +1,6 @@
 import { tick } from 'svelte';
 import Node from './Node.js';
-import TreeCopier from './TreeCopier.js';
+// import TreeCopier from './TreeCopier.js';
 
 export default class AVLTree {
 	constructor(inputArray, copy = true) {
