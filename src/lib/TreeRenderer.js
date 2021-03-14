@@ -11,10 +11,9 @@ export default class TreeRenderer {
   tree;
   rootSVG;
 
-  constructor(svg){
+  constructor(svg) {
     this.tree = new AVLTree();
     this.rootSVG = svg;
-    }
   }
 
   get stateGroups() {
