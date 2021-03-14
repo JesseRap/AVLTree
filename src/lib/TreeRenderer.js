@@ -283,6 +283,7 @@ export default class TreeRenderer {
     console.log('runLatestAnimationGroup', this.stateGroups);
     for (const state of this.tree.stateGroups[this.tree.stateGroups.length - 1]) {
       console.log(state);
+      debugger;
       this.update(state);
       this.animate(state);
     }
