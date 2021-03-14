@@ -24,6 +24,7 @@ export const createSVGElement = () => {
 };
 
 export const createNodeSVG = node => {
+  debugger;
   console.log('createNodeSVG');
 
   const g = document.createElementNS(XMLNS, 'g');

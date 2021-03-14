@@ -1,5 +1,6 @@
 import { tick } from 'svelte';
 import Node from './Node.js';
+import TreeCopier from './TreeCopier.js';
 
 export default class AVLTree {
 	constructor(inputArray, copy = true) {
@@ -459,47 +460,9 @@ export default class AVLTree {
 		return;
 	};
 
-	toHeapString = () => {
-		const heap = this.heap;
-		return heap.map(el => el?.val || null);
-	};
-
 	copy = () => {
-		const newTree = new TreeCopier(this).copy();
-		return newTree;
-	};
-}
+		const newTree = new TreeCopier(this);
 
-class TreeCopier {
-	constructor(tree) {
-		this.tree = tree;
-	}
-
-	copyNodeData = (sourceNode, destNode) => {
-		destNode.id = sourceNode.id;
-		destNode.height = sourceNode.height;
-		destNode.balance = sourceNode.balance;
-	};
-
-	copy = () => {
-		const newTree = new AVLTree([], false);
-		if (!this.tree.root) return newTree;
-		const newRoot = new Node(this.tree.root.val);
-		newTree.root = newRoot;
-		this.copyNodeData(this.tree.root, newRoot);
-		const dfs = (node, current) => {
-			if (node.left) {
-				current.left = new Node(node.left.val);
-				this.copyNodeData(node.left, current.left);
-				dfs(node.left, current.left);
-			}
-			if (node.right) {
-				current.right = new Node(node.right.val);
-				this.copyNodeData(node.right, current.right);
-				dfs(node.right, current.right);
-			}
-		};
-		dfs(this.tree.root, newRoot);
-		return newTree
+		return newTree.copy();
 	};
 }

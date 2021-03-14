@@ -77,6 +77,7 @@
   let newVal = 0;
   const onNewValue = () => {
 		renderer.insert(newVal);
+    renderer.stateGroup = renderer.stateGroup;
 		// tree = tree;
 		// tree.insert(newVal);
 		// tree = tree;
@@ -85,6 +86,7 @@
   let findVal = 0;
   const onFindValue = () => {
     renderer.find(findVal);
+    renderer.stateGroup = renderer.stateGroup;
     // console.log("FINDVAL", findVal)
     // tree.find(findVal);
   };
@@ -92,6 +94,7 @@
   let deleteVal = 0;
   const onDeleteVal = () => {
     renderer.delete(deleteVal);
+    renderer.stateGroup = renderer.stateGroup;
     // tree.delete(deleteVal);
     // tree = tree;
   };
@@ -101,6 +104,7 @@
 		console.log('onInsertRandVal *!@#!&@#&*', randVal);
 
     renderer.insert(randVal);
+    renderer.stateGroups = renderer.stateGroups;
 
 		// tree.insert(randVal);
 		// tree = tree;
