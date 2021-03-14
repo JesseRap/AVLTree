@@ -28,7 +28,6 @@ export const createNodeSVG = node => {
   console.log('createNodeSVG');
 
   const g = document.createElementNS(XMLNS, 'g');
-  g.setAttribute('id', `g-${node.id}`); // TODO - FIXME - duplicate IDs.
   const n = new Node({
     target: g,
     props: {
@@ -36,6 +35,7 @@ export const createNodeSVG = node => {
       value: node.val
     }
   });
+  g.setAttribute('id', `g-${node.id}`); // TODO - FIXME - duplicate IDs.
 
   const scaleGroup = g.querySelector('.scale-group');
 

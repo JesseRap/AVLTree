@@ -12,7 +12,7 @@ export default class AVLTree {
 				type: 'initial',
 				tree: this.copy()
 			}];
-			this.states.push(this.stateGroup);
+			this.states = [...this.states, this.stateGroup];
 		}
 		if (inputArray) {
 			for (const val of inputArray) {
@@ -302,13 +302,13 @@ export default class AVLTree {
 	insert = val => {
 		this.stateGroup = [];
 		this.insertValFromRoot(val);
-		this.states.push(this.stateGroup);
+		this.states = [...this.states, this.stateGroup];
 	};
 
 	insertUnbalanced = val => {
 		this.stateGroup = [];
 		this.insertValFromRoot(val, false);
-		this.states.push(this.stateGroup);
+		this.states = [...this.states, this.stateGroup];
 	};
 
 	toString = () => {
@@ -403,7 +403,7 @@ export default class AVLTree {
 				deleteValue: val,
 				deleted: false
 			});
-			this.states.push(this.stateGroup);
+			this.states = [...this.states, this.stateGroup];
 			return;
 		}
 
@@ -411,7 +411,7 @@ export default class AVLTree {
 
 		if (node === this.root) {
 			this.deleteRoot();
-			this.states.push(this.stateGroup);
+			this.states = [...this.states, this.stateGroup];
 			return;
 		}
 
@@ -437,7 +437,7 @@ export default class AVLTree {
 					deleteValue: val,
 					deleted: true
 				});
-				this.states.push(this.stateGroup);
+				this.states = [...this.states, this.stateGroup];
 				return;
 			}
 			const parentOfSuccessor = this.getParentNode(successor);
@@ -456,7 +456,7 @@ export default class AVLTree {
 			deleteValue: val,
 			deleted: true
 		});
-		this.states.push(this.stateGroup);
+		this.states = [...this.states, this.stateGroup];
 		return;
 	};
 

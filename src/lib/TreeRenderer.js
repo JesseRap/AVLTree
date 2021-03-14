@@ -9,47 +9,39 @@ export default class TreeRenderer {
   cyArr = [];
   svgHeap = [];
   edgeMemo = {};
-  stateGroups = [];
   tree;
   rootSVG;
 
-  constructor(svg, copy = true){
+  constructor(svg){
     this.tree = new AVLTree();
     this.rootSVG = svg;
-    if (copy) {
-      this.stateGroup = [{
-        type: 'initial',
-        tree: this.tree.copy()
-      }];
-      this.stateGroups.push(this.stateGroup);
     }
   }
+
+  get stateGroups() {
+    return this.tree.stateGroups;
+  };
 
   insert = val => {
     debugger;
     console.log('insert');
     this.tree.insert(val);
-    this.stateGroups = [...this.stateGroups, this.tree.stateGroup];
-    this.runLatestAnimationGroup();
   };
 
   find = val => {
     console.log('find');
     this.tree.find(val);
-    this.stateGroups = [...this.stateGroups, this.tree.stateGroup];
   };
 
   delete = val => {
     console.log('delete');
     this.tree.insert(val);
-    this.stateGroups = [...this.stateGroups, this.tree.stateGroup];
   };
 
   reset = () => {
     console.log('reset');
     this.svgHeap = [];
     this.edgeMemo = {};
-    this.stateGroups = [...this.stateGroups, this.tree.stateGroup];
   };
 
 
@@ -260,6 +252,7 @@ export default class TreeRenderer {
   };
 
   insertNewNodesIntoSVG = state => {
+    debugger;
     state.tree.heap.forEach((node, index) => {
       if (node && !Array.from(state.rootSVG.children).includes(child => child?.id === `g-${node.id}`)) {
         const group = createNodeSVG(node);
@@ -290,7 +283,7 @@ export default class TreeRenderer {
 
   runLatestAnimationGroup = () => {
     console.log('runLatestAnimationGroup', this.stateGroups);
-    for (const state of this.stateGroups[this.stateGroups.length - 1]) {
+    for (const state of this.tree.stateGroups[this.tree.stateGroups.length - 1]) {
       console.log(state);
       this.update(state);
       this.animate(state);
