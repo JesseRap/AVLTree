@@ -3,7 +3,6 @@ let id = 0;
 
 export default class Node {
 	constructor(val) {
-		debugger;
 		this.val = val;
 		this.left = null;
 		this.right = null;

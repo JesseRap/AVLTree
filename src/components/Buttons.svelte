@@ -69,7 +69,6 @@
   }
 </style>
 <script>
-  export let tree;
   export let onReset;
   export let runAnimations;
   export let renderer;
@@ -78,6 +77,7 @@
   const onNewValue = () => {
 		renderer.insert(newVal);
     renderer.stateGroup = renderer.stateGroup;
+    renderer.runLatestAnimationGroup();
 		// tree = tree;
 		// tree.insert(newVal);
 		// tree = tree;
@@ -87,6 +87,7 @@
   const onFindValue = () => {
     renderer.find(findVal);
     renderer.stateGroup = renderer.stateGroup;
+    renderer.runLatestAnimationGroup();
     // console.log("FINDVAL", findVal)
     // tree.find(findVal);
   };
@@ -95,6 +96,7 @@
   const onDeleteVal = () => {
     renderer.delete(deleteVal);
     renderer.stateGroup = renderer.stateGroup;
+    renderer.runLatestAnimationGroup();
     // tree.delete(deleteVal);
     // tree = tree;
   };
@@ -105,6 +107,7 @@
 
     renderer.insert(randVal);
     renderer.stateGroups = renderer.stateGroups;
+    renderer.runLatestAnimationGroup();
 
 		// tree.insert(randVal);
 		// tree = tree;

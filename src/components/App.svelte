@@ -18,17 +18,16 @@
 
 	const XMLNS = 'http://www.w3.org/2000/svg';
 
-	let svg;
 	let renderer;
-	let stateGroups = renderer?.stateGroups || [];
+	$: stateGroups = renderer?.stateGroups || [];
 
-	const animate = () => {
-		console.log('ANIMATE', stateGroups);
-		if (stateGroups?.length > 0) {
-			renderer.runLatestAnimationGroup();
-			stateGroups = stateGroups;
-		}
-	};
+	// $: animate(stateGroups.length);
+	//
+	// const animate = () => {
+	// 	console.log('ANIMATE', stateGroups);
+	// 	renderer?.runLatestAnimationGroup();
+	// 	stateGroups = renderer?.stateGroups;
+	// };
 
 	const onReset = () => {
 		animate();
@@ -41,9 +40,9 @@
 
 	onMount(() => {
 		// Create root SVG.
-		svg = document.getElementById('svg-main');
+		const svg = document.getElementById('svg-main');
 
-		renderer = new TreeRenderer(svg);
+		$: renderer = new TreeRenderer(svg);
 
 		// updateSvg(theTree);
 		//

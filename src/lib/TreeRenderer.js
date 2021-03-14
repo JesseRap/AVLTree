@@ -1,5 +1,7 @@
+import anime from 'animejs/lib/anime.es.js';
 import AVLTree from './AVLTree.js';
 import { childExistsInNode, createNodeSVG } from '../utils/svg';
+import { getCxArr, getCyArr } from '../utils/tree';
 
 const XMLNS = 'http://www.w3.org/2000/svg';
 
@@ -24,16 +26,20 @@ export default class TreeRenderer {
     debugger;
     console.log('insert');
     this.tree.insert(val);
+    this.tree = this.tree;
+    // this.runLatestAnimationGroup();
   };
 
   find = val => {
     console.log('find');
     this.tree.find(val);
+    this.tree = this.tree;
   };
 
   delete = val => {
     console.log('delete');
     this.tree.insert(val);
+    this.tree = this.tree;
   };
 
   reset = () => {
@@ -64,7 +70,7 @@ export default class TreeRenderer {
   animateUpdateNodeCoords = () => {
 		this.svgHeap.forEach((group, index) => {
 			if (group) {
-				console.log("GROUP", JSON.stringify(group.style.transform), group.id)
+				console.log("GROUP", JSON.stringify(group.style.transform), group.id, this.cxArr, this.cyArr);
 				anime({
 					targets: group,
 					translateX: `${this.cxArr[index]}%`,
@@ -75,7 +81,7 @@ export default class TreeRenderer {
 				// group.style.transform = `translate(${cxArr[index]}%, ${cyArr[index]}%)`;
 
 				const balance = group.querySelector('.balance');
-				const heap = tree.heap;
+				const heap = this.tree.heap;
 				balance.innerHTML = heap[index].balance;
 				balance.setAttributeNS(null, 'fill', (Math.abs(heap[index].balance)) === 0 ? '#7f8fa6' : (Math.abs(heap[index].balance)) === 1 ? '#c23616' : '#e84118');
 
@@ -97,11 +103,11 @@ export default class TreeRenderer {
   createPath = node => {
     debugger;
 		if (!node) return;
-		const i = this.getNodeIndex(node);
+		const i = this.tree.getNodeIndex(node);
 		if (i === 0) return;
 		if (i === -1) throw new Error('Node not found.');
 		const nodeId = node.id;
-		const parent = this.getParentNode(node);
+		const parent = this.tree.getParentNode(node);
 		const parentId = parent.id;
 		const path = document.createElementNS(XMLNS, 'path');
 		path.classList.add('edge-circle');
@@ -138,25 +144,25 @@ export default class TreeRenderer {
 			const key = `${nodeId}-${parentId}`;
 			keys.push(key);
 			console.log("KEY", key)
-			console.log("this.edgesMemo", tree.edgesMemo)
-			console.log("svgHeap", svgHeap)
-			if (this.edgesMemo[key]) {
-				const path = this.edgesMemo[key];
+			console.log("this.edgeMemo", this.edgeMemo)
+			console.log("svgHeap", this.svgHeap)
+			if (this.edgeMemo[key]) {
+				const path = this.edgeMemo[key];
 				// if (path && !heap[i]) {
 				// 	svg.removeChild(path);
-				// 	delete tree.edgesMemo[i];
+				// 	delete tree.edgeMemo[i];
 				// }
-				path.setAttributeNS(null, 'd', `M ${tree.cxArr[i]} ${tree.cyArr[i]} L ${cxArr[tree.tree.parentArray[i]]} ${tree.cyArr[tree.tree.parentArray[i]]}`);
-				// if (!heap[i] && tree.edgesMemo[i]) {
+				path.setAttributeNS(null, 'd', `M ${this.cxArr[i]} ${this.cyArr[i]} L ${this.cxArr[this.tree.parentArray[i]]} ${this.cyArr[this.tree.parentArray[i]]}`);
+				// if (!heap[i] && tree.edgeMemo[i]) {
 				// 	svg.removeChild(path);
 				// }
 			} else {
 				console.log('NEW PATH');
         debugger;
 				const path = this.createPath(node);
-				const firstNode = tree.rootSVG.children[0];
+				const firstNode = this.rootSVG.children[0];
 				this.rootSVG.insertBefore(path, firstNode);
-				path.setAttributeNS(null, 'd', `M ${tree.cxArr[i]} ${tree.cyArr[i]} L ${tree.cxArr[tree.tree.parentArray[i]]} ${tree.cyArr[tree.tree.parentArray[i]]}`);
+				path.setAttributeNS(null, 'd', `M ${this.cxArr[i]} ${this.cyArr[i]} L ${this.cxArr[this.tree.parentArray[i]]} ${this.cyArr[this.tree.parentArray[i]]}`);
 				// path.setAttributeNS(null, 'stroke-dashoffset', '0%');
 				path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
 				anime({
@@ -165,24 +171,24 @@ export default class TreeRenderer {
 					duration: 500,
 					delay: 200
 				});
-				this.edgesMemo[key] = path;
+				this.edgeMemo[key] = path;
 			}
 		}
 
     // // remove old edges
-		// Object.keys(this.edgesMemo).forEach(key => {
+		// Object.keys(this.edgeMemo).forEach(key => {
 		// 	if (!keys.includes(key)) {
 		// 		anime({
-		// 			targets: this.edgesMemo[key],
+		// 			targets: this.edgeMemo[key],
 		// 			opacity: 0,
 		// 			duration: 500,
 		// 			delay: 1000
 		// 		});
-		// 		const path = this.edgesMemo[key];
+		// 		const path = this.edgeMemo[key];
 		// 		setTimeout(() => {
 		// 			svg.removeChild(path);
 		// 		}, 1000);
-		// 		delete tree.edgesMemo[key];
+		// 		delete tree.edgeMemo[key];
 		// 	}
 		// });
 	};
@@ -192,13 +198,14 @@ export default class TreeRenderer {
    */
   updateEdgeMemoFromState = state => {
     console.log('updateEdgeMemoFromState');
+    const { child, pivot, rotated, parent } = state;
     if (!state.tree.root) {
       this.edgeMemo = {};
 		} else if (state.type === 'insert') {
-      const { pivot, rotated, parent } = state;
-      const key = `${child.id}-${parent.id}`;
-
-      this.edgeMemo[key] = this.createPath(child);
+      if (parent) {
+        const key = `${child.id}-${parent.id}`;
+        this.edgeMemo[key] = this.createPath(child);
+      }
     } else if (state.type === 'rebalance') {
       const oldKey = `${pivot.id}-${rotated.id}`;
       const newKey = `${rotated.id}-${pivot.id}`;
@@ -245,16 +252,19 @@ export default class TreeRenderer {
     console.log('treeHeap', tree.heap);
     this.svgHeap = tree.heap.map(node => {
       if (!node) return null;
-      return tree.heap.find(el => el?.id === `g-${node.id}`) || createNodeSVG(node);
+      debugger;
+      return this.svgHeap.find(el => el?.id === `g-${node.id}`) || createNodeSVG(node);
     });
   };
 
   insertNewNodesIntoSVG = state => {
     debugger;
+    const rootSVG = this.rootSVG;
     state.tree.heap.forEach((node, index) => {
-      if (node && !Array.from(state.rootSVG.children).includes(child => child?.id === `g-${node.id}`)) {
+      if (node && !Array.from(rootSVG.children).includes(child => child?.id === `g-${node.id}`)) {
+        debugger;
         const group = createNodeSVG(node);
-        this.rootSVG.appendChild(group);
+        rootSVG.appendChild(group);
         anime({
           targets: group,
           translateX: `${this.cxArr[index]}%`,
@@ -265,16 +275,32 @@ export default class TreeRenderer {
     })
   };
 
+  insertNodesIntoSVG = () => {
+    for (const group of this.svgHeap) {
+      if (!Array.from(this.rootSVG.children).includes(group)) {
+        this.rootSVG.append(group);
+      }
+    }
+  };
+
+  updateCxArrAndCyArr = tree => {
+    this.cxArr = getCxArr(tree);
+    this.cyArr = getCyArr(tree);
+  };
+
   update = state => {
-    console.log('update state');
+    debugger;
+    console.log('update state', state.type);
+    this.updateCxArrAndCyArr(state.tree);
     this.updateSvgHeapFromHeap(state.tree);
     this.updateEdgeMemoFromState(state);
   };
 
   animate = state => {
-    console.log('animate state');
-    this.update(state);
-    this.insertNewNodesIntoSVG(state);
+    debugger;
+    console.log('animate state', state.type);
+    // this.insertNewNodesIntoSVG(state);
+    this.insertNodesIntoSVG();
     this.animateUpdateNodeCoords();
     this.animateDrawEdges(state.tree);
   };

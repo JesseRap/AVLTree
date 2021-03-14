@@ -1,3 +1,5 @@
+import Node from '../components/Node.svelte';
+
 const XMLNS = 'http://www.w3.org/2000/svg';
 
 export const createSVGElement = () => {
