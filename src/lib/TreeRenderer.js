@@ -291,6 +291,14 @@ export default class TreeRenderer {
     }
   };
 
+  insertEdgesIntoSVG = () => {
+    for (const edge of Object.values(this.edgeMemo)) {
+      if (!Array.from(this.rootSVG.children).includes(edge)) {
+        this.rootSVG.append(edge);
+      }
+    }
+  };
+
   updateCxArrAndCyArr = tree => {
     this.cxArr = getCxArr(tree);
     this.cyArr = getCyArr(tree);
@@ -309,6 +317,7 @@ export default class TreeRenderer {
     console.log('animate state', state.type);
     // this.insertNewNodesIntoSVG(state);
     this.insertNodesIntoSVG();
+    this.insertEdgesIntoSVG();
     this.animateUpdateNodeCoords(state);
     this.animateDrawEdges(state.tree);
   };
