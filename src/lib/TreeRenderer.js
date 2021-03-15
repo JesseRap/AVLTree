@@ -214,6 +214,12 @@ export default class TreeRenderer {
         this.edgeMemo[key] = this.createPath(newNode);
         console.log('EDGE MEMO', this.edgeMemo);
       }
+    } else if (state.type === 'visitNode') {
+      const node = state.node;
+      const svg = this.svgHeap.find(el => el?.id === `g-${node.id}`);
+      debugger;
+      const circle = svg.querySelector('circle');
+      circle.setAttributeNS(null, 'fill', 'red');
     } else if (state.type === 'rebalance') {
       const oldKey = `${rotated.id}-${pivot.id}`;
       const newKey = `${pivot.id}-${rotated.id}`;
