@@ -2,6 +2,7 @@ import anime from 'animejs/lib/anime.es.js';
 import AVLTree from './AVLTree.js';
 import { childExistsInNode, createNodeSVG } from '../utils/svg';
 import { getCxArr, getCyArr } from '../utils/tree';
+import { wait } from '../utils';
 
 const XMLNS = 'http://www.w3.org/2000/svg';
 
@@ -318,7 +319,7 @@ export default class TreeRenderer {
     this.updateEdgeMemoFromState(state);
   };
 
-  animate = state => {
+  animate = async state => {
     // debugger;
     console.log('animate state', state.type);
     // this.insertNewNodesIntoSVG(state);
@@ -326,15 +327,16 @@ export default class TreeRenderer {
     this.insertEdgesIntoSVG();
     this.animateUpdateNodeCoords(state);
     this.animateDrawEdges(state.tree);
+    await wait(2000);
   };
 
-  runLatestAnimationGroup = () => {
+  runLatestAnimationGroup = async () => {
     console.log('runLatestAnimationGroup', this.stateGroups);
     for (const state of this.tree.stateGroups[this.tree.stateGroups.length - 1]) {
       console.log(state);
       debugger;
       this.update(state);
-      this.animate(state);
+      await this.animate(state);
     }
   };
 }
