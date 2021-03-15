@@ -23,7 +23,7 @@ export default class TreeRenderer {
   };
 
   insert = val => {
-    debugger;
+    // debugger;
     console.log('insert');
     this.tree.insert(val);
     this.tree = this.tree;
@@ -101,7 +101,7 @@ export default class TreeRenderer {
 	};
 
   createPath = node => {
-    debugger;
+    // debugger;
 		if (!node) return;
 		const i = this.tree.getNodeIndex(node);
 		if (i === 0) return;
@@ -130,6 +130,7 @@ export default class TreeRenderer {
 	};
 
   animateDrawEdges = tree => {
+    console.log('animateDrawEdges', tree)
     debugger;
 		const heap = tree.heap;
 
@@ -147,7 +148,11 @@ export default class TreeRenderer {
 			console.log("this.edgeMemo", this.edgeMemo)
 			console.log("svgHeap", this.svgHeap)
 			if (this.edgeMemo[key]) {
+        console.log('update edge');
 				const path = this.edgeMemo[key];
+        if (!Array.from(this.rootSVG.children).find(g => g.id === path.id)) {
+          this.rootSVG.append(path);
+        }
 				// if (path && !heap[i]) {
 				// 	svg.removeChild(path);
 				// 	delete tree.edgeMemo[i];
@@ -157,9 +162,10 @@ export default class TreeRenderer {
 				// 	svg.removeChild(path);
 				// }
 			} else {
-				console.log('NEW PATH');
+        console.log('NOOO')
         debugger;
 				const path = this.createPath(node);
+        console.log('NEW PATH', path);
 				const firstNode = this.rootSVG.children[0];
 				this.rootSVG.insertBefore(path, firstNode);
 				path.setAttributeNS(null, 'd', `M ${this.cxArr[i]} ${this.cyArr[i]} L ${this.cxArr[this.tree.parentArray[i]]} ${this.cyArr[this.tree.parentArray[i]]}`);
@@ -197,18 +203,20 @@ export default class TreeRenderer {
    * Updates the edge memp based on the AVL tree after changes.
    */
   updateEdgeMemoFromState = state => {
+    debugger;
     console.log('updateEdgeMemoFromState');
-    const { child, pivot, rotated, parent } = state;
+    const { child, newNode, pivot, rotated, parent } = state;
     if (!state.tree.root) {
       this.edgeMemo = {};
 		} else if (state.type === 'insert') {
-      if (parent) {
-        const key = `${child.id}-${parent.id}`;
-        this.edgeMemo[key] = this.createPath(child);
+      if (newNode.id !== child.id) {
+        const key = `${newNode.id}-${child.id}`;
+        this.edgeMemo[key] = this.createPath(newNode);
+        console.log('EDGE MEMO', this.edgeMemo);
       }
     } else if (state.type === 'rebalance') {
-      const oldKey = `${pivot.id}-${rotated.id}`;
-      const newKey = `${rotated.id}-${pivot.id}`;
+      const oldKey = `${rotated.id}-${pivot.id}`;
+      const newKey = `${pivot.id}-${rotated.id}`;
       const path = this.edgeMemo[oldKey];
       this.edgeMemo[newKey] = path;
       delete this.edgeMemo[oldKey];
@@ -223,7 +231,7 @@ export default class TreeRenderer {
         path.setAttribute('id', newParentKey);
       }
 
-      const pivotIndex = this.getNodeIndex(pivot);
+      const pivotIndex = this.tree.getNodeIndex(pivot);
       const pivotIsLeftChild = pivotIndex % 2 === 1;
       const otherNode = pivot[pivotIsLeftChild ? 'right' : 'left'];
       if (otherNode) {
@@ -252,17 +260,17 @@ export default class TreeRenderer {
     console.log('treeHeap', tree.heap);
     this.svgHeap = tree.heap.map(node => {
       if (!node) return null;
-      debugger;
+      // debugger;
       return this.svgHeap.find(el => el?.id === `g-${node.id}`) || createNodeSVG(node);
     });
   };
 
   insertNewNodesIntoSVG = state => {
-    debugger;
+    // debugger;
     const rootSVG = this.rootSVG;
     state.tree.heap.forEach((node, index) => {
       if (node && !Array.from(rootSVG.children).includes(child => child?.id === `g-${node.id}`)) {
-        debugger;
+        // debugger;
         const group = createNodeSVG(node);
         rootSVG.appendChild(group);
         anime({
@@ -289,7 +297,7 @@ export default class TreeRenderer {
   };
 
   update = state => {
-    debugger;
+    // debugger;
     console.log('update state', state.type);
     this.updateCxArrAndCyArr(state.tree);
     this.updateSvgHeapFromHeap(state.tree);
@@ -297,7 +305,7 @@ export default class TreeRenderer {
   };
 
   animate = state => {
-    debugger;
+    // debugger;
     console.log('animate state', state.type);
     // this.insertNewNodesIntoSVG(state);
     this.insertNodesIntoSVG();
