@@ -3,7 +3,7 @@
 
   let n = 0
   export let value;
-  export let balance;
+  export let balance = 0;
   export let id = n++;
   export let isFirstNode = false;
 

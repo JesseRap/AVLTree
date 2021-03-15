@@ -27,6 +27,14 @@
     cursor: default;
   }
 
+  #intro {
+    background: radial-gradient(white 80%, transparent 100%);
+  }
+
+  #intro-group {
+    opacity: 0;
+  }
+
   @media (max-width: 1199px) {
     /* .svg-main {
       margin-left: 10%;
@@ -41,7 +49,9 @@
 </style>
 
 <script>
+  import { onMount } from 'svelte';
   import anime from 'animejs/lib/anime.es.js';
+  import Node from './Node.svelte';
   let clip;
 
   const open = () => {
@@ -88,12 +98,25 @@
 
 <svg id="svg-main" width="100%" height="100%" class="svg-main" viewBox="0 0 100 100">
   <defs>
+
+    <radialGradient id="Gradient1" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="white"/>
+      <stop offset="80%" stop-color="white" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </radialGradient>
+
     <filter id="edgeBlur">
       <feGaussianBlur in="SourceGraphic" stdDeviation="0.5" result="blur"></feGaussianBlur>
       <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="contrast"></feColorMatrix>
       <feBlend in="blur" in2="contrast"></feBlend>
     </filter>
   </defs>
+
+  <g id="intro-group">
+    <rect id="intro-rect" x="0" y="0" width="100%" height="100%" fill="url(#Gradient1)" />
+    <Node id="intro-node" val="8" />
+  </g>
+
 </svg>
 
 <svg id="svg-main-2" width="100%" height="100%" class="svg-main-2" viewBox="0 0 100 100">

@@ -1,5 +1,7 @@
 import anime from 'animejs/lib/anime.es.js';
 import AVLTree from './AVLTree.js';
+import Node from '../components/Node.svelte';
+import NodeEdgeCircle from '../components/NodeEdgeCircle.svelte';
 import { childExistsInNode, createNodeSVG } from '../utils/svg';
 import { getCxArr, getCyArr } from '../utils/tree';
 import { wait } from '../utils';
@@ -28,6 +30,7 @@ export default class TreeRenderer {
     console.log('insert');
     this.tree.insert(val);
     this.tree = this.tree;
+    this.clearAllVisitedNodes();
     // this.runLatestAnimationGroup();
   };
 
@@ -119,14 +122,14 @@ export default class TreeRenderer {
 		path.setAttributeNS(null, "stroke", "black");
 		path.setAttributeNS(null, "fill", "transparent");
 		path.setAttributeNS(null, 'stroke-dasharray', '100');
-		path.setAttributeNS(null, 'stroke-dashoffset', '0%');
-		// path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
-		// anime({
-		// 	targets: path,
-		// 	'stroke-dashoffset': '0%',
-		// 	duration: 1000,
-		// 	delay: 100
-		// });
+		path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
+		anime({
+			targets: path,
+			'stroke-dashoffset': '0%',
+			duration: 500,
+			delay: 0,
+      easing: 'easeOutQuad'
+		});
 		return path;
 	};
 
@@ -200,14 +203,46 @@ export default class TreeRenderer {
 		// });
 	};
 
+  animateStart = async (value) => {
+    const circle = document.getElementById('intro-group');
+
+    anime({
+      targets: circle,
+      opacity: 1,
+      duration: 0
+    });
+
+    const n = new Node({
+      target: circle,
+      props: {
+        value,
+        balance: 0,
+        id: 'intro-node'
+      }
+    });
+
+    const nodeGroup = document.getElementById('intro-node');
+    anime({
+      targets: nodeGroup,
+      translateX: '13%',
+      translateY: '18%',
+      scale: 3,
+      opacity: 1,
+      duration: 2000
+    });
+
+    await wait(1000);
+  };
+
   /**
    * Updates the edge memp based on the AVL tree after changes.
    */
-  updateEdgeMemoFromState = state => {
+  updateEdgeMemoFromState = async state => {
     debugger;
     console.log('updateEdgeMemoFromState');
-    const { child, newNode, pivot, rotated, parent } = state;
+    const { child, node, insertValue, newNode, pivot, rotated, parent } = state;
     if (!state.tree.root) {
+      await this.animateStart(state.insertValue);
       this.edgeMemo = {};
 		} else if (state.type === 'insert') {
       if (newNode.id !== child.id) {
@@ -215,12 +250,20 @@ export default class TreeRenderer {
         this.edgeMemo[key] = this.createPath(newNode);
         console.log('EDGE MEMO', this.edgeMemo);
       }
+    } else if (state.type === 'insertStart') {
+      await this.animateStart(state.insertValue);
     } else if (state.type === 'visitNode') {
       const node = state.node;
       const svg = this.svgHeap.find(el => el?.id === `g-${node.id}`);
+      svg.classList.add('visited-node');
+      const nodeIndex = this.svgHeap.findIndex(el => el?.id === `g-${node.id}`);
+      const parent = nodeIndex === 0 ? null : this.svgHeap[Math.floor((nodeIndex - 1) / 2)];
       debugger;
       const circle = svg.querySelector('circle');
       circle.setAttributeNS(null, 'fill', 'red');
+      if (parent) {
+        await this.animateEdge(state.tree, parent, node);
+      }
     } else if (state.type === 'rebalance') {
       const oldKey = `${rotated.id}-${pivot.id}`;
       const newKey = `${pivot.id}-${rotated.id}`;
@@ -311,12 +354,12 @@ export default class TreeRenderer {
     this.cyArr = getCyArr(tree);
   };
 
-  update = state => {
+  update = async state => {
     // debugger;
     console.log('update state', state.type);
     this.updateCxArrAndCyArr(state.tree);
     this.updateSvgHeapFromHeap(state.tree);
-    this.updateEdgeMemoFromState(state);
+    await this.updateEdgeMemoFromState(state);
   };
 
   animate = async state => {
@@ -327,7 +370,7 @@ export default class TreeRenderer {
     this.insertEdgesIntoSVG();
     this.animateUpdateNodeCoords(state);
     this.animateDrawEdges(state.tree);
-    await wait(2000);
+    await wait(500);
   };
 
   runLatestAnimationGroup = async () => {
@@ -335,8 +378,51 @@ export default class TreeRenderer {
     for (const state of this.tree.stateGroups[this.tree.stateGroups.length - 1]) {
       console.log(state);
       debugger;
-      this.update(state);
+      await this.update(state);
       await this.animate(state);
     }
+  };
+
+  clearAllVisitedNodes = () => {
+    const visitedCircles = Array.from(document.querySelectorAll('.visited-node circle'));
+    visitedCircles.forEach(circle => {
+      circle.setAttributeNS(null, 'fill', '#00a8ff');
+      circle.classList.remove('visited-node');
+    });
+  };
+
+  animateEdge = async (tree, source, destination) => {
+    console.log('animateEdge');
+    const sourceIndex = tree.heap.findIndex(el => el?.id === source.id);
+    const destinationIndex = tree.heap.findIndex(el => el?.id === destination.id);
+
+    const edgeCircle = new NodeEdgeCircle({
+      target: this.rootSVG,
+      anchor: this.rootSVG.children[0],
+      props: {
+        cx: this.cxArr[sourceIndex],
+        cy: this.cyArr[sourceIndex]
+      }
+    });
+
+    const circle = document.getElementById('edge-circle');
+
+    console.log('edgeCircle', edgeCircle, circle)
+
+    // await tick();
+
+    anime({
+      targets: circle,
+      translateX: `${this.cxArr[destinationIndex] - this.cxArr[sourceIndex]}%`,
+      translateY: `${this.cyArr[destinationIndex] - this.cyArr[sourceIndex]}%`,
+      duration: 1000,
+      easing: 'easeInOutQuad'
+    });
+
+    await wait(1000);
+
+    this.rootSVG.removeChild(circle);
+
+    // circle.setAttribute('style', `transform: translate(${cxArr[destinationIndex] - cxArr[sourceIndex]}%, ${cyArr[destinationIndex] - cyArr[sourceIndex]}%)`);
   };
 }
