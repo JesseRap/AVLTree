@@ -67,7 +67,7 @@ export default class TreeRenderer {
 		});
 	};
 
-  animateUpdateNodeCoords = () => {
+  animateUpdateNodeCoords = state => {
 		this.svgHeap.forEach((group, index) => {
 			if (group) {
 				console.log("GROUP", JSON.stringify(group.style.transform), group.id, this.cxArr, this.cyArr);
@@ -82,16 +82,16 @@ export default class TreeRenderer {
 
 				const balance = group.querySelector('.balance');
 				const heap = this.tree.heap;
-				balance.innerHTML = heap[index].balance;
-				balance.setAttributeNS(null, 'fill', (Math.abs(heap[index].balance)) === 0 ? '#7f8fa6' : (Math.abs(heap[index].balance)) === 1 ? '#c23616' : '#e84118');
+				balance.innerHTML = state.tree.heap[index].balance;
+				balance.setAttributeNS(null, 'fill', (Math.abs(state.tree.heap[index].balance)) === 0 ? '#7f8fa6' : (Math.abs(state.tree.heap[index].balance)) === 1 ? '#c23616' : '#e84118');
 
 				const balanceLineGroup = group.querySelector('.balance-line-group');
-				balanceLineGroup.setAttribute('style', heap[index].balance === 0 ? 'transform: rotate(0);' : heap[index].balance === 1 ? 'transform: rotate(7deg);' : 'transform: rotate(-7deg)');
+				balanceLineGroup.setAttribute('style', state.tree.heap[index].balance === 0 ? 'transform: rotate(0);' : state.tree.heap[index].balance === 1 ? 'transform: rotate(7deg);' : 'transform: rotate(-7deg)');
 
 				const balanceNumberGroup = group.querySelector('.balance-number-group');
-				balanceNumberGroup.setAttribute('style', heap[index].balance === 0 ? 'transform: translate(0, 0)' : heap[index].balance === 1 ? 'transform: translate(20px, 5px);' : 'transform: translate(-20px, 5px)');
+				balanceNumberGroup.setAttribute('style', state.tree.heap[index].balance === 0 ? 'transform: translate(0, 0)' : state.tree.heap[index].balance === 1 ? 'transform: translate(20px, 5px);' : 'transform: translate(-20px, 5px)');
 
-				if (Math.abs(heap[index].balance) > 0) {
+				if (Math.abs(state.tree.heap[index].balance) > 0) {
 					balanceLineGroup.parentElement.classList.add('wobble');
 				} else {
 					balanceLineGroup.parentElement.classList.remove('wobble');
@@ -215,8 +215,8 @@ export default class TreeRenderer {
       path.setAttribute('id', newKey);
 
       if (parent) {
-        const oldParentKey = `${parent.id}-${rotated.id}`;
-        const newParentKey = `${parent.id}-${rotated.id}`;
+        const oldParentKey = `${pivot.id}-${parent.id}`;
+        const newParentKey = `${rotated.id}-${parent.id}`;
         const path = this.edgeMemo[oldKey];
         this.edgeMemo[newKey] = path;
         delete this.edgeMemo[oldKey];
@@ -301,7 +301,7 @@ export default class TreeRenderer {
     console.log('animate state', state.type);
     // this.insertNewNodesIntoSVG(state);
     this.insertNodesIntoSVG();
-    this.animateUpdateNodeCoords();
+    this.animateUpdateNodeCoords(state);
     this.animateDrawEdges(state.tree);
   };
 
