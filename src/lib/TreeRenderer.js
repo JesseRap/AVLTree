@@ -207,7 +207,7 @@ export default class TreeRenderer {
     // big intro disply
     const circle = document.getElementById('intro-group');
 
-    const n = new Node({
+    const otherNode = new Node({
       target: circle,
       props: {
         value,
@@ -217,6 +217,7 @@ export default class TreeRenderer {
     });
 
     const nodeGroup = document.getElementById('intro-node');
+
 
     anime({
       targets: nodeGroup,
@@ -252,6 +253,16 @@ export default class TreeRenderer {
     });
     console.log('newNode!', newNode);
 
+    const introGroup = document.getElementById('intro-group');
+
+    const n = new Node({
+      target: introGroup,
+      props: {
+        value,
+        id: 'intro-node',
+      }
+    });
+
     startNode = document.getElementById('start-node');
     const transformGroup = startNode.querySelector('.node-transform-group');
     const balanceGroup = startNode.querySelector('.balance-line-group');
@@ -266,33 +277,31 @@ export default class TreeRenderer {
 
     await wait(2000);
 
-    anime({
+    timeline.add({
       targets: transformGroup,
       translateX: '15%',
       translateY: '15%',
       opacity: 0,
       duration: 0
     })
-    anime({
+    .add({
       targets: transformGroup,
       translateX: '15%',
       translateY: '15%',
       opacity: 1,
       duration: 0
-    });
-
-    anime({
+    })
+    .add({
       targets: transformGroup,
       translateX: `${this.cxArr[0] ?? 50}%`,
       translateY: `${this.cyArr[0] ?? 50}%`,
       duration: 1000,
-    });
-
-    anime({
-      targets: startNode,
-      opacity: 0,
-      delay: 2000
-    });
+    }, '+=1000')
+    // .add({
+    //   targets: startNode,
+    //   opacity: 0,
+    //   delay: 1000,
+    // }, '+=1000')
 
     // anime({
     //   targets: circle,

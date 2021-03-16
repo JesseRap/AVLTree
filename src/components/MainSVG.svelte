@@ -114,7 +114,6 @@
 
   <g id="intro-group">
     <rect id="intro-rect" x="0" y="0" width="100%" height="100%" fill="url(#Gradient1)" />
-    <Node id="intro-node" value={9} />
   </g>
 
 </svg>
