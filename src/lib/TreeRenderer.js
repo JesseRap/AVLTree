@@ -282,14 +282,14 @@ export default class TreeRenderer {
       translateX: '15%',
       translateY: '15%',
       opacity: 0,
-      duration: 0
+      duration: 1
     })
     .add({
       targets: transformGroup,
       translateX: '15%',
       translateY: '15%',
       opacity: 1,
-      duration: 0
+      duration: 1
     })
     .add({
       targets: transformGroup,
@@ -297,11 +297,12 @@ export default class TreeRenderer {
       translateY: `${this.cyArr[0] ?? 50}%`,
       duration: 1000,
     }, '+=1000')
-    // .add({
-    //   targets: startNode,
-    //   opacity: 0,
-    //   delay: 1000,
-    // }, '+=1000')
+    .add({
+      targets: transformGroup,
+      translateX: `${this.cxArr[0] ?? 50}%`,
+      translateY: `${this.cyArr[0] ?? 50}%`,
+      opacity: 0
+    }, '+=1000')
 
     // anime({
     //   targets: circle,
