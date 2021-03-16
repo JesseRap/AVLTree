@@ -165,7 +165,7 @@ export default class TreeRenderer {
 				// 	svg.removeChild(path);
 				// 	delete tree.edgeMemo[i];
 				// }
-				path.setAttributeNS(null, 'd', `M ${this.cxArr[i]} ${this.cyArr[i]} L ${this.cxArr[this.tree.parentArray[i]]} ${this.cyArr[this.tree.parentArray[i]]}`);
+				path.setAttributeNS(null, 'd', `M ${this.cxArr[i]} ${this.cyArr[i]} L ${this.cxArr[tree.parentArray[i]]} ${this.cyArr[tree.parentArray[i]]}`);
 				// if (!heap[i] && tree.edgeMemo[i]) {
 				// 	svg.removeChild(path);
 				// }
@@ -176,7 +176,7 @@ export default class TreeRenderer {
         console.log('NEW PATH', path);
 				const firstNode = this.rootSVG.children[0];
 				this.rootSVG.insertBefore(path, firstNode);
-				path.setAttributeNS(null, 'd', `M ${this.cxArr[i]} ${this.cyArr[i]} L ${this.cxArr[this.tree.parentArray[i]]} ${this.cyArr[this.tree.parentArray[i]]}`);
+				path.setAttributeNS(null, 'd', `M ${this.cxArr[i]} ${this.cyArr[i]} L ${this.cxArr[tree.parentArray[i]]} ${this.cyArr[tree.parentArray[i]]}`);
 				// path.setAttributeNS(null, 'stroke-dashoffset', '0%');
 				path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
 				anime({
