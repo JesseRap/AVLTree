@@ -203,7 +203,8 @@ export default class TreeRenderer {
 		// });
 	};
 
-  animateStart = async (value) => {
+  animateStart = async value => {
+    // big intro disply
     const circle = document.getElementById('intro-group');
 
     const n = new Node({
@@ -236,8 +237,9 @@ export default class TreeRenderer {
     });
 
 
+    // start-node animation
     let startNode = document.getElementById('start-node');
-    if (startNode) this.rootSvg.removeChild(startNode);
+    if (startNode) this.rootSVG.removeChild(startNode);
     // QUESTION: Need to await tick()?
     const newNode = new Node({
       target: this.rootSVG,
@@ -264,26 +266,56 @@ export default class TreeRenderer {
 
     await wait(2000);
 
-    timeline.add({
+    anime({
+      targets: transformGroup,
+      translateX: '15%',
+      translateY: '15%',
+      opacity: 0,
+      duration: 0
+    })
+    anime({
       targets: transformGroup,
       translateX: '15%',
       translateY: '15%',
       opacity: 1,
       duration: 0
-    })
-    .add({
+    });
+
+    anime({
       targets: transformGroup,
       translateX: `${this.cxArr[0] ?? 50}%`,
       translateY: `${this.cyArr[0] ?? 50}%`,
-      opacity: 1,
       duration: 1000,
-    }, '+=1000')
-    .add({
+    });
+
+    anime({
       targets: startNode,
-      opacity: 1,
-      duration: 0,
-      delay: 1000
-    })
+      opacity: 0,
+      delay: 2000
+    });
+
+    // anime({
+    //   targets: circle,
+    //   opacity: 0,
+    //   duration: 0,
+    // });
+    // anime({
+    //   targets: startNode,
+    //   opacity: 0,
+    //   duration: 0,
+    //   delay: 2000
+    // });
+
+    // .add({
+    //   targets: transformGroup,
+    //   opacity: 0,
+    //   duration: 0,
+    // }, '+=100')
+    // .add({
+    //   targets: startNode,
+    //   duration: 0,
+    //   delay: 1000
+    // })
     // .add({
     //   targets: transformGroup,
     //   opacity: 0,
@@ -296,9 +328,8 @@ export default class TreeRenderer {
 
     // applyScaleToAllBalances();
     // this.balanceScaleDown();
-    // await wait(500);
     // this.updateSvg();
-    // this.rootSvg.removeChild(startNode);
+    // this.rootSVG.removeChild(startNode);
   };
 
   /**
@@ -459,7 +490,7 @@ export default class TreeRenderer {
 
     // await wait(1000);
 
-    this.rootSVG.removeChild(circle);
+    // this.rootSVG.removeChild(circle);
 
     // circle.setAttribute('style', `transform: translate(${cxArr[destinationIndex] - cxArr[sourceIndex]}%, ${cyArr[destinationIndex] - cyArr[sourceIndex]}%)`);
   };
