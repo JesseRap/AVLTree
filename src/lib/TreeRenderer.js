@@ -235,7 +235,70 @@ export default class TreeRenderer {
       easing: 'easeInOutQuad'
     });
 
+
+    let startNode = document.getElementById('start-node');
+    if (startNode) this.rootSvg.removeChild(startNode);
+    // QUESTION: Need to await tick()?
+    const newNode = new Node({
+      target: this.rootSVG,
+      props: {
+        value,
+        anchor: this.rootSVG.children[0],
+        id: 'start-node',
+        isFirstNode: true,
+      }
+    });
+    console.log('newNode!', newNode);
+
+    startNode = document.getElementById('start-node');
+    const transformGroup = startNode.querySelector('.node-transform-group');
+    const balanceGroup = startNode.querySelector('.balance-line-group');
+
+    console.log('startNode!', startNode);
+    console.log('balanceGroup!', balanceGroup);
+    console.log('transformGroup!', transformGroup);
+
+    transformGroup.setAttribute('style', 'opacity: 0');
+
+    const timeline = anime.timeline();
+
+    await wait(2000);
+
+    timeline.add({
+      targets: transformGroup,
+      translateX: '15%',
+      translateY: '15%',
+      opacity: 1,
+      duration: 0
+    })
+    .add({
+      targets: transformGroup,
+      translateX: `${this.cxArr[0] ?? 50}%`,
+      translateY: `${this.cyArr[0] ?? 50}%`,
+      opacity: 1,
+      duration: 1000,
+    }, '+=1000')
+    .add({
+      targets: startNode,
+      opacity: 1,
+      duration: 0,
+      delay: 1000
+    })
+    // .add({
+    //   targets: transformGroup,
+    //   opacity: 0,
+    //   duration: 1,
+    //   delay: 200
+    // });
+
+    // startNode.setAttributeNS(null, 'cx', '20%');
+    // startNode.setAttributeNS(null, 'cy', '20%');
+
+    // applyScaleToAllBalances();
+    // this.balanceScaleDown();
     // await wait(500);
+    // this.updateSvg();
+    // this.rootSvg.removeChild(startNode);
   };
 
   /**
