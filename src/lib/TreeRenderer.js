@@ -9,6 +9,8 @@ import { tick } from 'svelte';
 
 const XMLNS = 'http://www.w3.org/2000/svg';
 
+const DURATION = 500;
+
 export default class TreeRenderer {
   cxArr = [];
   cyArr = [];
@@ -127,7 +129,7 @@ export default class TreeRenderer {
 		anime({
 			targets: path,
 			'stroke-dashoffset': '0%',
-			duration: 500,
+			duration: DURATION,
 			delay: 0,
       easing: 'easeOutQuad'
 		});
@@ -180,7 +182,7 @@ export default class TreeRenderer {
 				anime({
 					targets: path,
 					'stroke-dashoffset': '0%',
-					duration: 500,
+					duration: DURATION,
 					delay: 200
 				});
 				this.edgeMemo[key] = path;
@@ -193,7 +195,7 @@ export default class TreeRenderer {
 		// 		anime({
 		// 			targets: this.edgeMemo[key],
 		// 			opacity: 0,
-		// 			duration: 500,
+		// 			duration: DURATION,
 		// 			delay: 1000
 		// 		});
 		// 		const path = this.edgeMemo[key];
@@ -277,7 +279,7 @@ export default class TreeRenderer {
 
     const timeline = anime.timeline();
 
-    await wait(2000);
+    // await wait(2000);
 
     timeline.add({
       targets: transformGroup,
@@ -367,13 +369,13 @@ export default class TreeRenderer {
       const svg = this.svgHeap.find(el => el?.id === `g-${node.id}`);
       svg.classList.add('visited-node');
       const nodeIndex = this.svgHeap.findIndex(el => el?.id === `g-${node.id}`);
-      const parent = nodeIndex === 0 ? null : this.svgHeap[Math.floor((nodeIndex - 1) / 2)];
+      const parent = this.tree.getParentNode(node);
       debugger;
       const circle = svg.querySelector('circle');
       circle.setAttributeNS(null, 'fill', 'red');
-      if (parent) {
-        await this.animateEdge(state.tree, parent, node);
-      }
+      // if (parent) {
+      //   await this.animateEdge(parent, node);
+      // }
     } else if (state.type === 'rebalance') {
       const oldKey = `${rotated.id}-${pivot.id}`;
       const newKey = `${pivot.id}-${rotated.id}`;
@@ -472,10 +474,10 @@ export default class TreeRenderer {
     });
   };
 
-  animateEdge = async (tree, source, destination) => {
+  animateEdge = async (source, destination) => {
     debugger;
-    const sourceIndex = tree.heap.findIndex(el => `g-${el?.id}` === source.id);
-    const destinationIndex = tree.heap.findIndex(el => `g-${el?.id}` === destination.id);
+    const sourceIndex = this.tree.heap.findIndex(el => el?.id === source.id);
+    const destinationIndex = this.tree.heap.findIndex(el => el?.id === destination.id);
     console.log('animateEdge', source, destination, sourceIndex, destinationIndex);
 
     const edgeCircle = new NodeEdgeCircle({
@@ -512,7 +514,8 @@ export default class TreeRenderer {
     this.updateCxArrAndCyArr(state.tree);
     this.updateSvgHeapFromHeap(state.tree);
     await this.updateEdgeMemoFromState(state);
-    await wait(state.duration || 1);
+    await wait(DURATION);
+    // await wait(state.duration || DURATION);
   };
 
   animate = async state => {
@@ -523,7 +526,7 @@ export default class TreeRenderer {
     this.insertEdgesIntoSVG();
     this.animateUpdateNodeCoords(state);
     this.animateDrawEdges(state.tree);
-    await wait(500);
+    await wait(DURATION);
   };
 
   runLatestAnimationGroup = async () => {
