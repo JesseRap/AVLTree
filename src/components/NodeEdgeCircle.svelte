@@ -1,11 +1,3 @@
-<style>
-  .edge-circle {
-    /* transition: transform 1s; */
-    /* filter: blur(20px) contrast(30); */
-    /* animation: demonstration 10s linear; */
-  }
-</style>
-
 <script>
   export let cx;
   export let cy;

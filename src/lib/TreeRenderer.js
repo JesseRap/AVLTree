@@ -5,6 +5,7 @@ import NodeEdgeCircle from '../components/NodeEdgeCircle.svelte';
 import { childExistsInNode, createNodeSVG } from '../utils/svg';
 import { getCxArr, getCyArr } from '../utils/tree';
 import { wait } from '../utils';
+import { tick } from 'svelte';
 
 const XMLNS = 'http://www.w3.org/2000/svg';
 
@@ -114,7 +115,7 @@ export default class TreeRenderer {
 		const parent = this.tree.getParentNode(node);
 		const parentId = parent.id;
 		const path = document.createElementNS(XMLNS, 'path');
-		path.classList.add('edge-circle');
+		path.classList.add('edge');
 		const pathId = `${nodeId}-${parentId}`
 		path.setAttribute('id', pathId);
 		path.setAttributeNS(null, 'filter', 'url(#edgeBlur)');
@@ -152,6 +153,7 @@ export default class TreeRenderer {
 			console.log("this.edgeMemo", this.edgeMemo)
 			console.log("svgHeap", this.svgHeap)
 			if (this.edgeMemo[key]) {
+        debugger;
         console.log('update edge');
 				const path = this.edgeMemo[key];
         if (!Array.from(this.rootSVG.children).find(g => g.id === path.id)) {
@@ -471,9 +473,10 @@ export default class TreeRenderer {
   };
 
   animateEdge = async (tree, source, destination) => {
-    console.log('animateEdge');
-    const sourceIndex = tree.heap.findIndex(el => el?.id === source.id);
-    const destinationIndex = tree.heap.findIndex(el => el?.id === destination.id);
+    debugger;
+    const sourceIndex = tree.heap.findIndex(el => `g-${el?.id}` === source.id);
+    const destinationIndex = tree.heap.findIndex(el => `g-${el?.id}` === destination.id);
+    console.log('animateEdge', source, destination, sourceIndex, destinationIndex);
 
     const edgeCircle = new NodeEdgeCircle({
       target: this.rootSVG,
@@ -487,8 +490,6 @@ export default class TreeRenderer {
     const circle = document.getElementById('edge-circle');
 
     console.log('edgeCircle', edgeCircle, circle)
-
-    // await tick();
 
     anime({
       targets: circle,
@@ -511,7 +512,7 @@ export default class TreeRenderer {
     this.updateCxArrAndCyArr(state.tree);
     this.updateSvgHeapFromHeap(state.tree);
     await this.updateEdgeMemoFromState(state);
-    await wait(state.duration);
+    await wait(state.duration || 1);
   };
 
   animate = async state => {
