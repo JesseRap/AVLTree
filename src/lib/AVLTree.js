@@ -197,7 +197,8 @@ export default class AVLTree {
 		this.stateGroup.push({
 			type: 'insertStart',
 			tree: this.copy(),
-			insertValue: val
+			insertValue: val,
+			duration: 2000
 		});
 		if (!this.root) {
 			this.root = newNode;

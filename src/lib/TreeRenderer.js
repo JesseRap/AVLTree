@@ -206,12 +206,6 @@ export default class TreeRenderer {
   animateStart = async (value) => {
     const circle = document.getElementById('intro-group');
 
-    anime({
-      targets: circle,
-      opacity: 1,
-      duration: 0
-    });
-
     const n = new Node({
       target: circle,
       props: {
@@ -222,16 +216,26 @@ export default class TreeRenderer {
     });
 
     const nodeGroup = document.getElementById('intro-node');
+
     anime({
       targets: nodeGroup,
       translateX: '13%',
       translateY: '18%',
       scale: 3,
       opacity: 1,
-      duration: 2000
+      duration: 0
     });
 
-    await wait(1000);
+    anime({
+      targets: circle,
+      opacity: 1,
+      duration: 1000,
+      loop: 2,
+      direction: 'alternate',
+      easing: 'easeInOutQuad'
+    });
+
+    // await wait(500);
   };
 
   /**
@@ -354,35 +358,6 @@ export default class TreeRenderer {
     this.cyArr = getCyArr(tree);
   };
 
-  update = async state => {
-    // debugger;
-    console.log('update state', state.type);
-    this.updateCxArrAndCyArr(state.tree);
-    this.updateSvgHeapFromHeap(state.tree);
-    await this.updateEdgeMemoFromState(state);
-  };
-
-  animate = async state => {
-    // debugger;
-    console.log('animate state', state.type);
-    // this.insertNewNodesIntoSVG(state);
-    this.insertNodesIntoSVG();
-    this.insertEdgesIntoSVG();
-    this.animateUpdateNodeCoords(state);
-    this.animateDrawEdges(state.tree);
-    await wait(500);
-  };
-
-  runLatestAnimationGroup = async () => {
-    console.log('runLatestAnimationGroup', this.stateGroups);
-    for (const state of this.tree.stateGroups[this.tree.stateGroups.length - 1]) {
-      console.log(state);
-      debugger;
-      await this.update(state);
-      await this.animate(state);
-    }
-  };
-
   clearAllVisitedNodes = () => {
     const visitedCircles = Array.from(document.querySelectorAll('.visited-node circle'));
     visitedCircles.forEach(circle => {
@@ -419,10 +394,40 @@ export default class TreeRenderer {
       easing: 'easeInOutQuad'
     });
 
-    await wait(1000);
+    // await wait(1000);
 
     this.rootSVG.removeChild(circle);
 
     // circle.setAttribute('style', `transform: translate(${cxArr[destinationIndex] - cxArr[sourceIndex]}%, ${cyArr[destinationIndex] - cyArr[sourceIndex]}%)`);
+  };
+
+  update = async state => {
+    // debugger;
+    console.log('update state', state.type);
+    this.updateCxArrAndCyArr(state.tree);
+    this.updateSvgHeapFromHeap(state.tree);
+    await this.updateEdgeMemoFromState(state);
+    await wait(state.duration);
+  };
+
+  animate = async state => {
+    // debugger;
+    console.log('animate state', state.type);
+    // this.insertNewNodesIntoSVG(state);
+    this.insertNodesIntoSVG();
+    this.insertEdgesIntoSVG();
+    this.animateUpdateNodeCoords(state);
+    this.animateDrawEdges(state.tree);
+    await wait(500);
+  };
+
+  runLatestAnimationGroup = async () => {
+    console.log('runLatestAnimationGroup', this.stateGroups);
+    for (const state of this.tree.stateGroups[this.tree.stateGroups.length - 1]) {
+      console.log(state);
+      debugger;
+      await this.update(state);
+      await this.animate(state);
+    }
   };
 }
