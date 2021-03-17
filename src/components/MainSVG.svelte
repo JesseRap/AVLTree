@@ -99,10 +99,12 @@
 <svg id="svg-main" width="100%" height="100%" class="svg-main" viewBox="0 0 100 100">
   <defs>
 
-    <radialGradient id="Gradient1" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0%" stop-color="white"/>
-      <stop offset="80%" stop-color="white" stop-opacity="0.5"/>
-      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    <radialGradient id="Gradient1" x1="-20%" x2="120%" y1="-20%" y2="120%">
+      <stop offset="-20%" stop-color="white" stop-opacity="0.2"/>
+      <stop offset="0%" stop-color="white" stop-opacity="0.5"/>
+      <stop offset="80%" stop-color="white" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="white" />
+      <stop offset="120%" stop-color="white" />
     </radialGradient>
 
     <filter id="edgeBlur">

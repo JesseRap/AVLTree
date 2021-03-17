@@ -222,8 +222,7 @@ export default class TreeRenderer {
 
     const nodeGroup = document.getElementById('intro-node');
 
-
-
+    await this.hideSVGChildrentForMS(1000);
 
     // start-node animation
     let startNode = document.getElementById('start-node');
@@ -311,7 +310,10 @@ export default class TreeRenderer {
       opacity: 0
     });
 
+
     await wait(2000);
+    // this.showSVGChildrentForMS();
+
 
     // timeline.add({
     //   targets: transformGroup,
@@ -393,6 +395,36 @@ export default class TreeRenderer {
     this.edgeMemo[key] = this.createPath(newNode);
     console.log('EDGE MEMO', this.edgeMemo);
   }
+
+  hideSVGChildrentForMS = async ms => {
+    Array.from(this.rootSVG.children).forEach(async child => {
+      if (child.classList.contains('edge') || !child.classList.contains('start-node')) {
+        anime({
+          targets: child,
+          opacity: 0,
+          duration: 500
+        });
+        await wait(ms);
+        anime({
+          targets: child,
+          opacity: 1,
+          duration: 500
+        });
+      }
+    });
+  };
+
+  // showSVGChildrentForMS = ms => {
+  //   Array.from(this.rootSVG.children).forEach(child => {
+  //     if (child.tagName === 'g' || child.tagName === 'path' && g.id !== 'intro-group' && g.id !== 'start-node') {
+  //       anime({
+  //         targets: child,
+  //         opacity: 1,
+  //         duration: 0,
+  //       });
+  //     }
+  //   });
+  // };
 
   /**
    * Updates the edge memp based on the AVL tree after changes.
