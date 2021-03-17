@@ -214,6 +214,8 @@ export default class TreeRenderer {
 
     const nodeGroup = document.getElementById('intro-node');
 
+    nodeGroup.querySelector('text').innerHTML = value; // QUESTION: why is this necssary? not reactive.
+
     await this.hideSVGChildrentForMS(1000);
 
     // start-node animation
@@ -230,8 +232,6 @@ export default class TreeRenderer {
         isFirstNode: true,
       }
     });
-
-
 
     const introGroup = document.getElementById('intro-group');
 
