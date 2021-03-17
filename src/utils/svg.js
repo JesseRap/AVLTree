@@ -42,7 +42,7 @@ export const createNodeSVG = node => {
   const scaleGroup = g.querySelector('.scale-group');
 
   // NB: Node starts with scale(0);
-  scaleGroup.setAttribute('style', 'transform: scale(0);');
+  // scaleGroup.setAttribute('style', 'transform: scale(0);');
 
   return g;
 };

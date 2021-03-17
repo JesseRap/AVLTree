@@ -34,7 +34,6 @@ export default class TreeRenderer {
     this.tree.insert(val);
     this.tree = this.tree;
     this.clearAllVisitedNodes();
-    // this.runLatestAnimationGroup();
   };
 
   find = val => {
@@ -56,15 +55,6 @@ export default class TreeRenderer {
   };
 
 
-	// removeOldNodes = () => {
-	// 	for (let i = 0; i < this.svgHeap.length; i++) {
-	// 		if (this.svgHeap[i] && this.tree.heap[i] === null) {
-	// 			this.rootSVG.removeChild(this.svgHeap[i]);
-	// 			this.svgHeap[i] = null;
-	// 		}
-	// 	}
-	// };
-
   removeAllChildrenFromSVG = () => {
 		Array.from(this.rootSVG.children).forEach(child => {
 			// TODO: Brittle. Meant to not delete the edge circle.
@@ -84,8 +74,6 @@ export default class TreeRenderer {
 					translateY: `${this.cyArr[index]}%`,
 					duration: group.style.transform === "" ? 0 : 1000,
 				});
-
-				// group.style.transform = `translate(${cxArr[index]}%, ${cyArr[index]}%)`;
 
 				const balance = group.querySelector('.balance');
 				const heap = this.tree.heap;
@@ -161,7 +149,7 @@ export default class TreeRenderer {
         console.log('update edge');
 				const path = this.edgeMemo[key];
         if (!Array.from(this.rootSVG.children).find(g => g.id === path.id)) {
-          this.rootSVG.append(path);
+          this.rootSVG.insertBefore(path, this.rootSVG.children[0]);
         }
 				// if (path && !heap[i]) {
 				// 	svg.removeChild(path);
@@ -219,7 +207,8 @@ export default class TreeRenderer {
       props: {
         value,
         balance: 0,
-        id: 'intro-node'
+        id: 'intro-node',
+        isFirstNode: true
       }
     });
 
@@ -444,10 +433,10 @@ export default class TreeRenderer {
         this.animateInsert(newNode, child);
       }
     } else if (state.type === 'insertStart') {
-      this.balanceScaleDown();
+      // this.balanceScaleDown();
       await this.animateStart(state.insertValue);
     } else if (state.type === 'insertFinish') {
-      this.balanceScaleUp();
+      // this.balanceScaleUp();
     } else if (state.type === 'visitNode') {
       const node = state.node;
       const svg = this.svgHeap.find(el => el?.id === `g-${node.id}`);
@@ -542,7 +531,7 @@ export default class TreeRenderer {
   insertEdgesIntoSVG = () => {
     for (const edge of Object.values(this.edgeMemo)) {
       if (!Array.from(this.rootSVG.children).includes(edge)) {
-        this.rootSVG.append(edge);
+        this.rootSVG.insertBefore(edge, this.rootSVG.children[0]);
       }
     }
   };
