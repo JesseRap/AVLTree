@@ -579,13 +579,13 @@ export default class TreeRenderer {
 
     console.log('edgeCircle', edgeCircle, circle)
 
-    // anime({
-    //   targets: circle,
-    //   translateX: `${this.cxArr[destinationIndex] - this.cxArr[sourceIndex]}%`,
-    //   translateY: `${this.cyArr[destinationIndex] - this.cyArr[sourceIndex]}%`,
-    //   duration: 1000,
-    //   easing: 'easeInOutQuad'
-    // });
+    anime({
+      targets: circle,
+      translateX: `${this.cxArr[destinationIndex] - this.cxArr[sourceIndex]}%`,
+      translateY: `${this.cyArr[destinationIndex] - this.cyArr[sourceIndex]}%`,
+      duration: 1000,
+      easing: 'easeInOutQuad'
+    });
 
     await wait(1000);
 
