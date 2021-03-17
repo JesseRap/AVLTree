@@ -229,7 +229,6 @@ export default class TreeRenderer {
         isFirstNode: true,
       }
     });
-    console.log('newNode!', newNode);
 
     const introGroup = document.getElementById('intro-group');
 
@@ -254,11 +253,15 @@ export default class TreeRenderer {
     const t = anime.timeline();
 
     t.add({
+      targets: startNode,
+      opacity: 1,
+      duration: 0
+    })
+    .add({
       targets: nodeGroup,
       translateX: '13%',
       translateY: '18%',
       scale: 3,
-      opacity: 1,
       duration: 0
     })
     .add({
@@ -302,74 +305,7 @@ export default class TreeRenderer {
       opacity: 0
     });
 
-
     await wait(2000);
-    // this.showSVGChildrentForMS();
-
-
-    // timeline.add({
-    //   targets: transformGroup,
-    //   translateX: '15%',
-    //   translateY: '15%',
-    //   opacity: 0,
-    //   duration: 1
-    // })
-    // .add({
-    //   targets: transformGroup,
-    //   translateX: '15%',
-    //   translateY: '15%',
-    //   opacity: 1,
-    //   duration: 1
-    // })
-    // .add({
-    //   targets: transformGroup,
-    //   translateX: `${this.cxArr[0] ?? 50}%`,
-    //   translateY: `${this.cyArr[0] ?? 50}%`,
-    //   duration: 1000,
-    // }, '+=1000')
-    // .add({
-    //   targets: transformGroup,
-    //   translateX: `${this.cxArr[0] ?? 50}%`,
-    //   translateY: `${this.cyArr[0] ?? 50}%`,
-    //   opacity: 0
-    // }, '+=1000')
-
-    // anime({
-    //   targets: circle,
-    //   opacity: 0,
-    //   duration: 0,
-    // });
-    // anime({
-    //   targets: startNode,
-    //   opacity: 0,
-    //   duration: 0,
-    //   delay: 2000
-    // });
-
-    // .add({
-    //   targets: transformGroup,
-    //   opacity: 0,
-    //   duration: 0,
-    // }, '+=100')
-    // .add({
-    //   targets: startNode,
-    //   duration: 0,
-    //   delay: 1000
-    // })
-    // .add({
-    //   targets: transformGroup,
-    //   opacity: 0,
-    //   duration: 1,
-    //   delay: 200
-    // });
-
-    // startNode.setAttributeNS(null, 'cx', '20%');
-    // startNode.setAttributeNS(null, 'cy', '20%');
-
-    // applyScaleToAllBalances();
-    // this.balanceScaleDown();
-    // this.updateSvg();
-    // this.rootSVG.removeChild(startNode);
   };
 
   balanceScaleDown = () => {

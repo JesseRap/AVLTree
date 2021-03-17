@@ -22,10 +22,6 @@ svg {
 .node-group {
   transform: translate(-12.5%, -12.5%);
 }
-
-.node-transform-group {
-  opacity: 1;
-}
 </style>
 
 <g {id} class="node-group"><g class="node-transform-group"><svg class="node-svg" id="svg" width="25%" height="25%" viewBox="0 0 100 100">
