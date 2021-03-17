@@ -223,23 +223,6 @@ export default class TreeRenderer {
     const nodeGroup = document.getElementById('intro-node');
 
 
-    anime({
-      targets: nodeGroup,
-      translateX: '13%',
-      translateY: '18%',
-      scale: 3,
-      opacity: 1,
-      duration: 0
-    });
-
-    anime({
-      targets: circle,
-      opacity: 1,
-      duration: 1000,
-      loop: 2,
-      direction: 'alternate',
-      easing: 'easeInOutQuad'
-    });
 
 
     // start-node animation
@@ -277,11 +260,31 @@ export default class TreeRenderer {
 
     transformGroup.setAttribute('style', 'opacity: 0');
 
-    const timeline = anime.timeline();
+    const t = anime.timeline();
 
-    // await wait(2000);
-
-    timeline.add({
+    t.add({
+      targets: nodeGroup,
+      translateX: '13%',
+      translateY: '18%',
+      scale: 3,
+      opacity: 1,
+      duration: 0
+    })
+    .add({
+      targets: circle,
+      opacity: 1,
+      duration: 1000,
+      direction: 'forward',
+      easing: 'easeInOutQuad'
+    })
+    .add({
+      targets: circle,
+      opacity: 0,
+      duration: 1000,
+      direction: 'backward',
+      easing: 'easeInOutQuad'
+    })
+    .add({
       targets: transformGroup,
       translateX: '15%',
       translateY: '15%',
@@ -306,7 +309,36 @@ export default class TreeRenderer {
       translateX: `${this.cxArr[0] ?? 50}%`,
       translateY: `${this.cyArr[0] ?? 50}%`,
       opacity: 0
-    }, '+=1000')
+    })
+
+    // await wait(2000);
+
+    // timeline.add({
+    //   targets: transformGroup,
+    //   translateX: '15%',
+    //   translateY: '15%',
+    //   opacity: 0,
+    //   duration: 1
+    // })
+    // .add({
+    //   targets: transformGroup,
+    //   translateX: '15%',
+    //   translateY: '15%',
+    //   opacity: 1,
+    //   duration: 1
+    // })
+    // .add({
+    //   targets: transformGroup,
+    //   translateX: `${this.cxArr[0] ?? 50}%`,
+    //   translateY: `${this.cyArr[0] ?? 50}%`,
+    //   duration: 1000,
+    // }, '+=1000')
+    // .add({
+    //   targets: transformGroup,
+    //   translateX: `${this.cxArr[0] ?? 50}%`,
+    //   translateY: `${this.cyArr[0] ?? 50}%`,
+    //   opacity: 0
+    // }, '+=1000')
 
     // anime({
     //   targets: circle,
@@ -344,6 +376,7 @@ export default class TreeRenderer {
     // this.balanceScaleDown();
     // this.updateSvg();
     // this.rootSVG.removeChild(startNode);
+    await wait(2000);
   };
 
   animateInsert = (newNode, child) => {
