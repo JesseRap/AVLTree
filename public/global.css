@@ -85,12 +85,7 @@ input, button, select, textarea {
 		blue,
 		red;
 	);
-	/* animation: morphword 2s; */
 }
-
-/* .header-svg text {
-	animation: morphword 2s;
-} */
 
 input:disabled {
 	color: #ccc;
