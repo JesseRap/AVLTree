@@ -404,13 +404,14 @@ export default class TreeRenderer {
       const node = state.node;
       const svg = this.svgHeap.find(el => el?.id === `g-${node.id}`);
       svg.classList.add('visited-node');
+      const nodeIndex = this.svgHeap.findIndex(el => el?.id === `g-${node.id}`);
       const parent = this.tree.getParentNode(node);
       debugger;
       const circle = svg.querySelector('circle');
       circle.setAttributeNS(null, 'fill', 'red');
       if (parent) {
         debugger;
-        await this.animateEdge(parent, node);
+        await this.animateEdge(state.tree, node, parent);
       }
     } else if (state.type === 'rebalance') {
       const oldKey = `${rotated.id}-${pivot.id}`;
@@ -511,10 +512,10 @@ export default class TreeRenderer {
     });
   };
 
-  animateEdge = async (source, destination) => {
+  animateEdge = async (tree, source, destination) => {
     debugger;
-    const sourceIndex = this.tree.heap.findIndex(el => el?.id === source.id);
-    const destinationIndex = this.tree.heap.findIndex(el => el?.id === destination.id);
+    const sourceIndex = tree.heap.findIndex(el => el?.id === source.id);
+    const destinationIndex = tree.heap.findIndex(el => el?.id === destination.id);
     console.log('animateEdge', source, destination, sourceIndex, destinationIndex);
 
     const edgeCircle = new NodeEdgeCircle({
@@ -538,7 +539,9 @@ export default class TreeRenderer {
       easing: 'easeInOutQuad'
     });
 
-    // this.rootSVG.removeChild(circle);
+    await wait(1000);
+
+    this.rootSVG.removeChild(circle);
 
     // circle.setAttribute('style', `transform: translate(${cxArr[destinationIndex] - cxArr[sourceIndex]}%, ${cyArr[destinationIndex] - cyArr[sourceIndex]}%)`);
   };
