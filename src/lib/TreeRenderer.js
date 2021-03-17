@@ -378,6 +378,16 @@ export default class TreeRenderer {
     // this.rootSVG.removeChild(startNode);
   };
 
+  balanceScaleDown = () => {
+    Array.from(document.querySelectorAll('.scale-group')).forEach(node => node.setAttribute('style', 'transform: scale(0)'));
+    Array.from(document.querySelectorAll('polygon')).forEach(node => node.setAttribute('style', 'transform: scale(0)'));
+  };
+
+  balanceScaleUp = () => {
+    Array.from(document.querySelectorAll('.scale-group')).forEach(node => node.setAttribute('style', 'transform: scale(1)'));
+    Array.from(document.querySelectorAll('polygon')).forEach(node => node.setAttribute('style', 'transform: scale(1)'));
+  };
+
   animateInsert = (newNode, child) => {
     const key = `${newNode.id}-${child.id}`;
     this.edgeMemo[key] = this.createPath(newNode);
@@ -399,7 +409,10 @@ export default class TreeRenderer {
         this.animateInsert(newNode, child);
       }
     } else if (state.type === 'insertStart') {
+      this.balanceScaleDown();
       await this.animateStart(state.insertValue);
+    } else if (state.type === 'insertFinish') {
+      this.balanceScaleUp();
     } else if (state.type === 'visitNode') {
       const node = state.node;
       const svg = this.svgHeap.find(el => el?.id === `g-${node.id}`);
