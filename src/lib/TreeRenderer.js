@@ -218,7 +218,8 @@ export default class TreeRenderer {
 
     // start-node animation
     let startNode = document.getElementById('start-node');
-    if (startNode) this.rootSVG.removeChild(startNode);
+    // if (startNode) this.rootSVG.removeChild(startNode);
+    debugger;
     // QUESTION: Need to await tick()?
     const newNode = new Node({
       target: this.rootSVG,
@@ -227,18 +228,22 @@ export default class TreeRenderer {
         anchor: this.rootSVG.children[0],
         id: 'start-node',
         isFirstNode: true,
+        hidden: true
       }
     });
+
+
 
     const introGroup = document.getElementById('intro-group');
 
-    const n = new Node({
-      target: introGroup,
-      props: {
-        value,
-        id: 'intro-node',
-      }
-    });
+    // const n = new Node({
+    //   target: introGroup,
+    //   props: {
+    //     value,
+    //     id: 'intro-node',
+    //     hidden: true
+    //   }
+    // });
 
     startNode = document.getElementById('start-node');
     const transformGroup = startNode.querySelector('.node-transform-group');
@@ -253,11 +258,6 @@ export default class TreeRenderer {
     const t = anime.timeline();
 
     t.add({
-      targets: startNode,
-      opacity: 1,
-      duration: 0
-    })
-    .add({
       targets: nodeGroup,
       translateX: '13%',
       translateY: '18%',
