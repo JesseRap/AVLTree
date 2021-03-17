@@ -98,7 +98,7 @@ export default class TreeRenderer {
 				const balanceNumberGroup = group.querySelector('.balance-number-group');
 				balanceNumberGroup.setAttribute('style', state.tree.heap[index].balance === 0 ? 'transform: translate(0, 0)' : state.tree.heap[index].balance === 1 ? 'transform: translate(20px, 5px);' : 'transform: translate(-20px, 5px)');
 
-				if (Math.abs(state.tree.heap[index].balance) > 0) {
+				if (this.isUnbalanced(state.tree.heap[index])) {
 					balanceLineGroup.parentElement.classList.add('wobble');
 				} else {
 					balanceLineGroup.parentElement.classList.remove('wobble');
@@ -106,6 +106,8 @@ export default class TreeRenderer {
 			}
 		});
 	};
+
+  isUnbalanced = node => Math.abs(node.balance) > 0
 
   createPath = node => {
     // debugger;
