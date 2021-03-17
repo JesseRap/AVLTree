@@ -192,21 +192,22 @@ export default class TreeRenderer {
 		}
 
     // // remove old edges
-		// Object.keys(this.edgeMemo).forEach(key => {
-		// 	if (!keys.includes(key)) {
-		// 		anime({
-		// 			targets: this.edgeMemo[key],
-		// 			opacity: 0,
-		// 			duration: DURATION,
-		// 			delay: 1000
-		// 		});
-		// 		const path = this.edgeMemo[key];
-		// 		setTimeout(() => {
-		// 			svg.removeChild(path);
-		// 		}, 1000);
-		// 		delete tree.edgeMemo[key];
-		// 	}
-		// });
+		Object.keys(this.edgeMemo).forEach(key => {
+			if (!keys.includes(key)) {
+        console.log('DELETE EDGE')
+				anime({
+					targets: this.edgeMemo[key],
+					opacity: 0,
+					duration: DURATION,
+					delay: 1000
+				});
+				const path = this.edgeMemo[key];
+				setTimeout(() => {
+					svg.removeChild(path);
+				}, 1000);
+				delete tree.edgeMemo[key];
+			}
+		});
 	};
 
   animateStart = async value => {
@@ -452,13 +453,13 @@ export default class TreeRenderer {
       const svg = this.svgHeap.find(el => el?.id === `g-${node.id}`);
       svg.classList.add('visited-node');
       const nodeIndex = this.svgHeap.findIndex(el => el?.id === `g-${node.id}`);
-      const parent = this.tree.getParentNode(node);
+      const parent = state.tree.getParentNode(node);
       debugger;
       const circle = svg.querySelector('circle');
       circle.setAttributeNS(null, 'fill', 'red');
       if (parent) {
         debugger;
-        await this.animateEdge(state.tree, node, parent);
+        await this.animateEdge(state.tree, parent, node);
       }
     } else if (state.type === 'rebalance') {
       const oldKey = `${rotated.id}-${pivot.id}`;
@@ -578,19 +579,17 @@ export default class TreeRenderer {
 
     console.log('edgeCircle', edgeCircle, circle)
 
-    anime({
-      targets: circle,
-      translateX: `${this.cxArr[destinationIndex] - this.cxArr[sourceIndex]}%`,
-      translateY: `${this.cyArr[destinationIndex] - this.cyArr[sourceIndex]}%`,
-      duration: 1000,
-      easing: 'easeInOutQuad'
-    });
+    // anime({
+    //   targets: circle,
+    //   translateX: `${this.cxArr[destinationIndex] - this.cxArr[sourceIndex]}%`,
+    //   translateY: `${this.cyArr[destinationIndex] - this.cyArr[sourceIndex]}%`,
+    //   duration: 1000,
+    //   easing: 'easeInOutQuad'
+    // });
 
     await wait(1000);
 
     this.rootSVG.removeChild(circle);
-
-    // circle.setAttribute('style', `transform: translate(${cxArr[destinationIndex] - cxArr[sourceIndex]}%, ${cyArr[destinationIndex] - cyArr[sourceIndex]}%)`);
   };
 
   update = async state => {
@@ -622,5 +621,6 @@ export default class TreeRenderer {
       await this.update(state);
       await this.animate(state);
     }
+    console.log('STATE GROUPS', this.stateGroups);
   };
 }
