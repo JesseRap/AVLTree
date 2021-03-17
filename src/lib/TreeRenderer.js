@@ -346,6 +346,12 @@ export default class TreeRenderer {
     // this.rootSVG.removeChild(startNode);
   };
 
+  animateInsert = (newNode, child) => {
+    const key = `${newNode.id}-${child.id}`;
+    this.edgeMemo[key] = this.createPath(newNode);
+    console.log('EDGE MEMO', this.edgeMemo);
+  }
+
   /**
    * Updates the edge memp based on the AVL tree after changes.
    */
@@ -358,9 +364,7 @@ export default class TreeRenderer {
       this.edgeMemo = {};
 		} else if (state.type === 'insert') {
       if (newNode.id !== child.id) {
-        const key = `${newNode.id}-${child.id}`;
-        this.edgeMemo[key] = this.createPath(newNode);
-        console.log('EDGE MEMO', this.edgeMemo);
+        this.animateInsert(newNode, child);
       }
     } else if (state.type === 'insertStart') {
       await this.animateStart(state.insertValue);
@@ -373,9 +377,10 @@ export default class TreeRenderer {
       debugger;
       const circle = svg.querySelector('circle');
       circle.setAttributeNS(null, 'fill', 'red');
-      // if (parent) {
-      //   await this.animateEdge(parent, node);
-      // }
+      if (parent) {
+        debugger;
+        await this.animateEdge(parent, node);
+      }
     } else if (state.type === 'rebalance') {
       const oldKey = `${rotated.id}-${pivot.id}`;
       const newKey = `${pivot.id}-${rotated.id}`;
