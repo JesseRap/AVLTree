@@ -486,7 +486,7 @@ export default class TreeRenderer {
         const oldKey = `${otherNode.id}-${rotated.id}`;
         const newKey = `${otherNode.id}-${pivot.id}`;
         const path = this.edgeMemo[oldKey];
-        this.edgeMemo[newVal] = path;
+        this.edgeMemo[newKey] = path;
         delete this.edgeMemo[oldKey];
         path.setAttribute('id', newKey);
       }
