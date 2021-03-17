@@ -309,9 +309,9 @@ export default class TreeRenderer {
       translateX: `${this.cxArr[0] ?? 50}%`,
       translateY: `${this.cyArr[0] ?? 50}%`,
       opacity: 0
-    })
+    });
 
-    // await wait(2000);
+    await wait(2000);
 
     // timeline.add({
     //   targets: transformGroup,
@@ -376,7 +376,6 @@ export default class TreeRenderer {
     // this.balanceScaleDown();
     // this.updateSvg();
     // this.rootSVG.removeChild(startNode);
-    await wait(2000);
   };
 
   animateInsert = (newNode, child) => {
@@ -405,7 +404,6 @@ export default class TreeRenderer {
       const node = state.node;
       const svg = this.svgHeap.find(el => el?.id === `g-${node.id}`);
       svg.classList.add('visited-node');
-      const nodeIndex = this.svgHeap.findIndex(el => el?.id === `g-${node.id}`);
       const parent = this.tree.getParentNode(node);
       debugger;
       const circle = svg.querySelector('circle');
@@ -539,8 +537,6 @@ export default class TreeRenderer {
       duration: 1000,
       easing: 'easeInOutQuad'
     });
-
-    // await wait(1000);
 
     // this.rootSVG.removeChild(circle);
 
