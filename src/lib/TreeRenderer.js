@@ -218,7 +218,7 @@ export default class TreeRenderer {
 
     // start-node animation
     let startNode = document.getElementById('start-node');
-    // if (startNode) this.rootSVG.removeChild(startNode);
+    if (startNode) this.rootSVG.removeChild(startNode);
     debugger;
     // QUESTION: Need to await tick()?
     const newNode = new Node({
@@ -228,7 +228,6 @@ export default class TreeRenderer {
         anchor: this.rootSVG.children[0],
         id: 'start-node',
         isFirstNode: true,
-        hidden: true
       }
     });
 
@@ -236,14 +235,14 @@ export default class TreeRenderer {
 
     const introGroup = document.getElementById('intro-group');
 
-    // const n = new Node({
-    //   target: introGroup,
-    //   props: {
-    //     value,
-    //     id: 'intro-node',
-    //     hidden: true
-    //   }
-    // });
+    const n = new Node({
+      target: introGroup,
+      props: {
+        value,
+        id: 'intro-node',
+        hidden: true
+      }
+    });
 
     startNode = document.getElementById('start-node');
     const transformGroup = startNode.querySelector('.node-transform-group');
@@ -326,14 +325,19 @@ export default class TreeRenderer {
 
   hideSVGChildrentForMS = async ms => {
     Array.from(this.rootSVG.children).forEach(async child => {
-      if (child.classList.contains('edge') || !child.classList.contains('start-node')) {
-        anime({
+      if (child.classList.contains('edge') || !child.classList.contains('intro-node')) {
+        const t = anime.timeline();
+
+        t.add({
           targets: child,
           opacity: 0,
           duration: 500
-        });
-        await wait(ms);
-        anime({
+        })
+        .add({
+          targets: child,
+          duration: ms
+        })
+        .add({
           targets: child,
           opacity: 1,
           duration: 500
@@ -341,18 +345,6 @@ export default class TreeRenderer {
       }
     });
   };
-
-  // showSVGChildrentForMS = ms => {
-  //   Array.from(this.rootSVG.children).forEach(child => {
-  //     if (child.tagName === 'g' || child.tagName === 'path' && g.id !== 'intro-group' && g.id !== 'start-node') {
-  //       anime({
-  //         targets: child,
-  //         opacity: 1,
-  //         duration: 0,
-  //       });
-  //     }
-  //   });
-  // };
 
   /**
    * Updates the edge memp based on the AVL tree after changes.
