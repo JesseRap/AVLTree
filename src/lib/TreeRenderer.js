@@ -441,6 +441,15 @@ export default class TreeRenderer {
     for (const edge of Object.values(this.edgeMemo)) {
       if (edge && !Array.from(this.rootSVG.children).includes(edge)) {
         this.rootSVG.insertBefore(edge, this.rootSVG.children[0]);
+        edge.setAttributeNS(null, 'stroke-dasharray', '100');
+    		edge.setAttributeNS(null, 'stroke-dashoffset', '-100%');
+    		anime({
+    			targets: edge,
+    			'stroke-dashoffset': '0%',
+    			duration: DURATION,
+    			delay: 0,
+          easing: 'easeOutQuad'
+    		});
       }
     }
   };
