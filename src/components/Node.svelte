@@ -1,6 +1,4 @@
 <script>
-  import { onMount } from 'svelte';
-
   let n = 0
   export let value;
   export let hidden;

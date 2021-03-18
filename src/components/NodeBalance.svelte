@@ -9,7 +9,7 @@
 
   @keyframes spin {
   	0% { transform: rotate(0deg) }
-  	100% { transform: rotate(1080deg) }
+  	100% { transform: rotate(1440deg) }
   }
 
   .scale-group {
@@ -27,7 +27,7 @@
   }
 
   .spin {
-    animation: spin 2s cubic-bezier(0.16, 1, 0.3, 1) 1s;
+    animation: spin 2s cubic-bezier(0.16, 1, 0.3, 1);
     transform-origin: center;
   }
 

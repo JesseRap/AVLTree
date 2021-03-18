@@ -26,13 +26,6 @@
   }
 </style>
 
-<script>
-  import { onMount } from 'svelte';
-  onMount(() => {
-
-  })
-</script>
-
 <header>
 	<div class="svg-container">
 		<svg class="header-svg" width="100%" height="100px" viewBox="0 0 100 100">

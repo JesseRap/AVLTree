@@ -34,18 +34,6 @@
   #intro-group {
     opacity: 0;
   }
-
-  @media (max-width: 1199px) {
-    /* .svg-main {
-      margin-left: 10%;
-    } */
-  }
-
-  @media (min-width: 1200px) {
-    /* .svg-main {
-      margin: 32px;
-    } */
-  }
 </style>
 
 <script>
@@ -55,13 +43,6 @@
   let clip;
 
   const open = () => {
-    console.log('open');
-    // const clip = document.querySelector('#svg-main-2 polygon');
-    // anime({
-    //   targets: clip,
-    //   points: '100 0, 100 200, -100 0, 100 0',
-    //   duration: 10000
-    // });
     const circles = document.querySelectorAll('.clip-circle');
     circles.forEach(circle => {
       const cx = `${Math.random() * 100}%`;
@@ -78,13 +59,6 @@
   };
 
   const close = () => {
-    console.log('close');
-    // const clip = document.querySelector('#svg-main-2 polygon');
-    // anime({
-    //   targets: clip,
-    //   points: '100 0, 100 0, 100 0, 100 0',
-    //   duration: 10000
-    // });
     anime({
       targets: ['.clip-circle'],
       r: '0px',

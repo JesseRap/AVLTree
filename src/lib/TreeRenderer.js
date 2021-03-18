@@ -54,16 +54,6 @@ export default class TreeRenderer {
     this.edgeMemo = {};
   };
 
-
-  removeAllChildrenFromSVG = () => {
-		Array.from(this.rootSVG.children).forEach(child => {
-			// TODO: Brittle. Meant to not delete the edge circle.
-			if (child.tagName === 'g' || child.tagName === 'path' ) {
-				this.rootSVG.removeChild(child);
-			}
-		});
-	};
-
   animateUpdateNodeCoords = state => {
 		this.svgHeap.forEach((group, index) => {
 			if (group) {
@@ -72,7 +62,7 @@ export default class TreeRenderer {
 					targets: group,
 					translateX: `${this.cxArr[index]}%`,
 					translateY: `${this.cyArr[index]}%`,
-					duration: group.style.transform === "" ? 0 : 1000,
+					duration: group.style.transform === '' ? 0 : 1000,
 				});
 
 				const balance = group.querySelector('.balance');
@@ -98,6 +88,7 @@ export default class TreeRenderer {
   isUnbalanced = node => Math.abs(node.balance) > 0
 
   createPath = node => {
+    console.log('createPath',node);
     // debugger;
 		if (!node) return;
 		const i = this.tree.getNodeIndex(node);
@@ -109,20 +100,21 @@ export default class TreeRenderer {
 		const path = document.createElementNS(XMLNS, 'path');
 		path.classList.add('edge');
 		const pathId = `${nodeId}-${parentId}`
+    console.log('HERE', parent, path);
 		path.setAttribute('id', pathId);
 		path.setAttributeNS(null, 'filter', 'url(#edgeBlur)');
 		path.setAttributeNS(null, 'd', `M ${this.cxArr[i]} ${this.cyArr[i]} L ${this.cxArr[this.tree.parentArray[i]]} ${this.cyArr[this.tree.parentArray[i]]}`);
 		path.setAttributeNS(null, "stroke", "black");
 		path.setAttributeNS(null, "fill", "transparent");
 		path.setAttributeNS(null, 'stroke-dasharray', '100');
-		path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
-		anime({
-			targets: path,
-			'stroke-dashoffset': '0%',
-			duration: DURATION,
-			delay: 0,
-      easing: 'easeOutQuad'
-		});
+		// path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
+		// anime({
+		// 	targets: path,
+		// 	'stroke-dashoffset': '0%',
+		// 	duration: DURATION,
+		// 	delay: 0,
+    //   easing: 'easeOutQuad'
+		// });
 		return path;
 	};
 
@@ -137,6 +129,7 @@ export default class TreeRenderer {
 			const node = heap[i];
 			if (i === 0 || !node) continue;
 			const parent = tree.getParentNode(node);
+      if (!parent) continue;
 			const nodeId = node.id;
 			const parentId = parent.id;
 			const key = `${nodeId}-${parentId}`;
@@ -162,6 +155,7 @@ export default class TreeRenderer {
 			} else {
         console.log('NOOO')
         debugger;
+        if (!node) continue;
 				const path = this.createPath(node);
         console.log('NEW PATH', path);
 				const firstNode = this.rootSVG.children[0];
@@ -220,18 +214,20 @@ export default class TreeRenderer {
 
     // start-node animation
     let startNode = document.getElementById('start-node');
-    if (startNode) this.rootSVG.removeChild(startNode);
+    // if (startNode) this.rootSVG.removeChild(startNode);
     debugger;
     // QUESTION: Need to await tick()?
-    const newNode = new Node({
-      target: this.rootSVG,
-      props: {
-        value,
-        anchor: this.rootSVG.children[0],
-        id: 'start-node',
-        isFirstNode: true,
-      }
-    });
+    if (!startNode) {
+        const newNode = new Node({
+        target: this.rootSVG,
+        props: {
+          value,
+          anchor: this.rootSVG.children[0],
+          id: 'start-node',
+          isFirstNode: true,
+        }
+      });
+    }
 
     const introGroup = document.getElementById('intro-group');
 
@@ -430,35 +426,20 @@ export default class TreeRenderer {
     });
   };
 
-  insertNewNodesIntoSVG = state => {
-    // debugger;
-    const rootSVG = this.rootSVG;
-    state.tree.heap.forEach((node, index) => {
-      if (node && !Array.from(rootSVG.children).includes(child => child?.id === `g-${node.id}`)) {
-        // debugger;
-        const group = createNodeSVG(node);
-        rootSVG.appendChild(group);
-        anime({
-          targets: group,
-          translateX: `${this.cxArr[index]}%`,
-          translateY: `${this.cyArr[index]}%`,
-          duration: group.style.transform === "" ? 0 : 1000,
-        });
-      }
-    })
-  };
-
   insertNodesIntoSVG = () => {
     for (const group of this.svgHeap) {
-      if (!Array.from(this.rootSVG.children).includes(group)) {
+      if (group && !Array.from(this.rootSVG.children).includes(group)) {
+        console.log('INSERT', group);
+        console.log(this.rootSVG.children);
         this.rootSVG.append(group);
+        console.log(this.rootSVG.children);
       }
     }
   };
 
   insertEdgesIntoSVG = () => {
     for (const edge of Object.values(this.edgeMemo)) {
-      if (!Array.from(this.rootSVG.children).includes(edge)) {
+      if (edge && !Array.from(this.rootSVG.children).includes(edge)) {
         this.rootSVG.insertBefore(edge, this.rootSVG.children[0]);
       }
     }
@@ -522,7 +503,6 @@ export default class TreeRenderer {
   animate = async state => {
     // debugger;
     console.log('animate state', state.type);
-    // this.insertNewNodesIntoSVG(state);
     this.insertNodesIntoSVG();
     this.insertEdgesIntoSVG();
     this.animateUpdateNodeCoords(state);
