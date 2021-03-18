@@ -87,15 +87,15 @@ export default class TreeRenderer {
 
   isUnbalanced = node => Math.abs(node.balance) > 0
 
-  createPath = node => {
+  createPath = (node, tree = this.tree) => {
     console.log('createPath',node);
-    // debugger;
+    debugger;
 		if (!node) return;
-		const i = this.tree.getNodeIndex(node);
+		const i = tree.getNodeIndex(node);
 		if (i === 0) return;
 		if (i === -1) throw new Error('Node not found.');
 		const nodeId = node.id;
-		const parent = this.tree.getParentNode(node);
+		const parent = tree.getParentNode(node);
 		const parentId = parent.id;
 		const path = document.createElementNS(XMLNS, 'path');
 		path.classList.add('edge');
@@ -103,7 +103,7 @@ export default class TreeRenderer {
     console.log('HERE', parent, path);
 		path.setAttribute('id', pathId);
 		path.setAttributeNS(null, 'filter', 'url(#edgeBlur)');
-		path.setAttributeNS(null, 'd', `M ${this.cxArr[i]} ${this.cyArr[i]} L ${this.cxArr[this.tree.parentArray[i]]} ${this.cyArr[this.tree.parentArray[i]]}`);
+		path.setAttributeNS(null, 'd', `M ${this.cxArr[i]} ${this.cyArr[i]} L ${this.cxArr[tree.parentArray[i]]} ${this.cyArr[tree.parentArray[i]]}`);
 		path.setAttributeNS(null, "stroke", "black");
 		path.setAttributeNS(null, "fill", "transparent");
 		path.setAttributeNS(null, 'stroke-dasharray', '100');
@@ -156,7 +156,7 @@ export default class TreeRenderer {
         console.log('NOOO')
         debugger;
         if (!node) continue;
-				const path = this.createPath(node);
+				const path = this.createPath(node, tree);
         console.log('NEW PATH', path);
 				const firstNode = this.rootSVG.children[0];
 				this.rootSVG.insertBefore(path, firstNode);
