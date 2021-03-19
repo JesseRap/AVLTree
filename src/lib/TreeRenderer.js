@@ -347,7 +347,7 @@ export default class TreeRenderer {
   updateEdgeMemoFromState = async state => {
     debugger;
     console.log('updateEdgeMemoFromState');
-    const { child, node, insertValue, newNode, pivot, rotated, parent } = state;
+    const { child, node, insertValue, newNode, pivot, rotated, parent, leftChild, rightChild, deleteValue } = state;
     if (state.type === 'insert') {
       if (newNode.id !== child.id) {
         this.animateInsert(newNode, child);
@@ -403,6 +403,12 @@ export default class TreeRenderer {
 
     } else if (state.type === 'deleteRootLeaf') {
       this.edgeMemo = {};
+    } else if (state.type === 'deleteRootLeft') {
+      const key = `${leftChild.id}-${node.id}`;
+      delete this.edgeMemo[key];
+    } else if (state.type === 'deleteRootRight') {
+      const key = `${rightChild.id}-${node.id}`;
+      delete this.edgeMemo[key];
     }
   };
 
