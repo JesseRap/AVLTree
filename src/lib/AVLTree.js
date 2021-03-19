@@ -367,7 +367,14 @@ export default class AVLTree {
 	deleteRoot = () => {
 		const deleteValue = this.root.val;
 		if (this.root.isLeaf) {
+			const root = this.root;
 			this.root = null;
+			this.stateGroup.push({
+				type: 'deleteRootLeaf',
+				tree: this.copy(),
+				node: this.root,
+				deleteValue
+			});
 		} else if (this.root.left && !this.root.right) {
 			this.root = this.root.left;
 		} else if (this.root.right && !this.root.left) {
@@ -389,10 +396,10 @@ export default class AVLTree {
 			deleteValue,
 			deleted: true
 		});
+		this.stateGroups.push(this.stateGroup);
 	};
 
 	delete = val => {
-		this.stateGroups.push(this.stateGroup);
 		this.stateGroup = [];
 
 		console.log('DELETE', val, typeof val)

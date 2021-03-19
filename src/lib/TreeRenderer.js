@@ -44,7 +44,7 @@ export default class TreeRenderer {
 
   delete = val => {
     console.log('delete');
-    this.tree.insert(val);
+    this.tree.delete(val);
     this.tree = this.tree;
   };
 
@@ -175,6 +175,7 @@ export default class TreeRenderer {
 
     // // remove old edges
 		Object.keys(this.edgeMemo).forEach(key => {
+      debugger;
 			if (!keys.includes(key)) {
         console.log('DELETE EDGE')
 				anime({
@@ -184,10 +185,8 @@ export default class TreeRenderer {
 					delay: 1000
 				});
 				const path = this.edgeMemo[key];
-				setTimeout(() => {
-					svg.removeChild(path);
-				}, 1000);
-				delete tree.edgeMemo[key];
+				this.rootSVG.removeChild(path);
+				delete this.edgeMemo[key];
 			}
 		});
 	};
@@ -349,10 +348,7 @@ export default class TreeRenderer {
     debugger;
     console.log('updateEdgeMemoFromState');
     const { child, node, insertValue, newNode, pivot, rotated, parent } = state;
-    if (!state.tree.root) {
-      await this.animateStart(state.insertValue);
-      this.edgeMemo = {};
-		} else if (state.type === 'insert') {
+    if (state.type === 'insert') {
       if (newNode.id !== child.id) {
         this.animateInsert(newNode, child);
       }
@@ -405,6 +401,8 @@ export default class TreeRenderer {
       }
     } else if (state.type === 'delete') {
 
+    } else if (state.type === 'deleteRootLeaf') {
+      this.edgeMemo = {};
     }
   };
 
@@ -433,6 +431,18 @@ export default class TreeRenderer {
         console.log(this.rootSVG.children);
         this.rootSVG.append(group);
         console.log(this.rootSVG.children);
+      }
+    }
+  };
+
+  removeOldNodesFromSVG = () => {
+    const svgIds = this.svgHeap.filter(g => !!g).map(group => group.id);
+    const children = Array.from(this.rootSVG.children);
+    for (const child of children) {
+      if (child.tagName === 'g' && child.id !== 'start-node' && child.id !== 'intro-group') {
+        if (!svgIds.includes(child.id)) {
+          this.rootSVG.removeChild(child);
+        }
       }
     }
   };
@@ -513,6 +523,7 @@ export default class TreeRenderer {
     // debugger;
     console.log('animate state', state.type);
     this.insertNodesIntoSVG();
+    this.removeOldNodesFromSVG();
     this.insertEdgesIntoSVG();
     this.animateUpdateNodeCoords(state);
     this.animateDrawEdges(state.tree);
