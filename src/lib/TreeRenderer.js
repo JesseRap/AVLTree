@@ -347,7 +347,7 @@ export default class TreeRenderer {
   updateEdgeMemoFromState = async state => {
     debugger;
     console.log('updateEdgeMemoFromState');
-    const { child, node, insertValue, newNode, pivot, rotated, parent, leftChild, rightChild, deleteValue } = state;
+    const { child, node, insertValue, newNode, pivot, rotated, parent, leftChild, rightChild, deleteValue, successor, parentOfSuccessor, childOfSuccessor } = state;
     if (state.type === 'insert') {
       if (newNode.id !== child.id) {
         this.animateInsert(newNode, child);
@@ -410,7 +410,13 @@ export default class TreeRenderer {
       const key = `${rightChild.id}-${node.id}`;
       delete this.edgeMemo[key];
     } else if (state.type === 'deleteLeaf') {
-      const key = `${node.id}-${parentOfNode.id}`;
+      const key = `${node.id}-${parent.id}`;
+      delete this.edgeMemo[key];
+    } else if (state.type === 'deleteLeft') {
+      const key = `${leftChild.id}-${node.id}`;
+      delete this.edgeMemo[key];
+    } else if (state.type === 'deleteRight') {
+      const key = `${rightChild.id}-${node.id}`;
       delete this.edgeMemo[key];
     }
   };
@@ -471,6 +477,18 @@ export default class TreeRenderer {
     		});
       }
     }
+  };
+
+  removeOldEdgesFromSVG = () => {
+    const keys = Object.keys(this.edgeMemo);
+    Array.from(this.rootSVG.children).forEach(group => {
+      if (group.id !== 'start-node' && group.id !== 'node-group' && group.tagName === 'path') {
+        if (!keys.includes(group.id)) {
+          const svg = document.getElementById(group.id);
+          this.rootSVG.removeChild(svg);
+        }
+      }
+    })
   };
 
   updateCxArrAndCyArr = tree => {
@@ -534,6 +552,7 @@ export default class TreeRenderer {
     this.insertNodesIntoSVG();
     this.removeOldNodesFromSVG();
     this.insertEdgesIntoSVG();
+    this.removeOldEdgesFromSVG();
     this.animateUpdateNodeCoords(state);
     this.animateDrawEdges(state.tree);
     await wait(DURATION);
