@@ -185,7 +185,10 @@ export default class TreeRenderer {
 					delay: 1000
 				});
 				const path = this.edgeMemo[key];
-				this.rootSVG.removeChild(path);
+        if (Array.from(this.rootSVG.children).includes(path)) {
+          this.rootSVG.removeChild(path);
+
+        }
 				delete this.edgeMemo[key];
 			}
 		});
@@ -374,9 +377,11 @@ export default class TreeRenderer {
       const oldKey = `${rotated.id}-${pivot.id}`;
       const newKey = `${pivot.id}-${rotated.id}`;
       const path = this.edgeMemo[oldKey];
-      this.edgeMemo[newKey] = path;
-      delete this.edgeMemo[oldKey];
-      path.setAttribute('id', newKey);
+      if (path) {
+        this.edgeMemo[newKey] = path;
+        delete this.edgeMemo[oldKey];
+        path.setAttribute('id', newKey);
+      }
 
       if (parent) {
         debugger;
@@ -431,6 +436,16 @@ export default class TreeRenderer {
       }
       delete this.edgeMemo[key1];
       delete this.edgeMemo[key2];
+
+      const key3 = `${successor.id}-${parent.id}`;
+      if (successorChild) {
+        const key4 = `${successorChild.id}-${successor.id}`;
+        const key5 = `${successorChild.id}-${parent.id}`;
+        const edge = this.edgeMemo[key4];
+        this.edgeMemo[key5] = edge;
+        delete this.edgeMemo[key4]
+      }
+      delete this.edgeMemo[key3];
     }
   };
 
