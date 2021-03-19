@@ -350,7 +350,7 @@ export default class TreeRenderer {
   updateEdgeMemoFromState = async state => {
     debugger;
     console.log('updateEdgeMemoFromState');
-    const { child, node, insertValue, newNode, pivot, rotated, parent, leftChild, rightChild, deleteValue, successor, parentOfSuccessor, successorChild, oldRoot, oldRootLeft, oldRootRight } = state;
+    const { child, node, insertValue, newNode, pivot, rotated, parent, leftChild, rightChild, deleteValue, successor, parentOfSuccessor, successorChild, oldRoot, oldRootLeft, oldRootRight, nodeLeft, nodeRight } = state;
     if (state.type === 'insert') {
       if (newNode.id !== child.id) {
         this.animateInsert(newNode, child);
@@ -437,10 +437,50 @@ export default class TreeRenderer {
       delete this.edgeMemo[key1];
       delete this.edgeMemo[key2];
 
-      const key3 = `${successor.id}-${parent.id}`;
+      const key3 = `${successor.id}-${parentOfSuccessor.id}`;
       if (successorChild) {
         const key4 = `${successorChild.id}-${successor.id}`;
-        const key5 = `${successorChild.id}-${parent.id}`;
+        const key5 = `${successorChild.id}-${parentOfSuccessor.id}`;
+        const edge = this.edgeMemo[key4];
+        this.edgeMemo[key5] = edge;
+        delete this.edgeMemo[key4]
+      }
+      delete this.edgeMemo[key3];
+    } else if (state.type === 'deleteWithSuccessor') {
+      const key1 = `${nodeLeft.id}-${node.id}`;
+      const key2 = `${nodeRight.id}-${node.id}`;
+      const newKey1 = `${nodeLeft.id}-${successor.id}`;
+      const newKey2 = `${nodeRight.id}-${successor.id}`;
+      const edge1 = this.edgeMemo[key1];
+      const edge2 = this.edgeMemo[key2];
+      this.edgeMemo[newKey1] = edge1;
+      if (!newKey2.split('-').every(el => el === el)) {
+        this.edgeMemo[newKey2] = edge2;
+      }
+      delete this.edgeMemo[key1];
+      delete this.edgeMemo[key2];
+
+      const k1 = `${node.id}-${parent.id}`;
+      const k2 = `${successor.id}-${parent.id}`;
+      const edge = this.edgeMemo[k1];
+      this.edgeMemo[k2] = edge;
+      delete this.edgeMemo[k1];
+
+      if (parentOfSuccessor) {
+        const key3 = `${successor.id}-${parentOfSuccessor.id}`;
+        delete this.edgeMemo[key3];
+        if (successorChild) {
+          const key4 = `${successorChild.id}-${successor.id}`;
+          const key5 = `${successorChild.id}-${parentOfSuccessor.id}`;
+          const edge = this.edgeMemo[key4];
+          this.edgeMemo[key5] = edge;
+          delete this.edgeMemo[key4]
+        }
+      }
+      const key3 = `${successor.id}-${parentOfSuccessor.id}`;
+      if (successorChild) {
+        const key4 = `${successorChild.id}-${successor.id}`;
+        const key5 = `${successorChild.id}-${parentOfSuccessor.id}`;
         const edge = this.edgeMemo[key4];
         this.edgeMemo[key5] = edge;
         delete this.edgeMemo[key4]

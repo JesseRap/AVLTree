@@ -367,7 +367,6 @@ export default class AVLTree {
 	deleteRoot = () => {
 		const deleteValue = this.root.val;
 		if (this.root.isLeaf) {
-			const root = this.root;
 			this.root = null;
 			this.stateGroup.push({
 				type: 'deleteRootLeaf',
@@ -402,8 +401,8 @@ export default class AVLTree {
 			const oldRootRight = this.root.right;
 			const successor = this.getSuccessor(this.root);
 			const parentOfSuccessor = this.getParentNode(successor);
-			const isLeftChild = this.heap.indexOf(successor) % 2 === 1;
-			parentOfSuccessor[isLeftChild ? 'left' : 'right'] = successor.right;
+			const successorIsLeftChild = this.heap.indexOf(successor) % 2 === 1;
+			parentOfSuccessor[successorIsLeftChild ? 'left' : 'right'] = successor.right;
 			const successorChild = successor.right;
 			successor.left = this.root.left;
 			successor.right = this.root.right;
@@ -417,7 +416,7 @@ export default class AVLTree {
 				successor,
 				deleteValue,
 				successorChild,
-				parent: parentOfSuccessor,
+				parentOfSuccessor,
 				oldRootLeft,
 				oldRootRight
 			});
@@ -430,6 +429,7 @@ export default class AVLTree {
 			deleted: true
 		});
 		this.stateGroups.push(this.stateGroup);
+		return;
 	};
 
 	delete = val => {
@@ -470,63 +470,67 @@ export default class AVLTree {
 			return;
 		}
 
-		const parentOfNode = this.getParentNode(node);
+		const parent = this.getParentNode(node);
 		const nodeIsLeftChild = this.heap.indexOf(node) % 2 === 1;
+		const childSide = nodeIsLeftChild ? 'left' : 'right'
 
 		if (node.isLeaf) {
-			parentOfNode[nodeIsLeftChild ? 'left' : 'right'] = null;
+			[childSide] = null;
 			this.stateGroup.push({
 				type: 'deleteLeaf',
 				tree: this.copy(),
 				node,
 				deleteValue: val,
-				parent: parentOfNode
+				parent
 			});
 		} else if (node.left && !node.right) {
 			const leftChild = node.left;
-			parentOfNode[nodeIsLeftChild ? 'left' : 'right'] = node.left;
+			parent[childSide] = node.left;
 			this.stateGroup.push({
 				type: 'deleteLeft',
 				tree: this.copy(),
 				node: this.root,
 				leftChild,
 				deleteValue: val,
-				parent: parentOfNode
+				parent
 			});
 		} else if (node.right && !node.left) {
-			parentOfNode[nodeIsLeftChild ? 'left' : 'right'] = node.right;
+			[childSide] = node.right;
 			const rightChild = node.right;
-			parentOfNode[nodeIsLeftChild ? 'left' : 'right'] = node.left;
 			this.stateGroup.push({
 				type: 'deleteRight',
 				tree: this.copy(),
 				node: this.root,
 				rightChild,
 				deleteValue: val,
-				parent: parentOfNode
+				parent
 			});
 		} else {
+			const nodeLeft = node.left;
+			const nodeRight = node.right;
 			const successor = this.getSuccessor(node);
-			if (!successor) {
-				parent[nodeIsLeftChild ? 'left' : 'right'] = null;
-				this.updateAllNodes();
-				this.rebalanceAllNodes();
-
-				this.stateGroup.push({
-					type: 'deleteFinish',
-					tree: this.copy(),
-					deleteValue: val,
-					deleted: true
-				});
-				// this.stateGroups = [...this.stateGroups, this.stateGroup];
-				this.stateGroups.push(this.stateGroup);
-				return;
-			}
 			const parentOfSuccessor = this.getParentNode(successor);
 			const successorIsLeftChild = this.heap.indexOf(successor) % 2 === 1;
 			parentOfSuccessor[successorIsLeftChild ? 'left' : 'right'] = successor.right;
-			[successor.left, successor.right] = [node.left, node.right];
+			const successorChild = successor.right;
+			successor.left = node.left;
+			successor.right = node.right;
 			parent[nodeIsLeftChild ? 'left' : 'right'] = successor;
+			this.updateAllNodes();
+			this.rebalanceAllNodes();
+
+			this.stateGroup.push({
+				type: 'deleteWithSuccessor',
+				tree: this.copy(),
+				node,
+				successor,
+				deleteValue: val,
+				parentOfSuccessor,
+				successorChild,
+				parent,
+				nodeLeft,
+				nodeRight
+			});
 		}
 
 		this.updateAllNodes();
