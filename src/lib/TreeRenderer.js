@@ -409,6 +409,9 @@ export default class TreeRenderer {
     } else if (state.type === 'deleteRootRight') {
       const key = `${rightChild.id}-${node.id}`;
       delete this.edgeMemo[key];
+    } else if (state.type === 'deleteLeaf') {
+      const key = `${node.id}-${parentOfNode.id}`;
+      delete this.edgeMemo[key];
     }
   };
 
