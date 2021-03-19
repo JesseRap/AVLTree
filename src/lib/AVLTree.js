@@ -396,20 +396,37 @@ export default class AVLTree {
 				deleteValue
 			});
 		} else {
+			debugger;
+			const oldRoot = this.root;
+			const oldRootLeft = this.root.left;
+			const oldRootRight = this.root.right;
 			const successor = this.getSuccessor(this.root);
 			const parentOfSuccessor = this.getParentNode(successor);
 			const isLeftChild = this.heap.indexOf(successor) % 2 === 1;
 			parentOfSuccessor[isLeftChild ? 'left' : 'right'] = successor.right;
+			const successorChild = successor.right;
 			successor.left = this.root.left;
 			successor.right = this.root.right;
 			this.root = successor;
+			this.updateAllNodes();
+			this.rebalanceAllNodes();
+			this.stateGroup.push({
+				type: 'deleteRootWithSuccessor',
+				tree: this.copy(),
+				oldRoot,
+				successor,
+				deleteValue,
+				successorChild,
+				parent: parentOfSuccessor,
+				oldRootLeft,
+				oldRootRight
+			});
 		}
-		this.updateAllNodes();
-		this.rebalanceAllNodes();
+
 		this.stateGroup.push({
 			type: 'deleteFinish',
 			tree: this.copy(),
-			deleteValue: val,
+			deleteValue,
 			deleted: true
 		});
 		this.stateGroups.push(this.stateGroup);
