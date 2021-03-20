@@ -368,6 +368,7 @@ export default class AVLTree {
           tree: this.copy(),
           findValue,
         });
+        this.stateGroups.push(this.stateGroup);
         return node;
       }
       if (node.val >= findValue) {
@@ -389,24 +390,18 @@ export default class AVLTree {
       }
     };
 
-    this.stateGroup.push({
-      type: 'findFinish',
-      tree: this.copy(),
-      findValue: val,
-    });
-
     const foundNode = dfs(this.root);
 
     this.stateGroup.push({
       type: 'findFinish',
       tree: this.copy(),
-      findValue: val,
+      findValue,
       foundNode,
     });
 
     this.stateGroups.push(this.stateGroup);
 
-    return result;
+    return foundNode;
   };
 
   isLeftChild = (node) => this.heap.indexOf(node) % 2 === 1; // root is considered left-child.
@@ -610,7 +605,6 @@ export default class AVLTree {
       deleteValue: val,
       deleted: true,
     });
-    // this.stateGroups = [...this.stateGroups, this.stateGroup];
     this.stateGroups.push(this.stateGroup);
     return;
   };

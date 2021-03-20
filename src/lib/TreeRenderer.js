@@ -603,11 +603,7 @@ export default class TreeRenderer {
     const svgIds = this.svgHeap.filter((g) => !!g).map((group) => group.id);
     const children = Array.from(this.rootSVG.children);
     for (const child of children) {
-      if (
-        child.tagName === 'g' &&
-        child.id !== 'start-node' &&
-        child.id !== 'intro-group'
-      ) {
+      if (child.classList.contains('tree-node')) {
         if (!svgIds.includes(child.id)) {
           this.rootSVG.removeChild(child);
         }
