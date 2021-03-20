@@ -404,6 +404,8 @@ export default class AVLTree {
       foundNode,
     });
 
+    this.stateGroups.push(this.stateGroup);
+
     return result;
   };
 
