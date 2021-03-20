@@ -573,14 +573,11 @@ export default class TreeRenderer {
 
   /**
    * Updates the SVG heap based on the AVL tree after changes.
+   * Maps nodes with ID's already in the heap and moves them if necessary, otherwise creates new node.
    */
   updateSvgHeapFromHeap = (tree) => {
-    console.log('updateSvgHeapFromHeap');
-    console.log('svgHeap', this.svgHeap);
-    console.log('treeHeap', tree.heap);
     this.svgHeap = tree.heap.map((node) => {
       if (!node) return null;
-      // debugger;
       return this.findNodeInSVGHeap(node, this.svgHeap) || createNodeSVG(node);
     });
   };
