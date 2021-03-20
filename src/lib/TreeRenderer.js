@@ -588,10 +588,7 @@ export default class TreeRenderer {
   insertNodesIntoSVG = () => {
     for (const group of this.svgHeap) {
       if (group && !Array.from(this.rootSVG.children).includes(group)) {
-        console.log('INSERT', group);
-        console.log(this.rootSVG.children);
         this.rootSVG.append(group);
-        console.log(this.rootSVG.children);
       }
     }
   };
