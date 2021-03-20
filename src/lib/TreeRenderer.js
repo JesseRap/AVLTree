@@ -4,7 +4,7 @@ import Node from '../components/Node.svelte';
 import NodeEdgeCircle from '../components/NodeEdgeCircle.svelte';
 import { childExistsInNode, createNodeSVG } from '../utils/svg';
 import { getCxArr, getCyArr } from '../utils/tree';
-import { wait } from '../utils';
+import { nodeIdToSVGId, wait } from '../utils';
 import { tick } from 'svelte';
 
 const XMLNS = 'http://www.w3.org/2000/svg';
@@ -113,7 +113,9 @@ export default class TreeRenderer {
     });
   };
 
-  isUnbalanced = (node) => Math.abs(node.balance) > 0;
+  isUnbalanced = (node) => Math.abs(node.balance) === 1;
+
+  isVeryUnbalanced = (node) => Math.abs(node.balance) > 1;
 
   createPath = (node, tree = this.tree) => {
     console.log('createPath', node);
@@ -441,7 +443,7 @@ export default class TreeRenderer {
       // this.balanceScaleUp();
     } else if (state.type === 'visitNode') {
       const node = state.node;
-      const svg = this.svgHeap.find((el) => el?.id === `g-${node.id}`);
+      const svg = this.findNodeInSVGHeap(node, this.svgHeap);
       svg.classList.add('visited-node');
       const nodeIndex = this.svgHeap.findIndex(
         (el) => el?.id === `g-${node.id}`
@@ -574,21 +576,17 @@ export default class TreeRenderer {
    */
   updateSvgHeapFromHeap = (tree) => {
     console.log('updateSvgHeapFromHeap');
-    if (!tree.root) {
-      this.svgHeap = [];
-      return;
-    }
     console.log('svgHeap', this.svgHeap);
     console.log('treeHeap', tree.heap);
     this.svgHeap = tree.heap.map((node) => {
       if (!node) return null;
       // debugger;
-      return (
-        this.svgHeap.find((el) => el?.id === `g-${node.id}`) ||
-        createNodeSVG(node)
-      );
+      return this.findNodeInSVGHeap(node, this.svgHeap) || createNodeSVG(node);
     });
   };
+
+  findNodeInSVGHeap = (node, heap) =>
+    heap.find((el) => el?.id === nodeIdToSVGId(node));
 
   insertNodesIntoSVG = () => {
     for (const group of this.svgHeap) {

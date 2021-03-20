@@ -1,4 +1,5 @@
 import Node from '../components/Node.svelte';
+import { nodeIdToSVGId } from './index';
 
 const XMLNS = 'http://www.w3.org/2000/svg';
 
@@ -37,12 +38,10 @@ export const createNodeSVG = (node) => {
       value: node.val,
     },
   });
-  g.setAttribute('id', `g-${node.id}`); // TODO - FIXME - duplicate IDs.
+  g.setAttribute('id', nodeIdToSVGId(node)); // TODO - FIXME - duplicate IDs.
+  g.classList.add('tree-node'); // TODO - FIXME - duplicate IDs.
 
   const scaleGroup = g.querySelector('.scale-group');
-
-  // NB: Node starts with scale(0);
-  // scaleGroup.setAttribute('style', 'transform: scale(0);');
 
   return g;
 };
