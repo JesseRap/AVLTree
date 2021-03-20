@@ -65,6 +65,12 @@ export default class AVLTree {
 
   getNodeIndexStrict = (node) => this.heap.indexOf(node);
 
+  isBalanced = (node) => node.balance === 0;
+
+  isUnbalanced = (node) => Math.abs(node.balance) === 1;
+
+  isVeryUnbalanced = (node) => Math.abs(node.balance) > 1;
+
   setChild = (parent, childDirection, newChild) => {
     if (parent) {
       parent[childDirection] = newChild;
@@ -103,17 +109,13 @@ export default class AVLTree {
   }
 
   rotateRightNode = (node) => {
-    const index = this.getNodeIndex(node);
-    const heap = this.heap;
-    const parent = index === 0 ? null : heap[Math.floor((index - 1) / 2)];
-    const isLeft = index % 2 === 1;
+    const parent = this.getParentNode(node);
+    const isLeft = this.isLeftChild(node);
+    const childDirection = isLeft ? 'left' : 'right';
     const rotated = this.rotateRight(node);
-    if (parent) {
-      parent[isLeft ? 'left' : 'right'] = rotated;
-    } else {
-      this.root = rotated;
-    }
-    // this.updateAllNodes();
+
+    this.setChild(parent, childDirection, rotated);
+
     this.stateGroup.push({
       type: 'rebalance',
       tree: this.copy(),
@@ -121,6 +123,7 @@ export default class AVLTree {
       rotated: rotated,
       parent: parent,
     });
+
     return rotated;
   };
 
@@ -135,8 +138,6 @@ export default class AVLTree {
     this.updateNode(node);
     this.updateNode(temp);
 
-    // this.stateGroup.push(this);
-
     return temp;
   };
 
@@ -150,8 +151,6 @@ export default class AVLTree {
 
     this.updateNode(node);
     this.updateNode(temp);
-
-    // this.stateGroup.push(this);
 
     return temp;
   };
@@ -187,9 +186,11 @@ export default class AVLTree {
   };
 
   rebalanceAllNodes = () => {
-    for (let i = this.heap.length - 1; i >= 0; i--) {
-      if (this.heap[i] && Math.abs(this.heap[i].balance) > 1) {
-        this.rebalance(this.heap[i]);
+    const heap = this.heap;
+    for (let i = heap.length - 1; i >= 0; i--) {
+      const node = heap[i];
+      if (node && this.isVeryUnbalanced(node)) {
+        this.rebalance(node);
         this.updateAllNodes();
       }
     }
