@@ -434,126 +434,121 @@ export default class TreeRenderer {
       nodeRight,
     } = state;
 
-    if (state.type === 'insert') {
-      if (newNode.id !== child.id) {
-        this.animateInsert(newNode, child);
+    switch (state.type) {
+      case 'insert': {
+        if (newNode.id !== child.id) {
+          this.animateInsert(newNode, child);
+        }
+        break;
       }
-    } else if (state.type === 'insertStart') {
-      // this.balanceScaleDown();
-      await this.animateStart(state.insertValue);
-    } else if (state.type === 'insertFinish') {
-      // this.balanceScaleUp();
-    } else if (state.type === 'visitNode') {
-      const node = state.node;
-      const svg = this.findNodeInSVGHeap(node, this.svgHeap);
-      svg.classList.add('visited-node');
-      const parent = state.tree.getParentNode(node);
-      debugger;
-      const circle = svg.querySelector('circle');
-      circle.setAttributeNS(null, 'fill', 'red');
-      if (parent) {
+      case 'insertStart': {
+        await this.animateStart(state.insertValue);
+        break;
+      }
+      case 'insertFinish': {
+        // this.balanceScaleUp();
+        break;
+      }
+      case 'visitNode': {
+        const node = state.node;
+        const svg = this.findNodeInSVGHeap(node, this.svgHeap);
+        svg.classList.add('visited-node');
+        const parent = state.tree.getParentNode(node);
         debugger;
-        await this.animateEdge(state.tree, parent, node);
+        const circle = svg.querySelector('circle');
+        circle.setAttributeNS(null, 'fill', 'red');
+        if (parent) {
+          debugger;
+          await this.animateEdge(state.tree, parent, node);
+        }
+        break;
       }
-    } else if (state.type === 'rebalance') {
-      const oldKey = `${rotated.id}-${pivot.id}`;
-      const newKey = `${pivot.id}-${rotated.id}`;
-      const path = this.edgeMemo[oldKey];
-      if (path) {
-        this.edgeMemo[newKey] = path;
-        delete this.edgeMemo[oldKey];
-        path.setAttribute('id', newKey);
-      }
-
-      if (parent) {
-        debugger;
-        const oldParentKey = `${pivot.id}-${parent.id}`;
-        const newParentKey = `${rotated.id}-${parent.id}`;
-        const path = this.edgeMemo[oldParentKey];
-        this.edgeMemo[newParentKey] = path;
-        delete this.edgeMemo[oldParentKey];
-        path.setAttribute('id', newParentKey);
-      }
-
-      const pivotIsLeftChild = this.tree.isLeftChild(pivot);
-      const childDirection = pivotIsLeftChild ? 'right' : 'left';
-      const otherNode = pivot[childDirection];
-      if (otherNode) {
-        const oldKey = `${otherNode.id}-${rotated.id}`;
-        const newKey = `${otherNode.id}-${pivot.id}`;
+      case 'rebalance': {
+        const oldKey = `${rotated.id}-${pivot.id}`;
+        const newKey = `${pivot.id}-${rotated.id}`;
         const path = this.edgeMemo[oldKey];
-        this.edgeMemo[newKey] = path;
-        delete this.edgeMemo[oldKey];
-        path.setAttribute('id', newKey);
+        if (path) {
+          this.edgeMemo[newKey] = path;
+          delete this.edgeMemo[oldKey];
+          path.setAttribute('id', newKey);
+        }
+
+        if (parent) {
+          debugger;
+          const oldParentKey = `${pivot.id}-${parent.id}`;
+          const newParentKey = `${rotated.id}-${parent.id}`;
+          const path = this.edgeMemo[oldParentKey];
+          this.edgeMemo[newParentKey] = path;
+          delete this.edgeMemo[oldParentKey];
+          path.setAttribute('id', newParentKey);
+        }
+
+        const pivotIsLeftChild = this.tree.isLeftChild(pivot);
+        const childDirection = pivotIsLeftChild ? 'right' : 'left';
+        const otherNode = pivot[childDirection];
+        if (otherNode) {
+          const oldKey = `${otherNode.id}-${rotated.id}`;
+          const newKey = `${otherNode.id}-${pivot.id}`;
+          const path = this.edgeMemo[oldKey];
+          this.edgeMemo[newKey] = path;
+          delete this.edgeMemo[oldKey];
+          path.setAttribute('id', newKey);
+        }
+        break;
       }
-    } else if (state.type === 'delete') {
-    } else if (state.type === 'deleteRootLeaf') {
-      this.edgeMemo = {};
-    } else if (state.type === 'deleteRootLeft') {
-      const key = `${leftChild.id}-${node.id}`;
-      delete this.edgeMemo[key];
-    } else if (state.type === 'deleteRootRight') {
-      const key = `${rightChild.id}-${node.id}`;
-      delete this.edgeMemo[key];
-    } else if (state.type === 'deleteLeaf') {
-      if (parent) {
-        const key = `${node.id}-${parent.id}`;
+      case 'deleteLeaf': {
+        if (parent) {
+          const key = `${node.id}-${parent.id}`;
+          delete this.edgeMemo[key];
+        } else {
+          this.edgeMemo = {};
+        }
+        break;
+      }
+      case 'deleteRootLeft': {
+        const key = `${leftChild.id}-${node.id}`;
         delete this.edgeMemo[key];
+        break;
       }
-    } else if (state.type === 'deleteLeft') {
-      const key = `${leftChild.id}-${node.id}`;
-      delete this.edgeMemo[key];
-    } else if (state.type === 'deleteRight') {
-      const key = `${rightChild.id}-${node.id}`;
-      delete this.edgeMemo[key];
-    } else if (state.type === 'deleteRootWithSuccessor') {
-      const key1 = `${oldRootLeft.id}-${oldRoot.id}`;
-      const key2 = `${oldRootRight.id}-${oldRoot.id}`;
-      const newKey1 = `${oldRootLeft.id}-${successor.id}`;
-      const newKey2 = `${oldRootRight.id}-${successor.id}`;
-      const edge1 = this.edgeMemo[key1];
-      const edge2 = this.edgeMemo[key2];
-      this.edgeMemo[newKey1] = edge1;
-      if (!newKey2.split('-').every((el) => el === el)) {
-        this.edgeMemo[newKey2] = edge2;
+      case 'deleteRight': {
+        const key = `${rightChild.id}-${node.id}`;
+        delete this.edgeMemo[key];
+        break;
       }
-      delete this.edgeMemo[key1];
-      delete this.edgeMemo[key2];
+      case 'deleteWithSuccessor': {
+        const key1 = `${nodeLeft.id}-${node.id}`;
+        const key2 = `${nodeRight.id}-${node.id}`;
+        const newKey1 = `${nodeLeft.id}-${successor.id}`;
+        const newKey2 = `${nodeRight.id}-${successor.id}`;
+        const edge1 = this.edgeMemo[key1];
+        const edge2 = this.edgeMemo[key2];
+        this.edgeMemo[newKey1] = edge1;
+        if (!newKey2.split('-').every((el) => el === el)) {
+          this.edgeMemo[newKey2] = edge2;
+        }
+        delete this.edgeMemo[key1];
+        delete this.edgeMemo[key2];
 
-      const key3 = `${successor.id}-${parentOfSuccessor.id}`;
-      if (successorChild) {
-        const key4 = `${successorChild.id}-${successor.id}`;
-        const key5 = `${successorChild.id}-${parentOfSuccessor.id}`;
-        const edge = this.edgeMemo[key4];
-        this.edgeMemo[key5] = edge;
-        delete this.edgeMemo[key4];
-      }
-      delete this.edgeMemo[key3];
-    } else if (state.type === 'deleteWithSuccessor') {
-      const key1 = `${nodeLeft.id}-${node.id}`;
-      const key2 = `${nodeRight.id}-${node.id}`;
-      const newKey1 = `${nodeLeft.id}-${successor.id}`;
-      const newKey2 = `${nodeRight.id}-${successor.id}`;
-      const edge1 = this.edgeMemo[key1];
-      const edge2 = this.edgeMemo[key2];
-      this.edgeMemo[newKey1] = edge1;
-      if (!newKey2.split('-').every((el) => el === el)) {
-        this.edgeMemo[newKey2] = edge2;
-      }
-      delete this.edgeMemo[key1];
-      delete this.edgeMemo[key2];
+        if (parent) {
+          const k1 = `${node.id}-${parent.id}`;
+          const k2 = `${successor.id}-${parent.id}`;
+          const edge = this.edgeMemo[k1];
+          this.edgeMemo[k2] = edge;
+          delete this.edgeMemo[k1];
+        }
 
-      if (parent) {
-        const k1 = `${node.id}-${parent.id}`;
-        const k2 = `${successor.id}-${parent.id}`;
-        const edge = this.edgeMemo[k1];
-        this.edgeMemo[k2] = edge;
-        delete this.edgeMemo[k1];
-      }
-
-      if (parentOfSuccessor) {
+        if (parentOfSuccessor) {
+          const key3 = `${successor.id}-${parentOfSuccessor.id}`;
+          delete this.edgeMemo[key3];
+          if (successorChild) {
+            const key4 = `${successorChild.id}-${successor.id}`;
+            const key5 = `${successorChild.id}-${parentOfSuccessor.id}`;
+            const edge = this.edgeMemo[key4];
+            this.edgeMemo[key5] = edge;
+            delete this.edgeMemo[key4];
+          }
+        }
         const key3 = `${successor.id}-${parentOfSuccessor.id}`;
-        delete this.edgeMemo[key3];
         if (successorChild) {
           const key4 = `${successorChild.id}-${successor.id}`;
           const key5 = `${successorChild.id}-${parentOfSuccessor.id}`;
@@ -561,16 +556,8 @@ export default class TreeRenderer {
           this.edgeMemo[key5] = edge;
           delete this.edgeMemo[key4];
         }
+        delete this.edgeMemo[key3];
       }
-      const key3 = `${successor.id}-${parentOfSuccessor.id}`;
-      if (successorChild) {
-        const key4 = `${successorChild.id}-${successor.id}`;
-        const key5 = `${successorChild.id}-${parentOfSuccessor.id}`;
-        const edge = this.edgeMemo[key4];
-        this.edgeMemo[key5] = edge;
-        delete this.edgeMemo[key4];
-      }
-      delete this.edgeMemo[key3];
     }
   };
 
