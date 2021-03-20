@@ -506,7 +506,6 @@ export default class AVLTree {
         parent,
       });
     } else {
-      const n = node;
       const nodeLeft = node.left;
       const nodeRight = node.right;
       const successor = this.getSuccessor(node);
