@@ -18,12 +18,8 @@
   }
 
   polygon {
-    /* transform: translate(45px, 20px); */
     transform-origin: center;
     transition: transform 1s;
-    /* animation-name: spin;
-    animation-duration: 3s;
-    animation-direction: alternate; */
   }
 
   .spin {
@@ -54,10 +50,6 @@
   .value {
     text-shadow: -1px -1px #fbc531;
   }
-
-  /* .triangle {
-    transform: scale(0);
-  } */
 
   path {
     transform: translate(-25%, -30%);

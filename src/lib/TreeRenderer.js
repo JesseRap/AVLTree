@@ -73,13 +73,14 @@ export default class TreeRenderer {
 
         const balance = group.querySelector('.balance');
         const heap = this.tree.heap;
-        balance.innerHTML = state.tree.heap[index].balance;
+        const stateBalance = state.tree.heap[index].balance;
+        balance.innerHTML = stateBalance;
         balance.setAttributeNS(
           null,
           'fill',
-          Math.abs(state.tree.heap[index].balance) === 0
+          Math.abs(stateBalance) === 0
             ? '#7f8fa6'
-            : Math.abs(state.tree.heap[index].balance) === 1
+            : Math.abs(stateBalance) === 1
             ? '#c23616'
             : '#e84118'
         );
@@ -87,9 +88,9 @@ export default class TreeRenderer {
         const balanceLineGroup = group.querySelector('.balance-line-group');
         balanceLineGroup.setAttribute(
           'style',
-          state.tree.heap[index].balance === 0
+          stateBalance === 0
             ? 'transform: rotate(0);'
-            : state.tree.heap[index].balance === 1
+            : stateBalance === 1
             ? 'transform: rotate(7deg);'
             : 'transform: rotate(-7deg)'
         );
@@ -97,9 +98,9 @@ export default class TreeRenderer {
         const balanceNumberGroup = group.querySelector('.balance-number-group');
         balanceNumberGroup.setAttribute(
           'style',
-          state.tree.heap[index].balance === 0
+          stateBalance === 0
             ? 'transform: translate(0, 0)'
-            : state.tree.heap[index].balance === 1
+            : stateBalance === 1
             ? 'transform: translate(20px, 5px);'
             : 'transform: translate(-20px, 5px)'
         );
@@ -432,6 +433,7 @@ export default class TreeRenderer {
       nodeLeft,
       nodeRight,
     } = state;
+
     if (state.type === 'insert') {
       if (newNode.id !== child.id) {
         this.animateInsert(newNode, child);
