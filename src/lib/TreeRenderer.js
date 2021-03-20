@@ -445,9 +445,6 @@ export default class TreeRenderer {
       const node = state.node;
       const svg = this.findNodeInSVGHeap(node, this.svgHeap);
       svg.classList.add('visited-node');
-      const nodeIndex = this.svgHeap.findIndex(
-        (el) => el?.id === `g-${node.id}`
-      );
       const parent = state.tree.getParentNode(node);
       debugger;
       const circle = svg.querySelector('circle');
@@ -476,9 +473,9 @@ export default class TreeRenderer {
         path.setAttribute('id', newParentKey);
       }
 
-      const pivotIndex = this.tree.getNodeIndex(pivot);
-      const pivotIsLeftChild = pivotIndex % 2 === 1;
-      const otherNode = pivot[pivotIsLeftChild ? 'right' : 'left'];
+      const pivotIsLeftChild = this.tree.isLeftChild(pivot);
+      const childDirection = pivotIsLeftChild ? 'right' : 'left';
+      const otherNode = pivot[childDirection];
       if (otherNode) {
         const oldKey = `${otherNode.id}-${rotated.id}`;
         const newKey = `${otherNode.id}-${pivot.id}`;
@@ -497,8 +494,10 @@ export default class TreeRenderer {
       const key = `${rightChild.id}-${node.id}`;
       delete this.edgeMemo[key];
     } else if (state.type === 'deleteLeaf') {
-      const key = `${node.id}-${parent.id}`;
-      delete this.edgeMemo[key];
+      if (parent) {
+        const key = `${node.id}-${parent.id}`;
+        delete this.edgeMemo[key];
+      }
     } else if (state.type === 'deleteLeft') {
       const key = `${leftChild.id}-${node.id}`;
       delete this.edgeMemo[key];
@@ -542,11 +541,13 @@ export default class TreeRenderer {
       delete this.edgeMemo[key1];
       delete this.edgeMemo[key2];
 
-      const k1 = `${node.id}-${parent.id}`;
-      const k2 = `${successor.id}-${parent.id}`;
-      const edge = this.edgeMemo[k1];
-      this.edgeMemo[k2] = edge;
-      delete this.edgeMemo[k1];
+      if (parent) {
+        const k1 = `${node.id}-${parent.id}`;
+        const k2 = `${successor.id}-${parent.id}`;
+        const edge = this.edgeMemo[k1];
+        this.edgeMemo[k2] = edge;
+        delete this.edgeMemo[k1];
+      }
 
       if (parentOfSuccessor) {
         const key3 = `${successor.id}-${parentOfSuccessor.id}`;

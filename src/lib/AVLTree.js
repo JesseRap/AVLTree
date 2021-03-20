@@ -428,79 +428,9 @@ export default class AVLTree {
     return node;
   };
 
-  deleteRoot = () => {
-    const deleteValue = this.root.val;
-    if (this.root.isLeaf) {
-      this.root = null;
-      this.stateGroup.push({
-        type: 'deleteRootLeaf',
-        tree: this.copy(),
-        node: this.root,
-        deleteValue,
-      });
-    } else if (this.root.left && !this.root.right) {
-      const leftChild = this.root.left;
-      this.root = this.root.left;
-      this.stateGroup.push({
-        type: 'deleteRootLeft',
-        tree: this.copy(),
-        node: this.root,
-        leftChild,
-        deleteValue,
-      });
-    } else if (this.root.right && !this.root.left) {
-      const rightChild = this.root.right;
-      this.root = this.root.right;
-      this.stateGroup.push({
-        type: 'deleteRootRight',
-        tree: this.copy(),
-        node: this.root,
-        rightChild,
-        deleteValue,
-      });
-    } else {
-      debugger;
-      const oldRoot = this.root;
-      const oldRootLeft = this.root.left;
-      const oldRootRight = this.root.right;
-      const successor = this.getSuccessor(this.root);
-      const parentOfSuccessor = this.getParentNode(successor);
-      const successorIsLeftChild = this.heap.indexOf(successor) % 2 === 1;
-      parentOfSuccessor[successorIsLeftChild ? 'left' : 'right'] =
-        successor.right;
-      const successorChild = successor.right;
-      successor.left = this.root.left;
-      successor.right = this.root.right;
-      this.root = successor;
-      this.updateAllNodes();
-      this.rebalanceAllNodes();
-      this.stateGroup.push({
-        type: 'deleteRootWithSuccessor',
-        tree: this.copy(),
-        oldRoot,
-        successor,
-        deleteValue,
-        successorChild,
-        parentOfSuccessor,
-        oldRootLeft,
-        oldRootRight,
-      });
-    }
-
-    this.stateGroup.push({
-      type: 'deleteFinish',
-      tree: this.copy(),
-      deleteValue,
-      deleted: true,
-    });
-    this.stateGroups.push(this.stateGroup);
-    return;
-  };
-
   delete = (val) => {
     this.stateGroup = [];
 
-    console.log('DELETE', val, typeof val);
     this.stateGroup.push({
       type: 'deleteStart',
       tree: this.copy(),
@@ -522,13 +452,7 @@ export default class AVLTree {
         deleteValue: val,
         deleted: false,
       });
-      // this.stateGroups = [...this.stateGroups, this.stateGroup];
       this.stateGroups.push(this.stateGroup);
-      return;
-    }
-
-    if (node === this.root) {
-      this.deleteRoot();
       return;
     }
 
@@ -537,7 +461,7 @@ export default class AVLTree {
     const childSide = nodeIsLeftChild ? 'left' : 'right';
 
     if (node.isLeaf) {
-      parent[childSide] = null;
+      parentOrRoot = null;
       this.stateGroup.push({
         type: 'deleteLeaf',
         tree: this.copy(),
@@ -547,7 +471,12 @@ export default class AVLTree {
       });
     } else if (node.left && !node.right) {
       const leftChild = node.left;
-      parent[childSide] = node.left;
+      if (parent) {
+        parent[childSide] = node.left;
+      } else {
+        // node is root
+        this.root = nod.left;
+      }
       this.stateGroup.push({
         type: 'deleteLeft',
         tree: this.copy(),
@@ -557,8 +486,13 @@ export default class AVLTree {
         parent,
       });
     } else if (node.right && !node.left) {
-      [childSide] = node.right;
       const rightChild = node.right;
+      if (parent) {
+        parent[childSide] = node.right;
+      } else {
+        // node is root
+        this.root = node.right;
+      }
       this.stateGroup.push({
         type: 'deleteRight',
         tree: this.copy(),
@@ -568,17 +502,23 @@ export default class AVLTree {
         parent,
       });
     } else {
+      const n = node;
       const nodeLeft = node.left;
       const nodeRight = node.right;
       const successor = this.getSuccessor(node);
       const parentOfSuccessor = this.getParentNode(successor);
-      const successorIsLeftChild = this.heap.indexOf(successor) % 2 === 1;
+      const successorIsLeftChild = this.isLeftChild(successor);
       parentOfSuccessor[successorIsLeftChild ? 'left' : 'right'] =
         successor.right;
       const successorChild = successor.right;
       successor.left = node.left;
       successor.right = node.right;
-      parent[nodeIsLeftChild ? 'left' : 'right'] = successor;
+      if (parent) {
+        parent[nodeIsLeftChild ? 'left' : 'right'] = successor;
+      } else {
+        // node is root
+        this.root = successor;
+      }
       this.updateAllNodes();
       this.rebalanceAllNodes();
 
