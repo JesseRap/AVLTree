@@ -532,16 +532,13 @@ export default class AVLTree {
       return;
     }
 
-    console.log('NODE', node);
-
     if (node === this.root) {
       this.deleteRoot();
-      // this.stateGroups = [...this.stateGroups, this.stateGroup];
       return;
     }
 
     const parent = this.getParentNode(node);
-    const nodeIsLeftChild = this.heap.indexOf(node) % 2 === 1;
+    const nodeIsLeftChild = this.isLeftChild(node);
     const childSide = nodeIsLeftChild ? 'left' : 'right';
 
     if (node.isLeaf) {
