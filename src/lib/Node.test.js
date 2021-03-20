@@ -1,7 +1,7 @@
-import Node from './Node';
+import Node from "./Node";
 
-describe('AVL Node', () => {
-  it('is constructed correctly.', () => {
+describe("AVL Node", () => {
+  it("is constructed correctly.", () => {
     const node = new Node(7);
     expect(node).toBeDefined();
     expect(node.val).toBe(7);
@@ -11,7 +11,7 @@ describe('AVL Node', () => {
     expect(node.balance).toBe(0);
   });
 
-  it('computes the isLeaf property correctly', () => {
+  it("computes the isLeaf property correctly", () => {
     const node = new Node(7);
     expect(node.isLeaf).toBe(true);
 
@@ -25,4 +25,4 @@ describe('AVL Node', () => {
     node.right = null;
     expect(node.isLeaf).toBe(true);
   });
-})
+});
