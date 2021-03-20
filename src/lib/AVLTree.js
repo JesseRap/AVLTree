@@ -461,7 +461,11 @@ export default class AVLTree {
     const childSide = nodeIsLeftChild ? 'left' : 'right';
 
     if (node.isLeaf) {
-      parentOrRoot = null;
+      if (parent) {
+        parent[childSide] = null;
+      } else {
+        this.root = null;
+      }
       this.stateGroup.push({
         type: 'deleteLeaf',
         tree: this.copy(),

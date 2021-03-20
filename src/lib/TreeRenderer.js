@@ -147,6 +147,15 @@ export default class TreeRenderer {
     return path;
   };
 
+  insertFirst = (el) => {
+    const children = Array.from(this.rootSVG.children);
+    if (children.length) {
+      this.rootSVG.insertBefore(el, this.rootSVG.children[0]);
+    } else {
+      this.rootSVG.append(el);
+    }
+  };
+
   animateDrawEdges = (tree) => {
     console.log('animateDrawEdges', tree);
     debugger;
@@ -171,12 +180,8 @@ export default class TreeRenderer {
         console.log('update edge');
         const path = this.edgeMemo[key];
         if (!Array.from(this.rootSVG.children).find((g) => g.id === path.id)) {
-          this.rootSVG.insertBefore(path, this.rootSVG.children[0]);
+          this.insertFirst(path);
         }
-        // if (path && !heap[i]) {
-        // 	svg.removeChild(path);
-        // 	delete tree.edgeMemo[i];
-        // }
         path.setAttributeNS(
           null,
           'd',
@@ -184,17 +189,13 @@ export default class TreeRenderer {
             this.cxArr[tree.parentArray[i]]
           } ${this.cyArr[tree.parentArray[i]]}`
         );
-        // if (!heap[i] && tree.edgeMemo[i]) {
-        // 	svg.removeChild(path);
-        // }
       } else {
         console.log('NOOO');
         debugger;
         if (!node) continue;
         const path = this.createPath(node, tree);
         console.log('NEW PATH', path);
-        const firstNode = this.rootSVG.children[0];
-        this.rootSVG.insertBefore(path, firstNode);
+        this.insertFirst(path);
         path.setAttributeNS(
           null,
           'd',
@@ -598,7 +599,7 @@ export default class TreeRenderer {
   insertEdgesIntoSVG = () => {
     for (const edge of Object.values(this.edgeMemo)) {
       if (edge && !Array.from(this.rootSVG.children).includes(edge)) {
-        this.rootSVG.insertBefore(edge, this.rootSVG.children[0]);
+        this.insertFirst(edge);
         edge.setAttributeNS(null, 'stroke-dasharray', '100');
         edge.setAttributeNS(null, 'stroke-dashoffset', '-100%');
         anime({
