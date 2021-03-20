@@ -14,4 +14,16 @@ export default class Node {
 	get isLeaf() {
 		return this.left === null && this.right === null;
 	}
+
+	get isBalanced() {
+		return this.balance === 0;
+	}
+
+	get isUnbalanced() {
+		return Math.abs(this.balance) === 1;
+	}
+
+	get isVeryUnbalanced() {
+		return Math.abs(this.balance) > 1;
+	}
 }
