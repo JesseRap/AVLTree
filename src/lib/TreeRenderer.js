@@ -322,17 +322,18 @@ export default class TreeRenderer {
       })
       .add({
         targets: transformGroup,
-        translateX: '15%',
-        translateY: '15%',
+        translateX: '50%',
+        translateY: '-15%',
         opacity: 0,
         duration: 1,
       })
       .add({
         targets: transformGroup,
-        translateX: '15%',
-        translateY: '15%',
+        translateX: '50%',
+        translateY: '-15%',
         opacity: 1,
         duration: 1,
+        easing: 'easeOutQuad',
       })
       .add(
         {
