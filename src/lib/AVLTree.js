@@ -321,13 +321,11 @@ export default class AVLTree {
   insert = (val) => {
     this.stateGroup = [];
     this.insertValFromRoot(val);
-    // this.stateGroups = [...this.stateGroups, this.stateGroup];
   };
 
   insertUnbalanced = (val) => {
     this.stateGroup = [];
     this.insertValFromRoot(val, false);
-    // this.stateGroups = [...this.stateGroups, this.stateGroup];
   };
 
   toString = () => {
@@ -337,23 +335,76 @@ export default class AVLTree {
       .join('\n');
   };
 
-  find = (val) => {
+  find = (findValue) => {
+    this.stateGroups = [];
+    this.stateGroup.push({
+      type: 'findStart',
+      tree: this.copy(),
+      findValue,
+    });
     const dfs = (node) => {
-      // console.log('dfs', node?.val);
       if (!node) {
+        this.stateGroup.push({
+          type: 'findNotFound',
+          tree: this.copy(),
+          findValue,
+        });
+        this.stateGroup.push({
+          type: 'findFinish',
+          tree: this.copy(),
+          findValue,
+        });
+        this.this.stateGroups.push(this.stateGroup);
         return null;
       }
-      if (node.val === val) {
+      if (node.val === findValue) {
+        this.stateGroup.push({
+          type: 'findFound',
+          tree: this.copy(),
+          findValue,
+        });
+        this.stateGroup.push({
+          type: 'findFinish',
+          tree: this.copy(),
+          findValue,
+        });
         return node;
       }
-      if (node.val >= val) {
+      if (node.val >= findValue) {
+        this.stateGroup.push({
+          type: 'visitNode',
+          tree: this.copy(),
+          findValue,
+          node,
+        });
         return dfs(node.left);
       } else {
+        this.stateGroup.push({
+          type: 'visitNode',
+          tree: this.copy(),
+          findValue,
+          node,
+        });
         return dfs(node.right);
       }
     };
 
-    return dfs(this.root);
+    this.stateGroup.push({
+      type: 'findFinish',
+      tree: this.copy(),
+      findValue: val,
+    });
+
+    const foundNode = dfs(this.root);
+
+    this.stateGroup.push({
+      type: 'findFinish',
+      tree: this.copy(),
+      findValue: val,
+      foundNode,
+    });
+
+    return result;
   };
 
   isLeftChild = (node) => this.heap.indexOf(node) % 2 === 1; // root is considered left-child.
