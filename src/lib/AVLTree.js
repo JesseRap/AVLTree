@@ -65,17 +65,21 @@ export default class AVLTree {
 
   getNodeIndexStrict = (node) => this.heap.indexOf(node);
 
+  setChild = (parent, childDirection, newChild) => {
+    if (parent) {
+      parent[childDirection] = newChild;
+    } else {
+      this.root = newChild;
+    }
+  };
+
   rotateLeftNode = (node) => {
     const parent = this.getParentNode(node);
     const isLeft = this.isLeftChild(node);
     const childDirection = isLeft ? 'left' : 'right';
     const rotated = this.rotateLeft(node);
 
-    if (parent) {
-      parent[childDirection] = rotated;
-    } else {
-      this.root = rotated;
-    }
+    this.setChild(parent, childDirection, rotated);
 
     this.stateGroup.push({
       type: 'rebalance',
