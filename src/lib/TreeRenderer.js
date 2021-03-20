@@ -144,14 +144,6 @@ export default class TreeRenderer {
     path.setAttributeNS(null, 'stroke', 'black');
     path.setAttributeNS(null, 'fill', 'transparent');
     path.setAttributeNS(null, 'stroke-dasharray', '100');
-    // path.setAttributeNS(null, 'stroke-dashoffset', '-100%');
-    // anime({
-    // 	targets: path,
-    // 	'stroke-dashoffset': '0%',
-    // 	duration: DURATION,
-    // 	delay: 0,
-    //   easing: 'easeOutQuad'
-    // });
     return path;
   };
 
@@ -407,6 +399,53 @@ export default class TreeRenderer {
     });
   };
 
+  animateVisitNode = async (state) => {
+    const node = state.node;
+    const svg = this.findNodeInSVGHeap(node, this.svgHeap);
+    svg.classList.add('visited-node');
+    const parent = state.tree.getParentNode(node);
+    debugger;
+    const circle = svg.querySelector('circle');
+    if (parent) {
+      debugger;
+      await this.animateEdge(state.tree, parent, node);
+    }
+    circle.setAttributeNS(null, 'fill', 'red');
+  };
+
+  animateRebalance = (rotated, pivot, parent) => {
+    const oldKey = `${rotated.id}-${pivot.id}`;
+    const newKey = `${pivot.id}-${rotated.id}`;
+    const path = this.edgeMemo[oldKey];
+    if (path) {
+      this.edgeMemo[newKey] = path;
+      delete this.edgeMemo[oldKey];
+      path.setAttribute('id', newKey);
+    }
+
+    if (parent) {
+      debugger;
+      const oldParentKey = `${pivot.id}-${parent.id}`;
+      const newParentKey = `${rotated.id}-${parent.id}`;
+      const path = this.edgeMemo[oldParentKey];
+      this.edgeMemo[newParentKey] = path;
+      delete this.edgeMemo[oldParentKey];
+      path.setAttribute('id', newParentKey);
+    }
+
+    const pivotIsLeftChild = this.tree.isLeftChild(pivot);
+    const childDirection = pivotIsLeftChild ? 'right' : 'left';
+    const otherNode = pivot[childDirection];
+    if (otherNode) {
+      const oldKey = `${otherNode.id}-${rotated.id}`;
+      const newKey = `${otherNode.id}-${pivot.id}`;
+      const path = this.edgeMemo[oldKey];
+      this.edgeMemo[newKey] = path;
+      delete this.edgeMemo[oldKey];
+      path.setAttribute('id', newKey);
+    }
+  };
+
   /**
    * Updates the edge memp based on the AVL tree after changes.
    */
@@ -450,50 +489,11 @@ export default class TreeRenderer {
         break;
       }
       case 'visitNode': {
-        const node = state.node;
-        const svg = this.findNodeInSVGHeap(node, this.svgHeap);
-        svg.classList.add('visited-node');
-        const parent = state.tree.getParentNode(node);
-        debugger;
-        const circle = svg.querySelector('circle');
-        if (parent) {
-          debugger;
-          await this.animateEdge(state.tree, parent, node);
-        }
-        circle.setAttributeNS(null, 'fill', 'red');
+        await this.animateVisitNode(state);
         break;
       }
       case 'rebalance': {
-        const oldKey = `${rotated.id}-${pivot.id}`;
-        const newKey = `${pivot.id}-${rotated.id}`;
-        const path = this.edgeMemo[oldKey];
-        if (path) {
-          this.edgeMemo[newKey] = path;
-          delete this.edgeMemo[oldKey];
-          path.setAttribute('id', newKey);
-        }
-
-        if (parent) {
-          debugger;
-          const oldParentKey = `${pivot.id}-${parent.id}`;
-          const newParentKey = `${rotated.id}-${parent.id}`;
-          const path = this.edgeMemo[oldParentKey];
-          this.edgeMemo[newParentKey] = path;
-          delete this.edgeMemo[oldParentKey];
-          path.setAttribute('id', newParentKey);
-        }
-
-        const pivotIsLeftChild = this.tree.isLeftChild(pivot);
-        const childDirection = pivotIsLeftChild ? 'right' : 'left';
-        const otherNode = pivot[childDirection];
-        if (otherNode) {
-          const oldKey = `${otherNode.id}-${rotated.id}`;
-          const newKey = `${otherNode.id}-${pivot.id}`;
-          const path = this.edgeMemo[oldKey];
-          this.edgeMemo[newKey] = path;
-          delete this.edgeMemo[oldKey];
-          path.setAttribute('id', newKey);
-        }
+        this.animateRebalance(rotated, pivot, parent);
         break;
       }
       case 'deleteLeaf': {
