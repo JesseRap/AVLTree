@@ -456,11 +456,11 @@ export default class TreeRenderer {
         const parent = state.tree.getParentNode(node);
         debugger;
         const circle = svg.querySelector('circle');
-        circle.setAttributeNS(null, 'fill', 'red');
         if (parent) {
           debugger;
           await this.animateEdge(state.tree, parent, node);
         }
+        circle.setAttributeNS(null, 'fill', 'red');
         break;
       }
       case 'rebalance': {
