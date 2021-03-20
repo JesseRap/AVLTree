@@ -616,11 +616,7 @@ export default class TreeRenderer {
   removeOldEdgesFromSVG = () => {
     const keys = Object.keys(this.edgeMemo);
     Array.from(this.rootSVG.children).forEach((group) => {
-      if (
-        group.id !== 'start-node' &&
-        group.id !== 'node-group' &&
-        group.tagName === 'path'
-      ) {
+      if (group.classList.contains('edge')) {
         if (!keys.includes(group.id)) {
           const svg = document.getElementById(group.id);
           this.rootSVG.removeChild(svg);
