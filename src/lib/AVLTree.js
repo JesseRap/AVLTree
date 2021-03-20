@@ -1,34 +1,35 @@
-import { tick } from "svelte";
-import Node from "./Node.js";
-import TreeCopier from "./TreeCopier.js";
+import { tick } from 'svelte';
+import Node from './Node.js';
+import TreeCopier from './TreeCopier.js';
 
 export default class AVLTree {
-  constructor(inputArray, copy = true) {
+  constructor(inputArray = [], copy = true) {
     this.root = null;
     this.stateGroups = [];
     this.stateGroup = [];
     if (copy) {
+      // When we copy the tree, we set `copy` to false, otherwise there is a vicious cycle, as the tree keeps trying to copy its initial state.
       this.stateGroup = [
         {
-          type: "initial",
+          type: 'initial',
           tree: this.copy(),
         },
       ];
-      // this.stateGroups = [...this.stateGroups, this.stateGroup];
     }
-    if (inputArray) {
-      for (const val of inputArray) {
-        this.insert(val);
-      }
-    }
+    this.insertValues(inputArray);
   }
+
+  insertValues = (valuesArr) => {
+    for (const val of valuesArr) {
+      this.insert(val);
+    }
+  };
 
   /**
    * Returns a 2D-array with the nodes at each depth level of a BFS on the tree. The levels are "packed," i.e., empty nodes are filled by `null`.
    * @return {any[][]} A 2D-array with the nodes at each depth level of a BFS on the tree.
    */
   getLevels = () => {
-    if (!this.root) return [];
     let level = [this.root];
     const levels = [];
     while (level.length && level.some((el) => el !== null)) {
@@ -65,24 +66,25 @@ export default class AVLTree {
   getNodeIndexStrict = (node) => this.heap.indexOf(node);
 
   rotateLeftNode = (node) => {
-    const index = this.getNodeIndex(node);
-    const heap = this.heap;
-    const parent = index === 0 ? null : heap[Math.floor((index - 1) / 2)];
-    const isLeft = index % 2 === 1;
+    const parent = this.getParentNode(node);
+    const isLeft = this.isLeftChild(node);
+    const childDirection = isLeft ? 'left' : 'right';
     const rotated = this.rotateLeft(node);
+
     if (parent) {
-      parent[isLeft ? "left" : "right"] = rotated;
+      parent[childDirection] = rotated;
     } else {
       this.root = rotated;
     }
-    // this.updateAllNodes();
+
     this.stateGroup.push({
-      type: "rebalance",
+      type: 'rebalance',
       tree: this.copy(),
       pivot: node,
       rotated: rotated,
       parent: parent,
     });
+
     return rotated;
   };
 
@@ -103,13 +105,13 @@ export default class AVLTree {
     const isLeft = index % 2 === 1;
     const rotated = this.rotateRight(node);
     if (parent) {
-      parent[isLeft ? "left" : "right"] = rotated;
+      parent[isLeft ? 'left' : 'right'] = rotated;
     } else {
       this.root = rotated;
     }
     // this.updateAllNodes();
     this.stateGroup.push({
-      type: "rebalance",
+      type: 'rebalance',
       tree: this.copy(),
       pivot: node,
       rotated: rotated,
@@ -120,7 +122,7 @@ export default class AVLTree {
 
   rotateLeft = (node) => {
     if (!node.right) {
-      throw new Error("Cannot rotate left without right child.");
+      throw new Error('Cannot rotate left without right child.');
     }
     const temp = node.right;
     node.right = node.right?.left || null;
@@ -136,7 +138,7 @@ export default class AVLTree {
 
   rotateRight = (node) => {
     if (!node.left) {
-      throw new Error("Cannot rotate right without left child.");
+      throw new Error('Cannot rotate right without left child.');
     }
     const temp = node.left;
     node.left = (node.left || {}).right || null;
@@ -199,7 +201,7 @@ export default class AVLTree {
   insertValFromRoot = (val, rebalance = true) => {
     const newNode = new Node(val);
     this.stateGroup.push({
-      type: "insertStart",
+      type: 'insertStart',
       tree: this.copy(),
       insertValue: val,
       duration: 2000,
@@ -207,7 +209,7 @@ export default class AVLTree {
     if (!this.root) {
       this.root = newNode;
       this.stateGroup.push({
-        type: "insert",
+        type: 'insert',
         tree: this.copy(),
         child: this.root,
         parent: null,
@@ -215,7 +217,7 @@ export default class AVLTree {
         newNode,
       });
       this.stateGroup.push({
-        type: "insertFinish",
+        type: 'insertFinish',
         tree: this.copy(),
         insertValue: val,
         newNode,
@@ -230,7 +232,7 @@ export default class AVLTree {
       const copy = this.copy();
       const n = copy.heap.find((el) => el?.id === node.id);
       this.stateGroup.push({
-        type: "visitNode",
+        type: 'visitNode',
         tree: this.copy(),
         node: n,
       });
@@ -259,7 +261,7 @@ export default class AVLTree {
     this.updateAllNodes();
 
     this.stateGroup.push({
-      type: "insert",
+      type: 'insert',
       tree: this.copy(),
       child: previous,
       parent: this.getParentNode(previous),
@@ -274,7 +276,7 @@ export default class AVLTree {
     this.updateAllNodes();
 
     this.stateGroup.push({
-      type: "insertFinish",
+      type: 'insertFinish',
       tree: this.copy(),
       insertValue: val,
       newNode,
@@ -326,8 +328,8 @@ export default class AVLTree {
   toString = () => {
     const levels = this.getLevels();
     return levels
-      .map((level) => level.map((el) => (el ? el.val : " ")).join(" "))
-      .join("\n");
+      .map((level) => level.map((el) => (el ? el.val : ' ')).join(' '))
+      .join('\n');
   };
 
   find = (val) => {
@@ -349,11 +351,14 @@ export default class AVLTree {
     return dfs(this.root);
   };
 
+  isLeftChild = (node) => this.heap.indexOf(node) % 2 === 1; // root is considered left-child.
+
+  isRightChild = (node) => this.heap.indexOf(node) % 2 === 0;
+
   getSuccessor = (node) => {
     if (!node.right) {
       // No right sub-tree. Successor must be parent, node must be left child.
-      const isLeftChild = this.heap.indexOf(node) % 2 === 1;
-      if (!isLeftChild) {
+      if (!this.isLeftChild(node)) {
         return null;
       }
       const parent = this.getParentNode(node);
@@ -375,7 +380,7 @@ export default class AVLTree {
     if (this.root.isLeaf) {
       this.root = null;
       this.stateGroup.push({
-        type: "deleteRootLeaf",
+        type: 'deleteRootLeaf',
         tree: this.copy(),
         node: this.root,
         deleteValue,
@@ -384,7 +389,7 @@ export default class AVLTree {
       const leftChild = this.root.left;
       this.root = this.root.left;
       this.stateGroup.push({
-        type: "deleteRootLeft",
+        type: 'deleteRootLeft',
         tree: this.copy(),
         node: this.root,
         leftChild,
@@ -394,7 +399,7 @@ export default class AVLTree {
       const rightChild = this.root.right;
       this.root = this.root.right;
       this.stateGroup.push({
-        type: "deleteRootRight",
+        type: 'deleteRootRight',
         tree: this.copy(),
         node: this.root,
         rightChild,
@@ -408,7 +413,7 @@ export default class AVLTree {
       const successor = this.getSuccessor(this.root);
       const parentOfSuccessor = this.getParentNode(successor);
       const successorIsLeftChild = this.heap.indexOf(successor) % 2 === 1;
-      parentOfSuccessor[successorIsLeftChild ? "left" : "right"] =
+      parentOfSuccessor[successorIsLeftChild ? 'left' : 'right'] =
         successor.right;
       const successorChild = successor.right;
       successor.left = this.root.left;
@@ -417,7 +422,7 @@ export default class AVLTree {
       this.updateAllNodes();
       this.rebalanceAllNodes();
       this.stateGroup.push({
-        type: "deleteRootWithSuccessor",
+        type: 'deleteRootWithSuccessor',
         tree: this.copy(),
         oldRoot,
         successor,
@@ -430,7 +435,7 @@ export default class AVLTree {
     }
 
     this.stateGroup.push({
-      type: "deleteFinish",
+      type: 'deleteFinish',
       tree: this.copy(),
       deleteValue,
       deleted: true,
@@ -442,9 +447,9 @@ export default class AVLTree {
   delete = (val) => {
     this.stateGroup = [];
 
-    console.log("DELETE", val, typeof val);
+    console.log('DELETE', val, typeof val);
     this.stateGroup.push({
-      type: "deleteStart",
+      type: 'deleteStart',
       tree: this.copy(),
       deleteValue: val,
     });
@@ -454,12 +459,12 @@ export default class AVLTree {
       this.updateAllNodes();
       this.rebalanceAllNodes();
       this.stateGroup.push({
-        type: "deleteNotFound",
+        type: 'deleteNotFound',
         tree: this.copy(),
         deleteValue: val,
       });
       this.stateGroup.push({
-        type: "deleteFinish",
+        type: 'deleteFinish',
         tree: this.copy(),
         deleteValue: val,
         deleted: false,
@@ -469,7 +474,7 @@ export default class AVLTree {
       return;
     }
 
-    console.log("NODE", node);
+    console.log('NODE', node);
 
     if (node === this.root) {
       this.deleteRoot();
@@ -479,12 +484,12 @@ export default class AVLTree {
 
     const parent = this.getParentNode(node);
     const nodeIsLeftChild = this.heap.indexOf(node) % 2 === 1;
-    const childSide = nodeIsLeftChild ? "left" : "right";
+    const childSide = nodeIsLeftChild ? 'left' : 'right';
 
     if (node.isLeaf) {
-      [childSide] = null;
+      parent[childSide] = null;
       this.stateGroup.push({
-        type: "deleteLeaf",
+        type: 'deleteLeaf',
         tree: this.copy(),
         node,
         deleteValue: val,
@@ -494,7 +499,7 @@ export default class AVLTree {
       const leftChild = node.left;
       parent[childSide] = node.left;
       this.stateGroup.push({
-        type: "deleteLeft",
+        type: 'deleteLeft',
         tree: this.copy(),
         node: this.root,
         leftChild,
@@ -505,7 +510,7 @@ export default class AVLTree {
       [childSide] = node.right;
       const rightChild = node.right;
       this.stateGroup.push({
-        type: "deleteRight",
+        type: 'deleteRight',
         tree: this.copy(),
         node: this.root,
         rightChild,
@@ -518,17 +523,17 @@ export default class AVLTree {
       const successor = this.getSuccessor(node);
       const parentOfSuccessor = this.getParentNode(successor);
       const successorIsLeftChild = this.heap.indexOf(successor) % 2 === 1;
-      parentOfSuccessor[successorIsLeftChild ? "left" : "right"] =
+      parentOfSuccessor[successorIsLeftChild ? 'left' : 'right'] =
         successor.right;
       const successorChild = successor.right;
       successor.left = node.left;
       successor.right = node.right;
-      parent[nodeIsLeftChild ? "left" : "right"] = successor;
+      parent[nodeIsLeftChild ? 'left' : 'right'] = successor;
       this.updateAllNodes();
       this.rebalanceAllNodes();
 
       this.stateGroup.push({
-        type: "deleteWithSuccessor",
+        type: 'deleteWithSuccessor',
         tree: this.copy(),
         node,
         successor,
@@ -545,7 +550,7 @@ export default class AVLTree {
     this.rebalanceAllNodes();
 
     this.stateGroup.push({
-      type: "deleteFinish",
+      type: 'deleteFinish',
       tree: this.copy(),
       deleteValue: val,
       deleted: true,

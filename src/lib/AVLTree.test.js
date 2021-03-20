@@ -1,14 +1,14 @@
-import AVLTree from "./AVLTree";
+import AVLTree from './AVLTree';
 
-describe("AVL Tree", () => {
-  describe("constructor", () => {
-    it("constructs empty tree correctly", () => {
+describe('AVL Tree', () => {
+  describe('constructor', () => {
+    it('constructs empty tree correctly', () => {
       const tree = new AVLTree();
       expect(tree.root).toBeNull();
       expect(tree.heap).toEqual([]);
     });
 
-    it("constructs a tree with input values", () => {
+    it('constructs a tree with input values', () => {
       let tree = new AVLTree([1]);
       expect(tree.root.val).toBe(1);
       expect(tree.root.left).toBeNull();
@@ -23,8 +23,8 @@ describe("AVL Tree", () => {
     });
   });
 
-  describe("getLevels", () => {
-    it("correctly produces levels", () => {
+  describe('getLevels', () => {
+    it('correctly produces levels', () => {
       const tree = new AVLTree([1, 3, 2, 5, 4]);
       const levels = tree
         .getLevels()
@@ -33,8 +33,8 @@ describe("AVL Tree", () => {
     });
   });
 
-  describe("heap", () => {
-    it("correctly produces heap representations", () => {
+  describe('heap', () => {
+    it('correctly produces heap representations', () => {
       let tree = new AVLTree();
       expect(tree.heap).toEqual([]);
 
@@ -48,8 +48,8 @@ describe("AVL Tree", () => {
     });
   });
 
-  describe("getSuccessor", () => {
-    it("correctly gets the successor", () => {
+  describe('getSuccessor', () => {
+    it('correctly gets the successor', () => {
       let tree = new AVLTree([1, 2, 3, 4, 5]);
       let node = tree.find(1);
       let successor = tree.getSuccessor(node);
@@ -73,8 +73,8 @@ describe("AVL Tree", () => {
     });
   });
 
-  describe("delete", () => {
-    it("correctly deletes values", () => {
+  describe('delete', () => {
+    it('correctly deletes values', () => {
       let tree = new AVLTree([1, 2, 3, 4, 5]);
 
       tree.delete(5);

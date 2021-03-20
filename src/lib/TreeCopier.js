@@ -1,5 +1,5 @@
-import AVLTree from "./AVLTree";
-import Node from "./Node";
+import AVLTree from './AVLTree';
+import Node from './Node';
 
 export default class TreeCopier {
   constructor(tree) {
