@@ -4,6 +4,7 @@
     background-color: transparent;
     border: 1px solid black;
     font-size: 20px;
+    margin-bottom: 24px;
   }
   .buttons * {
     font-weight: bold;
@@ -21,7 +22,7 @@
   .buttons--mobile {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: space-around;
     padding: 24px;
   }
@@ -41,11 +42,28 @@
     background-color: transparent;
     color: #fbc531;
     text-align: center;
-    width: 100px;
+    width: 50px;
+  }
+
+  /* Hides arrows on number input */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  /* Firefox */
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+
+  .buttons__button-container {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
   }
 
   /* DESKTOP */
-  @media (min-width: 1200px) {
+  /* @media (min-width: 1200px) {
     .buttons--mobile {
       display: none;
     }
@@ -56,17 +74,17 @@
     .svg-main {
       margin-left: 0px;
     }
-  }
+  } */
 
   /* MOBILE */
-  @media (max-width: 1199px) {
+  /* @media (max-width: 1199px) {
     .buttons--mobile {
       display: flex;
     }
     .buttons--desktop {
       display: none;
     }
-  }
+  } */
 </style>
 <script>
   export let onReset;
@@ -108,64 +126,33 @@
     renderer.insert(randVal);
     renderer.stateGroups = renderer.stateGroups;
     await renderer.runLatestAnimationGroup();
-
-		// tree.insert(randVal);
-		// tree = tree;
-		//
-		// updateSvg(theTree);
 	};
 </script>
 
-<div class="buttons buttons--desktop buttons--desktop-left">
-  <div>
-    <input class="buttons__input" type='number' bind:value={newVal} />
-    <button class="buttons__button" on:click={onNewValue}>New Value</button>
-  </div>
-  <div>
-    <input class="buttons__input" type='number' bind:value={findVal} />
-    <button class="buttons__button" on:click={onFindValue}>Find</button>
-  </div>
-  <div>
-    <input class="buttons__input" type='number' bind:value={deleteVal} />
-    <button class="buttons__button" on:click={onDeleteVal}>Delete</button>
-  </div>
-  <div>
-    <button class="buttons__button" on:click={onInsertRandVal}>Insert Random Value</button>
-  </div>
+<div class="buttons buttons--mobile">
+	<div class="buttons__button-container">
+		<input class="buttons__input" type='number' bind:value={newVal} />
+    <img role="button" tabindex="0" src="assets/AddIcon.svg" />
+		<!-- <button class="buttons__button" on:click={onNewValue}>New Value</button> -->
+	</div>
+	<div class="buttons__button-container">
+		<input class="buttons__input" type='number' bind:value={findVal} />
+		<!-- <button class="buttons__button" on:click={onFindValue}>Find Value</button> -->
+    <img role="button" tabindex="0" src="assets/FindIcon.svg" />
+	</div>
+	<div class="buttons__button-container">
+		<input class="buttons__input" type='number' bind:value={deleteVal} />
+		<!-- <button class="buttons__button" on:click={onDeleteVal}>Delete Value</button> -->
+    <img role="button" tabindex="0" src="assets/RemoveIcon.svg" />
+	</div>
+  <div class="buttons__button-container">
+    <input on:click={onInsertRandVal} class="buttons__input" type='text' value="&quest;" />
+    <img on:click={onInsertRandVal} role="button" tabindex="0" src="assets/AddIcon.svg" />
+		<!-- <button class="buttons__button" on:click={onNewValue}>New Value</button> -->
+	</div>
+	<div class="buttons__button-container">
+		<button class="buttons__button" on:click={onReset}>RESET</button>
+	</div>
 </div>
 
 <slot></slot>
-
-<div class="buttons buttons--desktop buttons--desktop-right">
-  <div>
-    <button class="buttons__button" on:click={onReset}>RESET</button>
-  </div>
-  <div>
-    <button class="buttons__button" on:click={runAnimations}>ANIMATE</button>
-  </div>
-</div>
-
-
-<div class="buttons buttons--mobile">
-	<div>
-		<input class="buttons__input" type='number' bind:value={newVal} />
-		<button class="buttons__button" on:click={onNewValue}>New Value</button>
-	</div>
-	<div>
-		<input class="buttons__input" type='number' bind:value={findVal} />
-		<button class="buttons__button" on:click={onFindValue}>Find Value</button>
-	</div>
-	<div>
-		<input class="buttons__input" type='number' bind:value={deleteVal} />
-		<button class="buttons__button" on:click={onDeleteVal}>Delete Value</button>
-	</div>
-	<div>
-		<button class="buttons__button" on:click={onInsertRandVal}>Insert Random Value</button>
-	</div>
-	<div>
-		<button class="buttons__button" on:click={onReset}>RESET</button>
-	</div>
-	<div>
-		<button class="buttons__button" on:click={runAnimations}>ANIMATE</button>
-	</div>
-</div>
