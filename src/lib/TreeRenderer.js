@@ -56,13 +56,6 @@ export default class TreeRenderer {
   animateUpdateNodeCoords = (state) => {
     this.svgHeap.forEach((group, index) => {
       if (group) {
-        console.log(
-          'GROUP',
-          JSON.stringify(group.style.transform),
-          group.id,
-          this.cxArr,
-          this.cyArr
-        );
         anime({
           targets: group,
           translateX: `${this.cxArr[index]}%`,
@@ -273,20 +266,22 @@ export default class TreeRenderer {
 
     const introGroup = document.getElementById('intro-group');
 
-    const n = new Node({
-      target: introGroup,
-      props: {
-        value,
-        id: 'intro-node',
-        hidden: true,
-      },
-    });
+    // const n = new Node({
+    //   target: introGroup,
+    //   props: {
+    //     value,
+    //     id: 'intro-node',
+    //     hidden: true,
+    //   },
+    // });
 
     startNode = document.getElementById('start-node');
     const transformGroup = startNode.querySelector('.node-transform-group');
     const balanceGroup = startNode.querySelector('.balance-line-group');
     const startCircle = startNode.querySelector('.node-circle__value');
     startCircle.innerHTML = value;
+
+    const introNode = document.querySelector('#intro-node');
 
     console.log('startNode!', startNode);
     console.log('balanceGroup!', balanceGroup);
@@ -349,6 +344,8 @@ export default class TreeRenderer {
       });
 
     await wait(2000);
+
+    introGroup.removeChild(introNode);
   };
 
   balanceScaleDown = () => {
