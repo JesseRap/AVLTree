@@ -2,7 +2,7 @@
   .buttons {
     /* background-color: #353b48; */
     background-color: transparent;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     font-size: 20px;
     margin-bottom: 24px;
   }
@@ -16,7 +16,7 @@
     /* max-width: 1000px; */
     margin: auto auto 32px auto;
     flex-wrap: wrap;
-    padding: 24px;
+    /* padding: 24px; */
   }
 
   .buttons--mobile {
@@ -24,7 +24,7 @@
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-around;
-    padding: 24px;
+    /* padding: 24spx; */
   }
 
   .buttons--mobile > div {
@@ -43,6 +43,10 @@
     color: #fbc531;
     text-align: center;
     width: 50px;
+  }
+
+  .buttons__icon {
+    max-width: 100px;
   }
 
   /* Hides arrows on number input */
@@ -132,28 +136,26 @@
 
 <div class="buttons buttons--mobile">
 	<div class="buttons__button-container">
-		<input class="buttons__input" type='number' bind:value={newVal} />
-    <img role="button" tabindex="0" src="assets/AddIcon.svg" />
+		<input class="buttons__input" type="number" bind:value={newVal} />
+    <img class="buttons__icon" role="button" tabindex="0" src="assets/AddIcon.svg" />
+	</div>
+  <div class="buttons__button-container">
+    <input on:click={onInsertRandVal} class="buttons__input" type='text' value="&quest;" />
+    <img class="buttons__icon" on:click={onInsertRandVal} role="button" tabindex="0" src="assets/AddIcon.svg" />
 		<!-- <button class="buttons__button" on:click={onNewValue}>New Value</button> -->
 	</div>
 	<div class="buttons__button-container">
 		<input class="buttons__input" type='number' bind:value={findVal} />
 		<!-- <button class="buttons__button" on:click={onFindValue}>Find Value</button> -->
-    <img role="button" tabindex="0" src="assets/FindIcon.svg" />
+    <img class="buttons__icon" role="button" tabindex="0" src="assets/FindIcon.svg" />
 	</div>
 	<div class="buttons__button-container">
 		<input class="buttons__input" type='number' bind:value={deleteVal} />
-		<!-- <button class="buttons__button" on:click={onDeleteVal}>Delete Value</button> -->
-    <img role="button" tabindex="0" src="assets/RemoveIcon.svg" />
-	</div>
-  <div class="buttons__button-container">
-    <input on:click={onInsertRandVal} class="buttons__input" type='text' value="&quest;" />
-    <img on:click={onInsertRandVal} role="button" tabindex="0" src="assets/AddIcon.svg" />
-		<!-- <button class="buttons__button" on:click={onNewValue}>New Value</button> -->
+    <img class="buttons__icon" role="button" tabindex="0" src="assets/RemoveIcon.svg" />
 	</div>
 	<div class="buttons__button-container">
 		<button class="buttons__button" on:click={onReset}>RESET</button>
-    <img on:click={onReset} role="button" tabindex="0" src="assets/ResetIcon.svg" />
+    <img class="buttons__icon" on:click={onReset} role="button" tabindex="0" src="assets/ResetIcon.svg" />
 	</div>
 </div>
 
