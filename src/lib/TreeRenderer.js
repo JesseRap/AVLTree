@@ -252,7 +252,7 @@ export default class TreeRenderer {
 
     nodeGroup.querySelector('text').innerHTML = value; // QUESTION: why is this necssary? not reactive.
 
-    await this.hideSVGChildrenForMS(1000);
+    this.hideSVGChildrenForMS(1000);
 
     // start-node animation
     let startNode = document.getElementById('start-node');
@@ -375,8 +375,8 @@ export default class TreeRenderer {
     console.log('EDGE MEMO', this.edgeMemo);
   };
 
-  hideSVGChildrenForMS = async (ms) => {
-    Array.from(this.rootSVG.children).forEach(async (child) => {
+  hideSVGChildrenForMS = (ms) => {
+    Array.from(this.rootSVG.children).forEach((child) => {
       if (
         child.classList.contains('edge') ||
         !child.classList.contains('intro-node')
