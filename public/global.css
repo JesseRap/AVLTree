@@ -35,12 +35,8 @@ body {
 
 .container {
   padding: 0 50px 50px 50px;
-}
-
-@media (min-width: 1200px) {
-  .container {
-    display: flex;
-  }
+  max-width: 1000px;
+  margin: auto;
 }
 
 path {
