@@ -46,6 +46,10 @@
     width: 50px;
   }
 
+  .buttons__input:focus {
+    outline: none;
+  }
+
   .buttons__icon {
     width: 50px;
     cursor: pointer;
