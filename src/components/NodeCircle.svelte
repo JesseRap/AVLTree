@@ -1,5 +1,5 @@
 <style>
-  text {
+  .node-circle__value {
     font-size: 24px;
     transform: translateY(8px);
     color: #192a56;
