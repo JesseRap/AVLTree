@@ -252,7 +252,7 @@ export default class TreeRenderer {
 
     nodeGroup.querySelector('text').innerHTML = value; // QUESTION: why is this necssary? not reactive.
 
-    await this.hideSVGChildrentForMS(1000);
+    await this.hideSVGChildrenForMS(1000);
 
     // start-node animation
     let startNode = document.getElementById('start-node');
@@ -285,6 +285,8 @@ export default class TreeRenderer {
     startNode = document.getElementById('start-node');
     const transformGroup = startNode.querySelector('.node-transform-group');
     const balanceGroup = startNode.querySelector('.balance-line-group');
+    const startCircle = startNode.querySelector('.node-circle__value');
+    startCircle.innerHTML = value;
 
     console.log('startNode!', startNode);
     console.log('balanceGroup!', balanceGroup);
@@ -373,7 +375,7 @@ export default class TreeRenderer {
     console.log('EDGE MEMO', this.edgeMemo);
   };
 
-  hideSVGChildrentForMS = async (ms) => {
+  hideSVGChildrenForMS = async (ms) => {
     Array.from(this.rootSVG.children).forEach(async (child) => {
       if (
         child.classList.contains('edge') ||
