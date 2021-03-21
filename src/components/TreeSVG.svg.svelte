@@ -34,7 +34,7 @@
   </defs>
 
   <g id="intro-group">
-    <rect id="intro-rect" x="0" y="0" width="100%" height="100%" fill="url(#Gradient1)" />
+    <rect id="intro-rect" x="0" y="0" width="100%" height="100%" fill="#2b5ada" />
   </g>
 
 </svg>

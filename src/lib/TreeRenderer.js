@@ -227,7 +227,7 @@ export default class TreeRenderer {
     });
   };
 
-  animateStart = async (value) => {
+  animateStart = async (value, actionType) => {
     // big intro disply
     const circle = document.getElementById('intro-group');
 
@@ -274,6 +274,14 @@ export default class TreeRenderer {
     //     hidden: true,
     //   },
     // });
+
+    const text = document.createElementNS(XMLNS, 'text');
+    text.setAttributeNS(null, 'x', '20%');
+    text.setAttributeNS(null, 'y', '30%');
+    text.setAttributeNS(null, 'fill', '#fbc531');
+    text.setAttributeNS(null, 'stroke', '#000');
+    text.innerHTML = actionType.toUpperCase();
+    introGroup.append(text);
 
     startNode = document.getElementById('start-node');
     const transformGroup = startNode.querySelector('.node-transform-group');
@@ -369,7 +377,6 @@ export default class TreeRenderer {
   animateInsert = (newNode, child) => {
     const key = `${newNode.id}-${child.id}`;
     this.edgeMemo[key] = this.createPath(newNode);
-    console.log('EDGE MEMO', this.edgeMemo);
   };
 
   hideSVGChildrenForMS = (ms) => {
@@ -409,7 +416,7 @@ export default class TreeRenderer {
       debugger;
       await this.animateEdge(state.tree, parent, node);
     }
-    circle.setAttributeNS(null, 'fill', 'red');
+    circle.setAttributeNS(null, 'fill', '#e84118');
   };
 
   animateRebalance = (rotated, pivot, parent) => {
@@ -480,7 +487,7 @@ export default class TreeRenderer {
         break;
       }
       case 'insertStart': {
-        await this.animateStart(state.insertValue);
+        await this.animateStart(state.insertValue, 'insert');
         break;
       }
       case 'insertFinish': {
