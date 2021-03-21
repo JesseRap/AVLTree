@@ -60,6 +60,7 @@
     width: 20%;
     display: flex;
     flex-direction: column;
+    align-items: center;
   }
 
   /* DESKTOP */
@@ -152,6 +153,7 @@
 	</div>
 	<div class="buttons__button-container">
 		<button class="buttons__button" on:click={onReset}>RESET</button>
+    <img on:click={onReset} role="button" tabindex="0" src="assets/ResetIcon.svg" />
 	</div>
 </div>
 
