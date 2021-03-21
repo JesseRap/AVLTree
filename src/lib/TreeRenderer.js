@@ -33,7 +33,6 @@ export default class TreeRenderer {
     console.log('insert');
     this.tree.insert(val);
     this.tree = this.tree;
-    this.clearAllVisitedNodes();
   };
 
   find = (val) => {
@@ -486,7 +485,8 @@ export default class TreeRenderer {
         break;
       }
       case 'insertFinish': {
-        // this.balanceScaleUp();
+        await wait(1000);
+        this.clearAllVisitedNodes();
         break;
       }
       case 'visitNode': {
