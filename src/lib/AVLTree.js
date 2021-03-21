@@ -354,7 +354,7 @@ export default class AVLTree {
           tree: this.copy(),
           findValue,
         });
-        this.this.stateGroups.push(this.stateGroup);
+        this.stateGroups.push(this.stateGroup);
         return null;
       }
       if (node.val === findValue) {
