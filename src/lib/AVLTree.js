@@ -336,7 +336,7 @@ export default class AVLTree {
   };
 
   find = (findValue) => {
-    this.stateGroups = [];
+    this.stateGroup = [];
     this.stateGroup.push({
       type: 'findStart',
       tree: this.copy(),
@@ -349,12 +349,6 @@ export default class AVLTree {
           tree: this.copy(),
           findValue,
         });
-        this.stateGroup.push({
-          type: 'findFinish',
-          tree: this.copy(),
-          findValue,
-        });
-        this.stateGroups.push(this.stateGroup);
         return null;
       }
       if (node.val === findValue) {
@@ -363,12 +357,6 @@ export default class AVLTree {
           tree: this.copy(),
           findValue,
         });
-        this.stateGroup.push({
-          type: 'findFinish',
-          tree: this.copy(),
-          findValue,
-        });
-        this.stateGroups.push(this.stateGroup);
         return node;
       }
       if (node.val >= findValue) {
