@@ -84,38 +84,42 @@
     text-align: center;
   }
 
-  /* DESKTOP */
-  /* @media (min-width: 1200px) {
-    .buttons--mobile {
-      display: none;
-    }
-    .buttons--desktop {
-      display: flex;
-      width: 300px;
-    }
-    .svg-main {
-      margin-left: 0px;
-    }
-  } */
+  .buttons__balanced {
+    color: #fbc531;
+    display: flex;
+    font-weight: 600;
+    font-size: 20px;
+    position: relative;
+  }
 
-  /* MOBILE */
-  /* @media (max-width: 1199px) {
-    .buttons--mobile {
-      display: flex;
-    }
-    .buttons--desktop {
-      display: none;
-    }
-  } */
+  input[type=radio]
+  {
+   display: none;
+  }
+
+  .checkbox {
+    width: 20px;
+    height: 20px;
+    background: transparent;
+    border-bottom: 1px solid #ccc;
+    margin: 0 4px;
+  }
 </style>
 <script>
   export let onReset;
   export let runAnimations;
   export let renderer;
+  let isBalanced = true;
+  let group = 1;
+  let value = true;
+
+  $: {
+    console.log("isBalanced", isBalanced);
+  }
 
   let newVal = 0;
   const onNewValue = async () => {
-		renderer.insert(newVal);
+		renderer.insert(newVal, isBalanced);
     renderer.stateGroup = renderer.stateGroup;
     await renderer.runLatestAnimationGroup();
 		// tree = tree;
@@ -143,7 +147,7 @@
   const onInsertRandVal = async () => {
 		let randVal = Math.floor(Math.random() * 50);
 
-    renderer.insert(randVal);
+    renderer.insert(randVal, isBalanced);
     renderer.stateGroups = renderer.stateGroups;
     await renderer.runLatestAnimationGroup();
 	};
@@ -176,5 +180,17 @@
     <div class="buttons__label">RESET</div>
 	</div>
 </div>
-
-<slot></slot>
+<div style="width: 100%; height: 100px; border: 1px solid red;">
+<div class="buttons__balanced">
+  <div class="checkbox" />
+  <input type="radio" id="balanced" bind:group value={value} name="balance" checked>
+  <label for="balanced">INSERT BALANCED</label>
+  <label>
+</div>
+<div class="buttons__balanced">
+<div class="checkbox" />
+  <input type="radio" bind:group value={isBalanced} id="unbalanced" name="balance">
+  <label for="unbalanced">INSERT UNBALANCED</label>
+  <label>
+</div>
+</div>

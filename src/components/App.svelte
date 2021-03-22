@@ -27,13 +27,9 @@
 	}
 
 	const onReset = () => {
-		animate();
-	}
-
-	const update = tree => {
-		console.log('UPDATE!!!');
-		animate();
-	}
+		renderer = new TreeRenderer(svg);
+		renderer = renderer;
+	};
 
 	onMount(() => {
 		// Create root SVG.
@@ -41,11 +37,6 @@
 
 		renderer = new TreeRenderer(svg);
 		renderer = renderer;
-
-		// updateSvg(theTree);
-		//
-		// console.log('svgHeap', svgHeap);
-
 	});
 </script>
 
@@ -56,9 +47,8 @@
 	<div class="container-container" width="100%">
 
 		<div class="container">
-			<Buttons {renderer} {onReset} runAnimations={() => {}}>
-				<MainSVG />
-			</Buttons>
+			<Buttons {renderer} {onReset} />
+			<MainSVG />
 		</div>
 
 	</div>

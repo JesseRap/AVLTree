@@ -28,10 +28,10 @@ export default class TreeRenderer {
     return this.tree?.stateGroups ?? [];
   }
 
-  insert = (val) => {
+  insert = (val, balanced = true) => {
     // debugger;
     console.log('insert');
-    this.tree.insert(val);
+    this.tree.insert(val, balanced);
     this.tree = this.tree;
   };
 

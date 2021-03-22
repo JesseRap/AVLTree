@@ -320,9 +320,9 @@ export default class AVLTree {
     }
   };
 
-  insert = (val) => {
+  insert = (val, balanced = true) => {
     this.stateGroup = [];
-    this.insertValFromRoot(val);
+    this.insertValFromRoot(val, balanced);
   };
 
   insertUnbalanced = (val) => {
