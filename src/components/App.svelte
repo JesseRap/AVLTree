@@ -22,14 +22,6 @@
 	$: renderer = null;
 	$: stateGroups = renderer?.stateGroups || [];
 
-	// $: animate(stateGroups.length);
-	//
-	// const animate = () => {
-	// 	console.log('ANIMATE', stateGroups);
-	// 	renderer?.runLatestAnimationGroup();
-	// 	stateGroups = renderer?.stateGroups;
-	// };
-
 	$: {
 		console.log('STATE GROUPS', stateGroups);
 	}
