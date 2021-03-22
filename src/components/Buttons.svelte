@@ -103,6 +103,14 @@
     background: transparent;
     border-bottom: 1px solid #ccc;
     margin: 0 4px;
+    position: relative;
+  }
+
+  .checkbox__icon {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    left: 8px;
   }
 </style>
 <script>
@@ -151,6 +159,11 @@
     renderer.stateGroups = renderer.stateGroups;
     await renderer.runLatestAnimationGroup();
 	};
+
+  const setIsBalanced = (val) => {
+    isBalanced = val;
+    isBalanced = isBalanced;
+  };
 </script>
 
 <div class="buttons buttons--mobile">
@@ -182,15 +195,21 @@
 </div>
 <div style="width: 100%; height: 100px; border: 1px solid red;">
 <div class="buttons__balanced">
-  <div class="checkbox" />
-  <input type="radio" id="balanced" bind:group value={value} name="balance" checked>
+  <div class="checkbox" on:click={() => {setIsBalanced(true);}}/>
+  {#if isBalanced}
+    <div class="checkbox__icon" on:click={() => {setIsBalanced(true);}}>&#10004;
+    </div>
+  {/if}
+  <input on:click={() => {setIsBalanced(true);}} type="radio" id="balanced" bind:group value={value} name="balance" checked>
   <label for="balanced">INSERT BALANCED</label>
-  <label>
 </div>
 <div class="buttons__balanced">
-<div class="checkbox" />
-  <input type="radio" bind:group value={isBalanced} id="unbalanced" name="balance">
+  <div class="checkbox" on:click={() => {setIsBalanced(false);}}/>
+  {#if !isBalanced}
+    <div class="checkbox__icon" on:click={() => {setIsBalanced(false);}}>&#10004;
+  </div>
+  {/if}
+  <input on:click={() => {setIsBalanced(false);}} type="radio" bind:group value={isBalanced} id="unbalanced" name="balance">
   <label for="unbalanced">INSERT UNBALANCED</label>
-  <label>
-</div>
+  </div>
 </div>
