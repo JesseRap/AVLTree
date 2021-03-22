@@ -128,7 +128,6 @@
     renderer.find(findVal);
     renderer.stateGroup = renderer.stateGroup;
     await renderer.runLatestAnimationGroup();
-    // console.log("FINDVAL", findVal)
     // tree.find(findVal);
   };
 
@@ -143,7 +142,6 @@
 
   const onInsertRandVal = async () => {
 		let randVal = Math.floor(Math.random() * 50);
-		console.log('onInsertRandVal *!@#!&@#&*', randVal);
 
     renderer.insert(randVal);
     renderer.stateGroups = renderer.stateGroups;

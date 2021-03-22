@@ -275,13 +275,20 @@ export default class TreeRenderer {
     //   },
     // });
 
+    debugger;
+
+    const oldText = introGroup.querySelector('.intro-text');
+    if (oldText) oldText.innerHTML = actionType.toUpperCase();
+
     const text = document.createElementNS(XMLNS, 'text');
-    text.setAttributeNS(null, 'x', '20%');
-    text.setAttributeNS(null, 'y', '30%');
+    text.setAttributeNS(null, 'x', '50%');
+    text.setAttributeNS(null, 'y', '20%');
+    text.setAttributeNS(null, 'text-anchor', 'middle');
     text.setAttributeNS(null, 'fill', '#fbc531');
     text.setAttributeNS(null, 'stroke', '#000');
+    text.classList.add('intro-text');
     text.innerHTML = actionType.toUpperCase();
-    introGroup.append(text);
+    this.rootSVG.append(text);
 
     startNode = document.getElementById('start-node');
     const transformGroup = startNode.querySelector('.node-transform-group');
@@ -296,6 +303,7 @@ export default class TreeRenderer {
     console.log('transformGroup!', transformGroup);
 
     transformGroup.setAttribute('style', 'opacity: 0');
+    text.setAttribute('style', 'opacity: 0');
 
     const t = anime.timeline();
 
@@ -307,14 +315,14 @@ export default class TreeRenderer {
       duration: 0,
     })
       .add({
-        targets: circle,
+        targets: [circle, text],
         opacity: 1,
         duration: 1000,
         direction: 'forward',
         easing: 'easeInOutQuad',
       })
       .add({
-        targets: circle,
+        targets: [circle, text],
         opacity: 0,
         duration: 1000,
         direction: 'backward',
@@ -354,6 +362,7 @@ export default class TreeRenderer {
     await wait(2000);
 
     introGroup.removeChild(introNode);
+    this.rootSVG.removeChild(text);
   };
 
   balanceScaleDown = () => {
@@ -417,6 +426,20 @@ export default class TreeRenderer {
       await this.animateEdge(state.tree, parent, node);
     }
     circle.setAttributeNS(null, 'fill', '#e84118');
+  };
+
+  animateNodeFound = async (state) => {
+    const node = state.node;
+    const svg = this.findNodeInSVGHeap(node, this.svgHeap);
+    svg.classList.add('visited-node');
+    const parent = state.tree.getParentNode(node);
+    debugger;
+    const circle = svg.querySelector('circle');
+    if (parent) {
+      debugger;
+      await this.animateEdge(state.tree, parent, node);
+    }
+    circle.setAttributeNS(null, 'fill', '#fbc531');
   };
 
   animateRebalance = (rotated, pivot, parent) => {
@@ -490,6 +513,14 @@ export default class TreeRenderer {
         await this.animateStart(state.insertValue, 'insert');
         break;
       }
+      case 'findNodeStart': {
+        await this.animateStart(state.findValue, 'find');
+        break;
+      }
+      case 'findNodeStart': {
+        this.clearAllVisitedNodes();
+        break;
+      }
       case 'insertFinish': {
         await wait(1000);
         this.clearAllVisitedNodes();
@@ -517,8 +548,11 @@ export default class TreeRenderer {
         break;
       }
       case 'deleteFinish': {
-        this.clearAllVisitedNodes(state);
+        this.clearAllVisitedNodes();
         break;
+      }
+      case 'findNodeFound': {
+        this.animateNodeFound(state);
       }
     }
   };
@@ -681,8 +715,6 @@ export default class TreeRenderer {
     });
 
     await wait(1000);
-
-    this.rootSVG.removeChild(circle);
   };
 
   update = async (state) => {

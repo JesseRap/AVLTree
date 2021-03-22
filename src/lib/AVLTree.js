@@ -280,6 +280,9 @@ export default class AVLTree {
 
     this.updateAllNodes();
 
+    //const oldText = introGroup.querySelector('text');
+    // +    if (oldText) oldText.parentElement.removeChild(oldText);
+
     this.stateGroup.push({
       type: 'insertFinish',
       tree: this.copy(),
@@ -296,7 +299,6 @@ export default class AVLTree {
 
   // TODO: Refactor for readability.
   rebalance = (node) => {
-    // console.log('rebalance', node);
     if (node.balance === 2) {
       if (node.right.balance >= 0) {
         // Right-right
@@ -338,7 +340,7 @@ export default class AVLTree {
   find = (findValue) => {
     this.stateGroup = [];
     this.stateGroup.push({
-      type: 'findStart',
+      type: 'findNodeStart',
       tree: this.copy(),
       findValue,
     });
@@ -348,14 +350,16 @@ export default class AVLTree {
           type: 'findNotFound',
           tree: this.copy(),
           findValue,
+          node,
         });
         return null;
       }
       if (node.val === findValue) {
         this.stateGroup.push({
-          type: 'findFound',
+          type: 'findNodeFound',
           tree: this.copy(),
           findValue,
+          node,
         });
         return node;
       }
