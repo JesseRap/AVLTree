@@ -5,8 +5,10 @@
   export let balance = 0;
   export let id = n++;
   export let isFirstNode = false;
+  export let isBadNode = false;
 
   import NodeBalance from './NodeBalance.svelte';
+  // import BadNodeCircle from './BadNodeCircle.svelte';
   import NodeCircle from './NodeCircle.svelte';
   $: color = (Math.abs(balance)) === 0 ? '#7f8fa6' : (Math.abs(balance)) === 1 ? '#c23616' : '#e84118';
 
@@ -39,5 +41,8 @@ svg {
       <NodeBalance {balance} {color} {isFirstNode} />
     {/if}
     <NodeCircle {value} />
+    <!-- {#if isBadNode}
+      <BadNodeCircle />
+    {/if} -->
   </g>
 </svg></g></g>

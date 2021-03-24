@@ -2,6 +2,7 @@ import anime from 'animejs/lib/anime.es.js';
 import AVLTree from './AVLTree.js';
 import Node from '../components/Node.svelte';
 import NodeEdgeCircle from '../components/NodeEdgeCircle.svelte';
+import BadNodeCircle from '../components/BadNodeCircle.svelte';
 import { childExistsInNode, createNodeSVG } from '../utils/svg';
 import { getCxArr, getCyArr } from '../utils/tree';
 import { nodeIdToSVGId, wait } from '../utils';
@@ -429,6 +430,8 @@ export default class TreeRenderer {
       await this.animateEdge(state.tree, parent, node);
     }
     circle.setAttributeNS(null, 'fill', '#e84118');
+    await wait(1000);
+    circle.setAttributeNS(null, 'fill', '#00a8ff');
   };
 
   animateNodeFound = async (state) => {
@@ -557,7 +560,30 @@ export default class TreeRenderer {
       case 'findNodeFound': {
         this.animateNodeFound(state);
       }
+      case 'veryUnbalancedNode': {
+        await this.animateVeryUnbalancedNode(state.node);
+        break;
+      }
+      default:
+        break;
     }
+  };
+
+  animateVeryUnbalancedNode = async (node) => {
+    const svgEl = this.svgHeap.find((el) => el?.id === `g-${node.id}`);
+
+    console.log('animateVeryUnbalancedNode', svgEl);
+
+    const badNodeCircle = new BadNodeCircle({
+      target: svgEl,
+    });
+
+    const group = document.querySelector('.bad-node-circle');
+
+    console.log('group!', group);
+
+    await wait(1000);
+    group.parentElement.removeChild(group);
   };
 
   animateDeleteWithSuccessor = (state) => {

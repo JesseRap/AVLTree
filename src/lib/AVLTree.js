@@ -190,6 +190,11 @@ export default class AVLTree {
     for (let i = heap.length - 1; i >= 0; i--) {
       const node = heap[i];
       if (node && this.isVeryUnbalanced(node)) {
+        this.stateGroup.push({
+          type: 'veryUnbalancedNode',
+          node: node,
+          tree: this.copy(),
+        });
         this.rebalance(node);
         this.updateAllNodes();
       }
