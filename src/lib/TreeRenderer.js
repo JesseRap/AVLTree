@@ -97,7 +97,10 @@ export default class TreeRenderer {
             : 'transform: translate(-20px, 5px)'
         );
 
-        if (this.isUnbalanced(state.tree.heap[index])) {
+        if (
+          this.isUnbalanced(state.tree.heap[index]) ||
+          this.isVeryUnbalanced(state.tree.heap[index])
+        ) {
           balanceLineGroup.parentElement.classList.add('wobble');
         } else {
           balanceLineGroup.parentElement.classList.remove('wobble');
@@ -715,6 +718,8 @@ export default class TreeRenderer {
     });
 
     await wait(1000);
+
+    circle.parentElement.removeChild(circle);
   };
 
   update = async (state) => {
