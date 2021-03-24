@@ -90,6 +90,7 @@
   export let renderer;
   let isBalanced = true;
   let value = true;
+  let locked = false;
 
   $: {
     console.log("isBalanced", isBalanced);
@@ -97,42 +98,56 @@
 
   let newVal = 0;
   const onNewValue = async () => {
-		renderer.insert(newVal, isBalanced);
-    renderer.stateGroup = renderer.stateGroup;
-    await renderer.runLatestAnimationGroup();
-		// tree = tree;
-		// tree.insert(newVal);
-		// tree = tree;
+    if (!locked) {
+      locked = true;
+      renderer.insert(newVal, isBalanced);
+      renderer.stateGroup = renderer.stateGroup;
+      await renderer.runLatestAnimationGroup();
+    }
+    locked = false;
 	};
 
   let findVal = 0;
   const onFindValue = async () => {
-    renderer.find(findVal);
-    renderer.stateGroup = renderer.stateGroup;
-    await renderer.runLatestAnimationGroup();
-    // tree.find(findVal);
+    if (!locked) {
+      locked = true;
+      renderer.find(findVal);
+      renderer.stateGroup = renderer.stateGroup;
+      await renderer.runLatestAnimationGroup();
+    }
+    locked = false;
   };
 
   let deleteVal = 0;
   const onDeleteVal = async () => {
-    renderer.delete(deleteVal);
-    renderer.stateGroup = renderer.stateGroup;
-    await renderer.runLatestAnimationGroup();
-    // tree.delete(deleteVal);
-    // tree = tree;
+    if (!locked) {
+      locked = true;
+      renderer.delete(deleteVal);
+      renderer.stateGroup = renderer.stateGroup;
+      await renderer.runLatestAnimationGroup();
+    }
+    locked = false;
   };
 
   const onInsertRandVal = async () => {
-		let randVal = Math.floor(Math.random() * 50);
+    if (!locked) {
+      locked = true;
+      let randVal = Math.floor(Math.random() * 50);
 
-    renderer.insert(randVal, isBalanced);
-    renderer.stateGroups = renderer.stateGroups;
-    await renderer.runLatestAnimationGroup();
+      renderer.insert(randVal, isBalanced);
+      renderer.stateGroups = renderer.stateGroups;
+      await renderer.runLatestAnimationGroup();
+    }
+    locked = false;
 	};
 
   const setIsBalanced = (val) => {
-    isBalanced = val;
-    isBalanced = isBalanced;
+    if (!locked) {
+      locked = true;
+      isBalanced = val;
+      isBalanced = isBalanced;
+    }
+    locked = false;
   };
 </script>
 

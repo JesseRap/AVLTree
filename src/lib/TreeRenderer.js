@@ -709,15 +709,17 @@ export default class TreeRenderer {
 
     console.log('edgeCircle', edgeCircle, circle);
 
+    const duration = 500;
+
     anime({
       targets: circle,
       translateX: `${this.cxArr[destinationIndex] - this.cxArr[sourceIndex]}%`,
       translateY: `${this.cyArr[destinationIndex] - this.cyArr[sourceIndex]}%`,
-      duration: 1000,
+      duration,
       easing: 'easeInOutQuad',
     });
 
-    await wait(1000);
+    await wait(duration);
 
     circle.parentElement.removeChild(circle);
   };
