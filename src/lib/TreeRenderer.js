@@ -559,6 +559,7 @@ export default class TreeRenderer {
       }
       case 'findNodeFound': {
         this.animateNodeFound(state);
+        break;
       }
       case 'veryUnbalancedNode': {
         await this.animateVeryUnbalancedNode(state.node);
