@@ -332,7 +332,6 @@ export default class AVLTree {
 
   reset = () => {
     this.root = null;
-    this.stateGroups = [];
     this.stateGroup = [
       {
         type: 'reset',
