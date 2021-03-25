@@ -20,9 +20,10 @@ export default class TreeRenderer {
   tree;
   rootSVG;
 
-  constructor(svg) {
+  constructor(svg, notes) {
     this.tree = new AVLTree();
     this.rootSVG = svg;
+    this.notes = notes;
   }
 
   get stateGroups() {
@@ -510,6 +511,10 @@ export default class TreeRenderer {
         break;
       }
       case 'insertStart': {
+        this.notes.update((arr) => [
+          ...arr,
+          `Insert ${insertValue} into the tree...`,
+        ]);
         await this.animateStart(state.insertValue, 'insert');
         break;
       }

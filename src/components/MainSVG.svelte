@@ -8,11 +8,14 @@
 <script>
   import TreeSVG from './TreeSVG.svg.svelte';
   import AboutSVG from './AboutSVG.svg.svelte';
+  import Notes from './Notes.svelte';
+  export let notes
 </script>
 
 <div class="svg-main__container">
 
   <TreeSVG />
   <AboutSVG />
+  <Notes {notes} />
 
 </div>

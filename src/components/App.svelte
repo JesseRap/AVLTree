@@ -4,6 +4,7 @@
 	import anime from 'animejs/lib/anime.es.js';
 
 	import { afterUpdate, onMount, tick } from 'svelte';
+	import { writable } from 'svelte/store';
 	import AVLTree from '../lib/AVLTree.js';
 	import TreeRenderer from '../lib/TreeRenderer.js';
 	import Node from './Node.svelte';
@@ -22,6 +23,8 @@
 	$: renderer = null;
 	$: stateGroups = renderer?.stateGroups || [];
 
+	const notes = writable([]);
+
 	$: {
 		console.log('STATE GROUPS', stateGroups);
 	}
@@ -30,7 +33,7 @@
 		// Create root SVG.
 		const svg = document.getElementById('svg-main');
 
-		renderer = new TreeRenderer(svg);
+		renderer = new TreeRenderer(svg, notes);
 		renderer = renderer;
 	});
 </script>
@@ -43,7 +46,7 @@
 
 		<div class="container">
 			<Buttons {renderer} />
-			<MainSVG />
+			<MainSVG {notes} />
 		</div>
 
 	</div>
