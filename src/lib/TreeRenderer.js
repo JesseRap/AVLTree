@@ -587,6 +587,14 @@ export default class TreeRenderer {
 
     console.log('group!', group);
 
+    anime({
+      targets: svgEl,
+      scale: 1.5,
+      direction: 'reverse',
+      duration: 1000,
+      easing: 'easeOutQuad',
+    });
+
     await wait(1000);
     group.parentElement.removeChild(group);
   };
