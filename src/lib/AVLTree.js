@@ -390,7 +390,7 @@ export default class AVLTree {
     const foundNode = dfs(this.root);
 
     this.stateGroup.push({
-      type: 'findFinish',
+      type: 'findNodeFinish',
       tree: this.copy(),
       findValue,
       foundNode,

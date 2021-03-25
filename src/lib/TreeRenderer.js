@@ -561,6 +561,10 @@ export default class TreeRenderer {
         this.animateNodeFound(state);
         break;
       }
+      case 'findNodeFinish': {
+        this.clearAllVisitedNodes();
+        break;
+      }
       case 'veryUnbalancedNode': {
         await this.animateVeryUnbalancedNode(state.node);
         break;
