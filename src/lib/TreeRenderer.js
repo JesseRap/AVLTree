@@ -554,23 +554,19 @@ export default class TreeRenderer {
         const value = state.findValue || state.insertValue;
         this.notes.update((arr) => {
           if (value < state.node.val) {
-            this.notes.update((arr) => [
-              ...arr,
-              `${value} < ${state.node.value}`,
-            ]);
-            this.notes.update((arr) => [...arr, 'go left...']);
+            return [...arr, `${value} < ${state.node.value}`, 'go left...'];
           } else {
-            this.notes.update((arr) => [
-              ...arr,
-              `${state.node.val} <= ${value}`,
-            ]);
-            this.notes.update((arr) => [...arr, 'go right...']);
+            return [...arr, `${state.node.val} <= ${value}`, 'go right...'];
           }
         });
         await this.animateVisitNode(state);
         break;
       }
       case 'rebalance': {
+        this.notes.update((arr) => [
+          ...arr,
+          `Rebalance node with value ${state.pivot.val}...`,
+        ]);
         this.animateRebalance(rotated, pivot, parent);
         break;
       }

@@ -1,4 +1,9 @@
 <style>
+  @keyframes fadein {
+    from { opacity: 0; }
+    to { opacity: 1;}
+  }
+
   .notes {
     border: 1px solid red;
     height: 100%;
@@ -12,6 +17,12 @@
   .note-text {
     color: #fbc531;
     list-style-type: none;
+    animation: fadein 1s ease-in-out;
+  }
+
+  li {
+    color: #fbc531;
+    margin-left: -32px;
   }
 </style>
 
