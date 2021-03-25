@@ -85,7 +85,6 @@
 </style>
 <script>
   import BalancedButtons from './BalancedButtons.svelte';
-  export let onReset;
   export let runAnimations;
   export let renderer;
   let isBalanced = true;
@@ -106,6 +105,15 @@
     }
     locked = false;
 	};
+
+  const onReset = async () => {
+    if (!locked) {
+      locked = true;
+      renderer.reset();
+      renderer.stateGroup = renderer.stateGroup;
+      await renderer.runLatestAnimationGroup();
+    }
+  };
 
   let findVal = 0;
   const onFindValue = async () => {

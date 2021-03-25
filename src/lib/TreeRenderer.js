@@ -48,12 +48,6 @@ export default class TreeRenderer {
     this.tree = this.tree;
   };
 
-  reset = () => {
-    console.log('reset');
-    this.svgHeap = [];
-    this.edgeMemo = {};
-  };
-
   animateUpdateNodeCoords = (state) => {
     this.svgHeap.forEach((group, index) => {
       if (group) {
@@ -572,6 +566,12 @@ export default class TreeRenderer {
       default:
         break;
     }
+  };
+
+  reset = () => {
+    console.log('RESET');
+    this.tree.reset();
+    this.tree = this.tree;
   };
 
   animateVeryUnbalancedNode = async (node) => {

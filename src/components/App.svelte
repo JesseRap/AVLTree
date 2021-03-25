@@ -26,11 +26,6 @@
 		console.log('STATE GROUPS', stateGroups);
 	}
 
-	const onReset = () => {
-		renderer = new TreeRenderer(svg);
-		renderer = renderer;
-	};
-
 	onMount(() => {
 		// Create root SVG.
 		const svg = document.getElementById('svg-main');
@@ -47,7 +42,7 @@
 	<div class="container-container" width="100%">
 
 		<div class="container">
-			<Buttons {renderer} {onReset} />
+			<Buttons {renderer} />
 			<MainSVG />
 		</div>
 

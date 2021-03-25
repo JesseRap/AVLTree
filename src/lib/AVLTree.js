@@ -330,6 +330,18 @@ export default class AVLTree {
     this.insertValFromRoot(val, balanced);
   };
 
+  reset = () => {
+    this.root = null;
+    this.stateGroups = [];
+    this.stateGroup = [
+      {
+        type: 'reset',
+        tree: this.copy(),
+      },
+    ];
+    this.stateGroups.push(this.stateGroup);
+  };
+
   insertUnbalanced = (val) => {
     this.stateGroup = [];
     this.insertValFromRoot(val, false);
