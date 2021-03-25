@@ -25,6 +25,10 @@
 
 	const notes = writable([]);
 
+	const resetNotes = () => {
+		notes.set([]);
+	};
+
 	$: {
 		console.log('STATE GROUPS', stateGroups);
 	}
@@ -45,7 +49,7 @@
 	<div class="container-container" width="100%">
 
 		<div class="container">
-			<Buttons {renderer} />
+			<Buttons {renderer} {notes} {resetNotes} />
 			<MainSVG {notes} />
 		</div>
 

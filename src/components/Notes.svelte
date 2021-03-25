@@ -20,7 +20,11 @@
   let n = [];
 
   notes.subscribe(value => {
-    n = value;
+    debugger;
+    console.log("VALUE", value);
+    if (value) {
+      n = value;
+    }
   });
 </script>
 

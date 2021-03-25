@@ -245,6 +245,7 @@ export default class AVLTree {
         type: 'visitNode',
         tree: this.copy(),
         node: n,
+        insertValue: val,
       });
       previous = node;
       if (node.val > val) {
@@ -363,7 +364,7 @@ export default class AVLTree {
     const dfs = (node) => {
       if (!node) {
         this.stateGroup.push({
-          type: 'findNotFound',
+          type: 'findNodeNotFound',
           tree: this.copy(),
           findValue,
           node,

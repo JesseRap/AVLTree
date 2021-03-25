@@ -87,6 +87,7 @@
   import BalancedButtons from './BalancedButtons.svelte';
   export let runAnimations;
   export let renderer;
+  export let resetNotes;
   let isBalanced = true;
   let value = true;
   let locked = false;
@@ -98,6 +99,7 @@
   let newVal = 0;
   const onNewValue = async () => {
     if (!locked) {
+      resetNotes();
       locked = true;
       renderer.insert(newVal, isBalanced);
       renderer.stateGroup = renderer.stateGroup;
@@ -108,6 +110,7 @@
 
   const onReset = async () => {
     if (!locked) {
+      resetNotes();
       locked = true;
       renderer.reset();
       renderer.stateGroup = renderer.stateGroup;
@@ -118,6 +121,7 @@
   let findVal = 0;
   const onFindValue = async () => {
     if (!locked) {
+      resetNotes();
       locked = true;
       renderer.find(findVal);
       renderer.stateGroup = renderer.stateGroup;
@@ -129,6 +133,7 @@
   let deleteVal = 0;
   const onDeleteVal = async () => {
     if (!locked) {
+      resetNotes();
       locked = true;
       renderer.delete(deleteVal);
       renderer.stateGroup = renderer.stateGroup;
@@ -139,6 +144,7 @@
 
   const onInsertRandVal = async () => {
     if (!locked) {
+      resetNotes();
       locked = true;
       let randVal = Math.floor(Math.random() * 50);
 
@@ -151,6 +157,7 @@
 
   const setIsBalanced = (val) => {
     if (!locked) {
+      resetNotes();
       locked = true;
       isBalanced = val;
       isBalanced = isBalanced;

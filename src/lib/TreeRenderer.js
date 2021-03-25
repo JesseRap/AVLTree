@@ -182,7 +182,7 @@ export default class TreeRenderer {
         );
       } else {
         console.log('NOOO');
-        debugger;
+        // debugger;
         if (!node) continue;
         const path = this.createPath(node, tree);
         console.log('NEW PATH', path);
@@ -208,7 +208,7 @@ export default class TreeRenderer {
 
     // // remove old edges
     Object.keys(this.edgeMemo).forEach((key) => {
-      debugger;
+      // debugger;
       if (!keys.includes(key)) {
         console.log('DELETE EDGE');
         anime({
@@ -249,7 +249,7 @@ export default class TreeRenderer {
     // start-node animation
     let startNode = document.getElementById('start-node');
     // if (startNode) this.rootSVG.removeChild(startNode);
-    debugger;
+    // debugger;
     // QUESTION: Need to await tick()?
     if (!startNode) {
       const newNode = new Node({
@@ -274,7 +274,7 @@ export default class TreeRenderer {
     //   },
     // });
 
-    debugger;
+    // debugger;
 
     const oldText = introGroup.querySelector('.intro-text');
     if (oldText) oldText.innerHTML = actionType.toUpperCase();
@@ -418,10 +418,10 @@ export default class TreeRenderer {
     const svg = this.findNodeInSVGHeap(node, this.svgHeap);
     svg.classList.add('visited-node');
     const parent = state.tree.getParentNode(node);
-    debugger;
+    // debugger;
     const circle = svg.querySelector('circle');
     if (parent) {
-      debugger;
+      // debugger;
       await this.animateEdge(state.tree, parent, node);
     }
     circle.setAttributeNS(null, 'fill', '#e84118');
@@ -434,10 +434,10 @@ export default class TreeRenderer {
     const svg = this.findNodeInSVGHeap(node, this.svgHeap);
     svg.classList.add('visited-node');
     const parent = state.tree.getParentNode(node);
-    debugger;
+    // debugger;
     const circle = svg.querySelector('circle');
     if (parent) {
-      debugger;
+      // debugger;
       await this.animateEdge(state.tree, parent, node);
     }
     circle.setAttributeNS(null, 'fill', '#fbc531');
@@ -454,7 +454,7 @@ export default class TreeRenderer {
     }
 
     if (parent) {
-      debugger;
+      // debugger;
       const oldParentKey = `${pivot.id}-${parent.id}`;
       const newParentKey = `${rotated.id}-${parent.id}`;
       const path = this.edgeMemo[oldParentKey];
@@ -480,7 +480,7 @@ export default class TreeRenderer {
    * Updates the edge memp based on the AVL tree after changes.
    */
   updateEdgeMemoFromState = async (state) => {
-    debugger;
+    // debugger;
     console.log('updateEdgeMemoFromState');
     const {
       child,
@@ -513,17 +513,35 @@ export default class TreeRenderer {
       case 'insertStart': {
         this.notes.update((arr) => [
           ...arr,
-          `Insert ${insertValue} into the tree...`,
+          `Insert ${state.insertValue} into tree...`,
         ]);
         await this.animateStart(state.insertValue, 'insert');
         break;
       }
       case 'findNodeStart': {
+        this.notes.update((arr) => [
+          ...arr,
+          `Find value ${state.findValue} into tree...`,
+        ]);
         await this.animateStart(state.findValue, 'find');
         break;
       }
       case 'findNodeStart': {
         this.clearAllVisitedNodes();
+        break;
+      }
+      case 'findNodeFinish': {
+        if (state.foundNode) {
+          this.notes.update((arr) => [
+            ...arr,
+            `Found value ${state.findValue} in tree...`,
+          ]);
+        } else {
+          this.notes.update((arr) => [
+            ...arr,
+            `Value ${state.findValue} not found in tree...`,
+          ]);
+        }
         break;
       }
       case 'insertFinish': {
@@ -532,6 +550,23 @@ export default class TreeRenderer {
         break;
       }
       case 'visitNode': {
+        debugger;
+        const value = state.findValue || state.insertValue;
+        this.notes.update((arr) => {
+          if (value < state.node.val) {
+            this.notes.update((arr) => [
+              ...arr,
+              `${value} < ${state.node.value}`,
+            ]);
+            this.notes.update((arr) => [...arr, 'go left...']);
+          } else {
+            this.notes.update((arr) => [
+              ...arr,
+              `${state.node.val} <= ${value}`,
+            ]);
+            this.notes.update((arr) => [...arr, 'go right...']);
+          }
+        });
         await this.animateVisitNode(state);
         break;
       }
@@ -558,6 +593,13 @@ export default class TreeRenderer {
       }
       case 'findNodeFound': {
         this.animateNodeFound(state);
+        break;
+      }
+      case 'findNodeNotFound': {
+        this.notes.update((arr) => [
+          ...arr,
+          `Node ${state.findValue} not found in tree...`,
+        ]);
         break;
       }
       case 'findNodeFinish': {
@@ -793,7 +835,7 @@ export default class TreeRenderer {
   runLatestAnimationGroup = async () => {
     console.log('runLatestAnimationGroup', this.stateGroups);
     for (const state of this.tree.stateGroups[
-      this.tree.stateGroups.length - 1
+      this.tree.stateGroups?.length - 1
     ]) {
       console.log(state);
       debugger;
