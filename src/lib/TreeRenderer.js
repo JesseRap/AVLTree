@@ -517,7 +517,15 @@ export default class TreeRenderer {
       case 'insertNoRoot': {
         this.notes.update((arr) => [
           ...arr,
-          'Tree is empty... insert into root...',
+          'Tree is empty... Insertion point is root...',
+        ]);
+        this.notes.update((arr) => [
+          ...arr,
+          '2. Insert into insertion point...',
+        ]);
+        this.notes.update((arr) => [
+          ...arr,
+          '3. Update heights and balances...',
         ]);
         if (newNode.id !== child.id) {
           this.animateInsert(newNode, child);
@@ -528,7 +536,16 @@ export default class TreeRenderer {
         this.notes.update((arr) => [
           ...arr,
           `Insert ${state.insertValue} into tree...`,
-          'Find insertion point...',
+          '1. Find insertion point...',
+        ]);
+        await this.animateStart(state.insertValue, 'insert');
+        break;
+      }
+      case 'deleteNodeFinish': {
+        this.notes.update((arr) => [
+          ...arr,
+          `Insert ${state.insertValue} into tree...`,
+          '1. Find insertion point...',
         ]);
         await this.animateStart(state.insertValue, 'insert');
         break;
@@ -536,16 +553,21 @@ export default class TreeRenderer {
       case 'findNodeStart': {
         this.notes.update((arr) => [
           ...arr,
-          `Find value ${state.findValue} into tree...`,
+          `Find value ${state.findValue} in tree...`,
         ]);
         await this.animateStart(state.findValue, 'find');
         break;
       }
-      case 'findNodeStart': {
-        this.clearAllVisitedNodes();
+      case 'deleteNodeStart': {
+        this.notes.update((arr) => [
+          ...arr,
+          `Delete value ${state.deleteValue} in tree...`,
+          '1. Find delete value...',
+        ]);
         break;
       }
       case 'findNodeFinish': {
+        this.clearAllVisitedNodes();
         if (state.foundNode) {
           this.notes.update((arr) => [
             ...arr,
@@ -600,7 +622,7 @@ export default class TreeRenderer {
         this.animateDeleteWithSuccessor(state);
         break;
       }
-      case 'deleteFinish': {
+      case 'deleteNodeFinish': {
         this.clearAllVisitedNodes();
         break;
       }

@@ -28,15 +28,6 @@
 
 <script>
   export let notes;
-  let n = [];
-
-  notes.subscribe(value => {
-    debugger;
-    console.log("VALUE", value);
-    if (value) {
-      setTimeout(() => { n = value; }, 1000);
-    }
-  });
 
   $: {
     console.log('NOTES', $notes);
@@ -45,7 +36,7 @@
 
 <div id="notes" class="notes">
   <ul>
-    {#each n as note}
+    {#each $notes as note}
       <li class="note-text">{note}</li>
     {/each}
   </ul>

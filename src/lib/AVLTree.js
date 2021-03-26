@@ -240,7 +240,7 @@ export default class AVLTree {
 
     while (node) {
       const copy = this.copy();
-      const n = copy.heap.find((el) => el?.id === node.id);
+      const n = copy.heap.find((el) => el?.id === node.id); // TODO: Not necessary?
       this.stateGroup.push({
         type: 'visitNode',
         tree: this.copy(),
@@ -354,8 +354,8 @@ export default class AVLTree {
       .join('\n');
   };
 
-  find = (findValue) => {
-    this.stateGroup = [];
+  find = (findValue, stateGroup) => {
+    this.stateGroup = stateGroup ?? [];
     this.stateGroup.push({
       type: 'findNodeStart',
       tree: this.copy(),
@@ -441,12 +441,12 @@ export default class AVLTree {
     this.stateGroup = [];
 
     this.stateGroup.push({
-      type: 'deleteStart',
+      type: 'deleteNodeStart',
       tree: this.copy(),
       deleteValue: val,
     });
 
-    const node = this.find(val);
+    const node = this.find(val, this.stateGroup);
     if (node === null) {
       this.updateAllNodes();
       this.rebalanceAllNodes();
@@ -456,7 +456,7 @@ export default class AVLTree {
         deleteValue: val,
       });
       this.stateGroup.push({
-        type: 'deleteFinish',
+        type: 'deleteNodeFinish',
         tree: this.copy(),
         deleteValue: val,
         deleted: false,
@@ -552,7 +552,7 @@ export default class AVLTree {
     this.rebalanceAllNodes();
 
     this.stateGroup.push({
-      type: 'deleteFinish',
+      type: 'deleteNodeFinish',
       tree: this.copy(),
       deleteValue: val,
       deleted: true,
