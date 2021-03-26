@@ -5,7 +5,6 @@
   }
 
   .notes {
-    border: 1px solid red;
     height: 100%;
     width: 400px;
     position: absolute;
