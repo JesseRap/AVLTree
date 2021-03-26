@@ -10,12 +10,15 @@
   import AboutSVG from './AboutSVG.svg.svelte';
   import Notes from './Notes.svelte';
   export let notes
+  export let showNotes
 </script>
 
 <div class="svg-main__container">
 
   <TreeSVG />
   <AboutSVG />
-  <Notes {notes} />
+  {#if showNotes}
+    <Notes {notes} />
+  {/if}
 
 </div>

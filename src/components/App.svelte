@@ -29,6 +29,12 @@
 		notes.set([]);
 	};
 
+	const setShowNotes = val => {
+		showNotes = val;
+	};
+
+	let showNotes = true;
+
 	$: {
 		console.log('STATE GROUPS', stateGroups);
 	}
@@ -49,8 +55,8 @@
 	<div class="container-container" width="100%">
 
 		<div class="container">
-			<Buttons {renderer} {notes} {resetNotes} />
-			<MainSVG {notes} />
+			<Buttons {renderer} {notes} {resetNotes} {setShowNotes} />
+			<MainSVG {notes} {showNotes} />
 		</div>
 
 	</div>

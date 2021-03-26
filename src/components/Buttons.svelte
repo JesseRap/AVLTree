@@ -82,14 +82,23 @@
     cursor: pointer;
     text-align: center;
   }
+
+  .flex {
+    display: flex;
+    justify-content: space-between;
+  }
 </style>
 <script>
   import BalancedButtons from './BalancedButtons.svelte';
+  import ShowTextButtons from './ShowTextButtons.svelte';
   export let runAnimations;
   export let renderer;
+  export let setShowNotes;
   export let resetNotes;
   let isBalanced = true;
+  let isShowing = true;
   let value = true;
+  let value2 = true;
   let locked = false;
 
   $: {
@@ -194,4 +203,7 @@
 	</div>
 </div>
 
-<BalancedButtons {isBalanced} {setIsBalanced} {value} />
+<div class="flex">
+  <BalancedButtons {isBalanced} {setIsBalanced} {value} />
+  <ShowTextButtons {isShowing} {setShowNotes} value={value2} />
+</div>
