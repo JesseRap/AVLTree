@@ -4,6 +4,7 @@
     top: -16px;
     left: 0;
     background-color: transparent;
+    pointer-events: none;
   }
 
   .svg-main-2 tspan {
@@ -18,7 +19,7 @@
 
 <script>
   import anime from 'animejs/lib/anime.es.js';
-  
+
   const open = () => {
     const circles = document.querySelectorAll('.clip-circle');
     circles.forEach(circle => {

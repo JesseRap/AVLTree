@@ -542,12 +542,11 @@ export default class TreeRenderer {
         break;
       }
       case 'deleteNodeFinish': {
+        this.clearAllVisitedNodes();
         this.notes.update((arr) => [
           ...arr,
-          `Insert ${state.insertValue} into tree...`,
-          '1. Find insertion point...',
+          `Node with value ${state.deleteValue} deleted!`,
         ]);
-        await this.animateStart(state.insertValue, 'delete');
         break;
       }
       case 'findNodeStart': {
@@ -591,7 +590,7 @@ export default class TreeRenderer {
       case 'visitNode': {
         debugger;
         console.log('STATE', state);
-        const value = state.findValue ?? state.insertValue;
+        const value = state.findValue ?? state.insertValue ?? state.deleteValue;
         this.notes.update((arr) => {
           if (value < state.node.val) {
             return [...arr, `${value} < ${state.node.val}`, 'go left...'];
@@ -621,10 +620,6 @@ export default class TreeRenderer {
       }
       case 'deleteWithSuccessor': {
         this.animateDeleteWithSuccessor(state);
-        break;
-      }
-      case 'deleteNodeFinish': {
-        this.clearAllVisitedNodes();
         break;
       }
       case 'findNodeFound': {

@@ -29,7 +29,7 @@ svg {
 }
 </style>
 
-<g {id} class:hidden={hidden} class="node-group"><g class="node-transform-group"><svg class="node-svg" id="svg" width="25%" height="25%" viewBox="0 0 100 100">
+<g on:click={() => {alert(1)}} {id} class:hidden={hidden} class="node-group"><g class="node-transform-group"><svg class="node-svg" id="svg" width="25%" height="25%" viewBox="0 0 100 100">
   <defs>
     <filter id="shadow-1">
       <feDropShadow dx="1" dy="1.2" stdDeviation="0.5" flood-opacity="0.8"/>

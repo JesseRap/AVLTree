@@ -354,6 +354,44 @@ export default class AVLTree {
       .join('\n');
   };
 
+  dfs = (node, findValue) => {
+    if (!node) {
+      this.stateGroup.push({
+        type: 'findNodeNotFound',
+        tree: this.copy(),
+        findValue,
+        node,
+      });
+      return null;
+    }
+    if (node.val === findValue) {
+      this.stateGroup.push({
+        type: 'findNodeFound',
+        tree: this.copy(),
+        findValue,
+        node,
+      });
+      return node;
+    }
+    if (node.val >= findValue) {
+      this.stateGroup.push({
+        type: 'visitNode',
+        tree: this.copy(),
+        findValue,
+        node,
+      });
+      return dfs(node.left, findValue);
+    } else {
+      this.stateGroup.push({
+        type: 'visitNode',
+        tree: this.copy(),
+        findValue,
+        node,
+      });
+      return dfs(node.right, findValue);
+    }
+  };
+
   find = (findValue, stateGroup) => {
     this.stateGroup = stateGroup ?? [];
     this.stateGroup.push({
@@ -361,45 +399,8 @@ export default class AVLTree {
       tree: this.copy(),
       findValue,
     });
-    const dfs = (node) => {
-      if (!node) {
-        this.stateGroup.push({
-          type: 'findNodeNotFound',
-          tree: this.copy(),
-          findValue,
-          node,
-        });
-        return null;
-      }
-      if (node.val === findValue) {
-        this.stateGroup.push({
-          type: 'findNodeFound',
-          tree: this.copy(),
-          findValue,
-          node,
-        });
-        return node;
-      }
-      if (node.val >= findValue) {
-        this.stateGroup.push({
-          type: 'visitNode',
-          tree: this.copy(),
-          findValue,
-          node,
-        });
-        return dfs(node.left);
-      } else {
-        this.stateGroup.push({
-          type: 'visitNode',
-          tree: this.copy(),
-          findValue,
-          node,
-        });
-        return dfs(node.right);
-      }
-    };
 
-    const foundNode = dfs(this.root);
+    const foundNode = this.dfs(this.root, findValue);
 
     this.stateGroup.push({
       type: 'findNodeFinish',
@@ -446,7 +447,7 @@ export default class AVLTree {
       deleteValue: val,
     });
 
-    const node = this.find(val, this.stateGroup);
+    const node = this.dfs(this.root, val);
     if (node === null) {
       this.updateAllNodes();
       this.rebalanceAllNodes();
