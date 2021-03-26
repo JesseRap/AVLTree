@@ -514,6 +514,7 @@ export default class TreeRenderer {
         this.notes.update((arr) => [
           ...arr,
           `Insert ${state.insertValue} into tree...`,
+          'Find insertion point...',
         ]);
         await this.animateStart(state.insertValue, 'insert');
         break;
@@ -554,7 +555,7 @@ export default class TreeRenderer {
         const value = state.findValue || state.insertValue;
         this.notes.update((arr) => {
           if (value < state.node.val) {
-            return [...arr, `${value} < ${state.node.value}`, 'go left...'];
+            return [...arr, `${value} < ${state.node.val}`, 'go left...'];
           } else {
             return [...arr, `${state.node.val} <= ${value}`, 'go right...'];
           }
