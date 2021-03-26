@@ -547,7 +547,7 @@ export default class TreeRenderer {
           `Insert ${state.insertValue} into tree...`,
           '1. Find insertion point...',
         ]);
-        await this.animateStart(state.insertValue, 'insert');
+        await this.animateStart(state.insertValue, 'delete');
         break;
       }
       case 'findNodeStart': {
@@ -564,6 +564,7 @@ export default class TreeRenderer {
           `Delete value ${state.deleteValue} in tree...`,
           '1. Find delete value...',
         ]);
+        await this.animateStart(state.deleteValue, 'delete');
         break;
       }
       case 'findNodeFinish': {
@@ -635,10 +636,6 @@ export default class TreeRenderer {
           ...arr,
           `Node ${state.findValue} not found in tree...`,
         ]);
-        break;
-      }
-      case 'findNodeFinish': {
-        this.clearAllVisitedNodes();
         break;
       }
       case 'veryUnbalancedNode': {
