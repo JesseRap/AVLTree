@@ -34,9 +34,13 @@
     debugger;
     console.log("VALUE", value);
     if (value) {
-      n = value;
+      setTimeout(() => { n = value; }, 1000);
     }
   });
+
+  $: {
+    console.log('NOTES', $notes);
+  }
 </script>
 
 <div id="notes" class="notes">

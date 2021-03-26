@@ -219,7 +219,7 @@ export default class AVLTree {
     if (!this.root) {
       this.root = newNode;
       this.stateGroup.push({
-        type: 'insert',
+        type: 'insertNoRoot',
         tree: this.copy(),
         child: this.root,
         parent: null,

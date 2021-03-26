@@ -505,6 +505,20 @@ export default class TreeRenderer {
 
     switch (state.type) {
       case 'insert': {
+        this.notes.update((arr) => [
+          ...arr,
+          `Insert value ${state.insertValue}....`,
+        ]);
+        if (newNode.id !== child.id) {
+          this.animateInsert(newNode, child);
+        }
+        break;
+      }
+      case 'insertNoRoot': {
+        this.notes.update((arr) => [
+          ...arr,
+          'Tree is empty... insert into root...',
+        ]);
         if (newNode.id !== child.id) {
           this.animateInsert(newNode, child);
         }
@@ -546,13 +560,15 @@ export default class TreeRenderer {
         break;
       }
       case 'insertFinish': {
+        this.notes.update((arr) => [...arr, 'Insert complete!']);
         await wait(1000);
         this.clearAllVisitedNodes();
         break;
       }
       case 'visitNode': {
         debugger;
-        const value = state.findValue || state.insertValue;
+        console.log('STATE', state);
+        const value = state.findValue ?? state.insertValue;
         this.notes.update((arr) => {
           if (value < state.node.val) {
             return [...arr, `${value} < ${state.node.val}`, 'go left...'];
