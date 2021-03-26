@@ -94,6 +94,7 @@
   export let runAnimations;
   export let renderer;
   export let setShowNotes;
+  export let showNotes;
   export let resetNotes;
   let isBalanced = true;
   let isShowing = true;
@@ -205,5 +206,5 @@
 
 <div class="flex">
   <BalancedButtons {isBalanced} {setIsBalanced} {value} />
-  <ShowTextButtons {isShowing} {setShowNotes} value={value2} />
+  <ShowTextButtons isShowing={showNotes} {setShowNotes} value={value} />
 </div>

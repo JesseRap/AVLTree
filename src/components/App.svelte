@@ -31,6 +31,7 @@
 
 	const setShowNotes = val => {
 		showNotes = val;
+		showNotes = showNotes;
 	};
 
 	let showNotes = true;
@@ -55,7 +56,7 @@
 	<div class="container-container" width="100%">
 
 		<div class="container">
-			<Buttons {renderer} {notes} {resetNotes} {setShowNotes} />
+			<Buttons {renderer} {notes} {resetNotes} {showNotes} {setShowNotes} />
 			<MainSVG {notes} {showNotes} />
 		</div>
 
