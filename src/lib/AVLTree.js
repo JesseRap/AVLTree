@@ -380,7 +380,7 @@ export default class AVLTree {
         findValue,
         node,
       });
-      return dfs(node.left, findValue);
+      return this.dfs(node.left, findValue);
     } else {
       this.stateGroup.push({
         type: 'visitNode',
@@ -388,7 +388,7 @@ export default class AVLTree {
         findValue,
         node,
       });
-      return dfs(node.right, findValue);
+      return this.dfs(node.right, findValue);
     }
   };
 
