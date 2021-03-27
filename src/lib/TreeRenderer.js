@@ -615,7 +615,7 @@ export default class TreeRenderer {
       }
       case 'deleteLeaf': {
         this.notes.update((arr) => [...arr, `Delete node is a leaf...`]);
-        await wait(2000);
+        // await wait(2000);
         await this.animateDeleteLeaf(node, parent);
         if (parent) {
           const key = `${node.id}-${parent.id}`;
@@ -628,7 +628,7 @@ export default class TreeRenderer {
       case 'deleteLeft': {
         this.notes.update((arr) => [
           ...arr,
-          `Delete node has a singe left child...`,
+          `Delete node has a single left child...`,
         ]);
         await wait(2000);
         await this.animateDeleteLeaf(node, parent);
