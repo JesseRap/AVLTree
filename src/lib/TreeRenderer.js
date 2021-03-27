@@ -543,10 +543,14 @@ export default class TreeRenderer {
       }
       case 'deleteNodeFinish': {
         this.clearAllVisitedNodes();
-        this.notes.update((arr) => [
-          ...arr,
-          `Node with value ${state.deleteValue} deleted!`,
-        ]);
+        if (state.deleted) {
+          this.notes.update((arr) => [
+            ...arr,
+            `Node with value ${state.deleteValue} deleted!`,
+          ]);
+        } else {
+          this.notes.update((arr) => [...arr, `Deletion not successful!`]);
+        }
         break;
       }
       case 'findNodeStart': {
