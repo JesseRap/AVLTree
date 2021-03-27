@@ -666,6 +666,11 @@ export default class TreeRenderer {
         break;
       }
       case 'deleteWithSuccessor': {
+        this.notes.update((arr) => [
+          ...arr,
+          `Delete node has a successor...`,
+          'Find the successor...',
+        ]);
         this.animateDeleteWithSuccessor(state);
         break;
       }
