@@ -12,23 +12,29 @@
   import NodeCircle from './NodeCircle.svelte';
   $: color = (Math.abs(balance)) === 0 ? '#7f8fa6' : (Math.abs(balance)) === 1 ? '#c23616' : '#e84118';
 
+  let el;
+
   const onMouseOver = () => {
-    const el = document.querySelector('.node-group:hover');
+    el = document.querySelector('.node-group:hover');
     if (el) {
+      el.style.filter = 'saturate(0.1)';
       const nodes = document.querySelectorAll('.node-group:not(.node-group:hover)');
       console.log(nodes);
-      // nodes.forEach((node) => {
-      //   node.setAttribute('style', 'opacity: 0.5;');
-      // });
+      nodes.forEach((node) => {
+        node.setAttribute('style', 'filter: blur(0.4px);');
+      });
     }
   };
 
   const onMouseOut = () => {
-    const nodes = document.querySelectorAll('.node-group:not(.node-group:hover)');
-    console.log(nodes);
-    // nodes.forEach((node) => {
-    //   node.setAttribute('style', 'opacity: 1;');
-    // });
+    if (el) {
+      el.style.filter = 'saturate(1)';
+      const nodes = document.querySelectorAll('.node-group:not(.node-group:hover)');
+      console.log(nodes);
+      nodes.forEach((node) => {
+        node.setAttribute('style', 'filter: blur(0);');
+      });
+    }
   };
 
 </script>
@@ -44,11 +50,12 @@ svg {
 }
 
 .node-group {
+  opacity: 1;
   transform: translate(-12.5%, -12.5%);
 }
 
 .node-group:hover {
-  filter: brightness(1.5);
+  /* filter: brightness(1.5); */
 }
 
 .hidden {
