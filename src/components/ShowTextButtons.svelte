@@ -29,8 +29,8 @@
   }
 
   .buttons__container {
-    width: 100%;
     height: 60px;
+    width: 250px;
   }
 </style>
 
