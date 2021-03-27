@@ -7,6 +7,10 @@
     pointer-events: none;
   }
 
+  .svg-main-2 circle, .svg-main-2 circle {
+    pointer-events: all;
+  }
+
   .svg-main-2 tspan {
     font-family: Arial, sans-serif;
     font-weight: normal;

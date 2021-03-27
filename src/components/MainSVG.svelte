@@ -16,9 +16,9 @@
 <div id="svg-main__container" class="svg-main__container">
 
   <TreeSVG />
-  <AboutSVG />
   {#if showNotes}
     <Notes {notes} />
   {/if}
+  <AboutSVG />
 
 </div>
