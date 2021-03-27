@@ -79,6 +79,10 @@ export default class AVLTree {
     }
   };
 
+  addState = (state) => {
+    this.stateGroup.push(state);
+  };
+
   rotateLeftNode = (node) => {
     const parent = this.getParentNode(node);
     const isLeft = this.isLeftChild(node);
@@ -87,7 +91,7 @@ export default class AVLTree {
 
     this.setChild(parent, childDirection, rotated);
 
-    this.stateGroup.push({
+    this.addState({
       type: 'rebalance',
       tree: this.copy(),
       pivot: node,
