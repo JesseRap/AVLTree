@@ -489,12 +489,12 @@ export default class AVLTree {
         parent[childSide] = node.left;
       } else {
         // node is root
-        this.root = nod.left;
+        this.root = node.left;
       }
       this.stateGroup.push({
         type: 'deleteLeft',
         tree: this.copy(),
-        node: this.root,
+        node,
         leftChild,
         deleteValue: val,
         parent,

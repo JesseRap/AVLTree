@@ -13,7 +13,7 @@
   export let showNotes
 </script>
 
-<div class="svg-main__container">
+<div id="svg-main__container" class="svg-main__container">
 
   <TreeSVG />
   <AboutSVG />

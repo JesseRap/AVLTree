@@ -614,11 +614,54 @@ export default class TreeRenderer {
         break;
       }
       case 'deleteLeaf': {
+        this.notes.update((arr) => [...arr, `Delete node is a leaf...`]);
+        await wait(2000);
+        await this.animateDeleteLeaf(node, parent);
         if (parent) {
           const key = `${node.id}-${parent.id}`;
           delete this.edgeMemo[key];
         } else {
           this.edgeMemo = {};
+        }
+        break;
+      }
+      case 'deleteLeft': {
+        this.notes.update((arr) => [
+          ...arr,
+          `Delete node has a singe left child...`,
+        ]);
+        await wait(2000);
+        await this.animateDeleteLeaf(node, parent);
+        // await this.animateDeleteLeft(node, parent);
+        if (parent) {
+          const key = `${node.id}-${parent.id}`;
+          const newKey = `${leftChild.id}-${parent.id}`;
+          const path = this.edgeMemo[key];
+          delete this.edgeMemo[key];
+          this.edgeMemo[newKey] = path;
+        } else {
+          const key = `${leftChild.id}-${node.id}`;
+          delete this.edgeMemo[key];
+        }
+        break;
+      }
+      case 'deleteRight': {
+        this.notes.update((arr) => [
+          ...arr,
+          `Delete node has a single right child...`,
+        ]);
+        await wait(2000);
+        await this.animateDeleteLeaf(node, parent);
+        // await this.animateDeleteLeft(node, parent);
+        if (parent) {
+          const key = `${node.id}-${parent.id}`;
+          const newKey = `${rightChild.id}-${parent.id}`;
+          const path = this.edgeMemo[key];
+          delete this.edgeMemo[key];
+          this.edgeMemo[newKey] = path;
+        } else {
+          const key = `${rightChild.id}-${node.id}`;
+          delete this.edgeMemo[key];
         }
         break;
       }
@@ -643,6 +686,27 @@ export default class TreeRenderer {
       }
       default:
         break;
+    }
+  };
+
+  animateDeleteLeaf = (node, parent) => {
+    const group = Array.from(this.rootSVG.children).find(
+      (g) => g.id === `g-${node.id}`
+    );
+    console.log('HI!!!!!', group);
+    anime({
+      targets: group,
+      translateX: 1000,
+      translateY: 1000,
+      duration: 5000,
+    });
+    if (parent) {
+      const path = this.edgeMemo[`${node.id}-${parent.id}`];
+      anime({
+        targets: path,
+        fill: 'transparent',
+        duration: 5000,
+      });
     }
   };
 
