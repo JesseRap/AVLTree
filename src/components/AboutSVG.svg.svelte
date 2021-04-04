@@ -16,6 +16,10 @@
     font-weight: normal;
   }
 
+  #circle, #text {
+    pointer-events: all;
+  }
+
   .question-mark {
     cursor: default;
   }
@@ -80,8 +84,8 @@
     </clipPath>
   </defs>
 
-  <circle on:mouseover={open} on:mouseout={close} cx="95%" cy="5%" r="3px" fill="#fbc531" />
-  <text class="question-mark" on:mouseover={open} on:mouseout={close} x="93.5%" y="7%" text-anchor="center" fill="black" font-size="6px">?</text>
+  <circle id="circle" on:mouseover={open} on:mouseout={close} cx="95%" cy="5%" r="3px" fill="#fbc531" />
+  <text id="text" class="question-mark" on:mouseover={open} on:mouseout={close} x="93.5%" y="7%" text-anchor="center" fill="black" font-size="6px">?</text>
   <rect clip-path="url(#clip)" x="10%" y="10%" width="80%" height="80%" fill="#4cd137" />
   <text clip-path="url(#clip)" x="15%" y="10%" text-anchor="start" fill="#000">
     <tspan letter-spacing="0.4px" font-size="3px" x="15%" dy="8%">An AVL tree is a</tspan>
