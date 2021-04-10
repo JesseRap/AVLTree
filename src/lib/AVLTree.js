@@ -296,9 +296,6 @@ export default class AVLTree {
 
     this.updateAllNodes();
 
-    //const oldText = introGroup.querySelector('text');
-    // +    if (oldText) oldText.parentElement.removeChild(oldText);
-
     this.stateGroup.push({
       type: 'insertFinish',
       tree: this.copy(),
@@ -313,7 +310,6 @@ export default class AVLTree {
     return nodeIndex === 0 ? null : this.heap[Math.floor((nodeIndex - 1) / 2)];
   };
 
-  // TODO: Refactor for readability.
   rebalance = (node) => {
     if (node.balance === 2) {
       if (node.right.balance >= 0) {
