@@ -32,15 +32,21 @@ export default class AVLTree {
   getLevels = () => {
     let level = [this.root];
     const levels = [];
-    while (level.length && level.some((el) => el !== null)) {
+    while (this.levelIsNotAllNull(level)) {
       levels.push(level);
-      level = level.reduce(
-        (acc, node) => [...acc, node?.left || null, node?.right || null],
-        []
-      );
+      level = this.getNextLevel(level);
     }
     return levels;
   };
+
+  levelIsNotAllNull = (level) =>
+    level.length > 0 && level.some((el) => el !== null);
+
+  getNextLevel = (level) =>
+    level.reduce(
+      (acc, node) => [...acc, node?.left || null, node?.right || null],
+      []
+    );
 
   /**
    * Returns a heap representation of the tree.

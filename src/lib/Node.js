@@ -1,4 +1,3 @@
-// TODO: This ID scheme might fail if module is imported multiple times.
 let id = 0;
 
 export default class Node {
