@@ -911,8 +911,7 @@ export default class TreeRenderer {
   };
 
   update = async (state) => {
-    // debugger;
-    console.log('update state', state.type);
+    console.log('update state', state);
     this.updateCxArrAndCyArr(state.tree);
     this.updateSvgHeapFromHeap(state.tree);
     await this.updateEdgeMemoFromState(state);
@@ -921,7 +920,6 @@ export default class TreeRenderer {
   };
 
   animate = async (state) => {
-    // debugger;
     console.log('animate state', state.type);
     this.insertNodesIntoSVG();
     this.removeOldNodesFromSVG();
@@ -937,8 +935,7 @@ export default class TreeRenderer {
     for (const state of this.tree.stateGroups[
       this.tree.stateGroups?.length - 1
     ]) {
-      console.log(state);
-      debugger;
+      console.log('STATE:', state.type);
       await this.update(state);
       await this.animate(state);
     }
