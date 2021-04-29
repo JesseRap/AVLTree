@@ -94,8 +94,8 @@ export default class TreeRenderer {
         );
 
         if (
-          this.isUnbalanced(state.tree.heap[index]) ||
-          this.isVeryUnbalanced(state.tree.heap[index])
+          state.tree.heap[index].isUnbalanced ||
+          state.tree.heap[index].isVeryUnbalanced
         ) {
           balanceLineGroup.parentElement.classList.add('wobble');
         } else {
@@ -104,10 +104,6 @@ export default class TreeRenderer {
       }
     });
   };
-
-  isUnbalanced = (node) => Math.abs(node.balance) === 1;
-
-  isVeryUnbalanced = (node) => Math.abs(node.balance) > 1;
 
   createPath = (node, tree = this.tree) => {
     console.log('createPath', node);
@@ -477,11 +473,10 @@ export default class TreeRenderer {
   };
 
   /**
-   * Updates the edge memp based on the AVL tree after changes.
+   * Updates the edge memo based on the AVL tree after changes.
    */
   updateEdgeMemoFromState = async (state) => {
-    // debugger;
-    console.log('updateEdgeMemoFromState');
+    console.log('updateEdgeMemoFromState', state.type);
     const {
       child,
       node,
@@ -933,7 +928,7 @@ export default class TreeRenderer {
   runLatestAnimationGroup = async () => {
     console.log('runLatestAnimationGroup', this.stateGroups);
     for (const state of this.tree.stateGroups[
-      this.tree.stateGroups?.length - 1
+      this.tree.stateGroups.length - 1
     ]) {
       console.log('STATE:', state.type);
       await this.update(state);
